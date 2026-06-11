@@ -586,13 +586,22 @@ def fetch_apifootball():
 
 def fetch_footballdata():
     tok = os.environ["FOOTBALLDATA_TOKEN"]
-    # El plan gratis a veces no expone la competencia WC, pero sí lista los partidos
-    # en el endpoint general /matches. Pedimos todos los FINISHED y luego el filtrado
-    # por nombres de equipo (mapeo del fixture) se queda solo con los del Mundial.
-    url = "https://api.football-data.org/v4/matches?status=FINISHED"
+    # /v4/matches sin fecha devuelve solo el día actual (UTC). Pedimos una ventana
+    # de varios días para no perder partidos según el huso horario. El merge en main()
+    # acumula, así que esta ventana móvil + las corridas cada 30 min cubren todo.
+    hoy = datetime.datetime.now(datetime.timezone.utc).date()
+    desde = (hoy - datetime.timedelta(days=3)).isoformat()
+    hasta = (hoy + datetime.timedelta(days=1)).isoformat()
+    url = (f"https://api.football-data.org/v4/matches"
+           f"?dateFrom={desde}&dateTo={hasta}&status=FINISHED")
     data = http_get(url, {"X-Auth-Token": tok})
     matches = data.get("matches", []) or []
-    print(f"[diag] football-data.org · partidos FINISHED recibidos (todas las competencias): {len(matches)}")
+    print(f"[diag] football-data.org · ventana {desde}..{hasta} · FINISHED recibidos: {len(matches)}")
+    # detalle de lo que llega (para ver competencia, equipos y marcador)
+    for m in matches[:40]:
+        comp = (m.get("competition") or {}).get("code") or (m.get("competition") or {}).get("name","?")
+        ft = m.get("score",{}).get("fullTime",{})
+        print(f"[diag]   [{comp}] {m['homeTeam'].get('name')} {ft.get('home')}-{ft.get('away')} {m['awayTeam'].get('name')}")
     out = []
     for m in matches:
         h = m["homeTeam"]["name"]; a = m["awayTeam"]["name"]
@@ -661,3 +670,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
