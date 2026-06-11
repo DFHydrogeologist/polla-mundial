@@ -1,0 +1,42 @@
+name: Actualizar resultados
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # cada 30 minutos (UTC)
+  workflow_dispatch:          # permite ejecutarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-resultados
+  cancel-in-progress: true
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Traer resultados desde la API
+        env:
+          POLLA_PROVIDER: ${{ vars.POLLA_PROVIDER || 'apifootball' }}
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          FOOTBALLDATA_TOKEN: ${{ secrets.FOOTBALLDATA_TOKEN }}
+        run: python scripts/fetch_resultados.py
+
+      - name: Commit si cambió
+        run: |
+          git config user.name  "polla-bot"
+          git config user.email "polla-bot@users.noreply.github.com"
+          if ! git diff --quiet -- resultados.json; then
+            git add resultados.json
+            git commit -m "Actualizar resultados ($(date -u +%FT%TZ))"
+            git push
+          else
+            echo "Sin cambios en resultados.json"
+          fi

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polla Mundial 2026 — Ranking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A2540; --blue:#1F4E79; --blue2:#2E6CB0; --ice:#DCE6F1;
+  --gold:#F2B705; --green:#16A571; --frost:#3E8FCB; --fire:#EF4B27;
+  --paper:#EEF2F8; --ink:#0A2540; --muted:#5B6B7F; --line:#DDE5EF; --white:#fff;
+  --display:'Anton',Impact,sans-serif; --body:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 18px}
+.eyebrow{font-family:var(--display);text-transform:uppercase;letter-spacing:.14em;color:var(--blue2);font-size:13px}
+
+.topbar{background:var(--navy);color:#fff;position:sticky;top:0;z-index:50;border-bottom:3px solid var(--gold)}
+.topbar .wrap{display:flex;align-items:center;gap:16px;padding:13px 18px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand .ball{font-size:22px}
+.brand h1{font-family:var(--display);font-weight:400;font-size:23px;letter-spacing:.02em;margin:0;line-height:1}
+.brand .yr{font-family:var(--mono);color:var(--gold);font-size:14px}
+.src{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:11px;line-height:1.3}
+.src .dot{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:#cfe0f2}
+.src .dot i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(22,165,113,.25)}
+.src .dot.warn i{background:var(--gold);box-shadow:0 0 0 3px rgba(242,183,5,.25)}
+.src .upd{color:#9DB2CC;font-family:var(--mono)}
+.btn{font-family:var(--body);font-weight:600;font-size:12.5px;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:8px 13px;border-radius:8px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{background:rgba(255,255,255,.2)}
+.btn .spin{display:inline-block}
+.btn.loading .spin{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.subnav{position:sticky;top:60px;z-index:40;background:rgba(238,242,248,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.subnav .wrap{display:flex;gap:4px;padding:7px 18px}
+.subnav a{font-weight:600;font-size:13px;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:8px}
+.subnav a:hover{color:var(--blue);background:#fff}
+
+section{padding:34px 0 8px}
+.sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sechead h2{font-family:var(--display);font-weight:400;font-size:27px;letter-spacing:.01em;margin:4px 0 0}
+.sechead .hint{font-size:12.5px;color:var(--muted);max-width:340px;text-align:right}
+
+.podium{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:12px;align-items:end}
+.tile{background:var(--navy);color:#fff;border-radius:14px;padding:18px 14px 16px;text-align:center;position:relative;box-shadow:0 12px 30px -16px rgba(10,37,64,.6)}
+.tile.gold{background:linear-gradient(170deg,#123a63,#0A2540);border:2px solid var(--gold);padding-top:26px}
+.tile .medal{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:16px;color:var(--navy);background:#C9D4E2}
+.tile.gold .medal{background:var(--gold);width:40px;height:40px;top:-18px;font-size:19px}
+.tile .pname{font-weight:700;font-size:16px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .pscore{font-family:var(--display);font-size:46px;line-height:.95;color:var(--gold);margin-top:4px}
+.tile.gold .pscore{font-size:60px}
+.tile .plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:#9DB2CC;text-transform:uppercase}
+.tile .mini{margin-top:8px;font-size:11px;color:#B9C8DB;display:flex;justify-content:center;gap:9px}
+.tile .mini b{color:#fff}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;position:relative;overflow:hidden}
+.card .stripe{position:absolute;inset:0 auto 0 0;width:5px}
+.card.g .stripe{background:var(--green)} .card.b .stripe{background:var(--frost)} .card.e .stripe{background:var(--fire)}
+.card .ico{font-size:20px}
+.card h3{margin:6px 0 1px;font-size:13px;font-weight:700}
+.card .sub{font-size:11.5px;color:var(--muted);margin-bottom:10px;min-height:28px}
+.card .lead{display:flex;align-items:baseline;gap:9px}
+.card .lead .who{font-weight:800;font-size:18px}
+.card .lead .val{font-family:var(--display);font-size:30px;margin-left:auto;line-height:1}
+.card.g .lead .val{color:var(--green)} .card.b .lead .val{color:var(--frost)} .card.e .lead .val{color:var(--fire)}
+.card .runners{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;font-size:12px;color:var(--muted);display:grid;gap:3px}
+.card .runners span b{color:var(--ink);font-weight:600}
+
+.tablecard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{background:var(--blue);color:#fff;font-weight:600;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;padding:11px 10px;text-align:center}
+thead th.l{text-align:left}
+tbody td{padding:10px;border-top:1px solid var(--line);text-align:center}
+tbody td.l{text-align:left}
+tbody tr:nth-child(even){background:#FAFCFF}
+.pos{font-family:var(--display);font-size:18px;color:var(--blue);width:46px}
+tbody tr.top1 .pos{color:var(--gold)}
+.nm{font-weight:700}
+.tot{font-family:var(--mono);font-weight:700;font-size:16px}
+.chip{display:inline-block;min-width:26px;font-family:var(--mono);font-weight:700;font-size:13px;padding:2px 7px;border-radius:7px}
+.chip.g{color:#0c6b48;background:#DCF5EC} .chip.b{color:#1d5a86;background:#DEEDFA} .chip.e{color:#9a2c14;background:#FCE3DC}
+.chip.zero{color:#9aa7b6;background:#F0F3F8}
+
+details.grp{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden}
+details.grp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:11px;padding:13px 15px;font-weight:700}
+details.grp summary::-webkit-details-marker{display:none}
+.gbadge{font-family:var(--display);font-size:15px;width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;display:grid;place-items:center}
+summary .gcount{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+summary .chev{color:var(--muted);transition:.2s}
+details[open] summary .chev{transform:rotate(180deg)}
+.matches{padding:2px 12px 10px}
+.match{display:grid;grid-template-columns:1fr 86px 1fr;align-items:center;gap:10px;padding:9px 4px;border-top:1px solid #F0F3F8}
+.match:first-child{border-top:none}
+.match .tm{font-size:13.5px;font-weight:600}
+.match .tm.lo{text-align:right} .match .tm.vi{text-align:left}
+.match .sc{display:flex;align-items:center;justify-content:center;gap:7px;font-family:var(--mono);font-weight:700;font-size:17px}
+.match .sc .col{color:var(--muted)}
+.match .sc.pend{color:#B3C0D0;font-family:var(--body);font-weight:600;font-size:11px;letter-spacing:.04em}
+.match .dt{grid-column:1/-1;text-align:center;font-family:var(--mono);font-size:10px;color:#A9B6C6;letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+.match.played .sc{color:var(--ink)}
+.match .badge{grid-column:1/-1;justify-self:center;margin-top:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);font-weight:700}
+
+.note{font-size:12.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin-top:14px}
+footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
+.flash{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:99;border:1px solid rgba(255,255,255,.15)}
+.flash.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:720px){
+  .brand h1{font-size:19px}
+  .sechead{flex-direction:column;align-items:flex-start} .sechead .hint{text-align:left}
+  .cards{grid-template-columns:1fr}
+  .podium{grid-template-columns:1fr;gap:9px} .tile.gold{order:-1}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="brand"><span class="ball">⚽</span><h1>Polla Mundial</h1><span class="yr">2026</span></div>
+  <div class="src">
+    <span class="dot" id="srcDot"><i></i><span id="srcTxt">cargando…</span></span>
+    <span class="upd" id="srcUpd"></span>
+  </div>
+  <button class="btn" id="btnReload"><span class="spin">↻</span> Actualizar</button>
+</div></div>
+
+<div class="subnav"><div class="wrap">
+  <a href="#ranking">Ranking oficial</a>
+  <a href="#destacados">Destacados</a>
+  <a href="#resultados">Resultados</a>
+</div></div>
+
+<div class="wrap">
+
+  <section id="ranking">
+    <div class="sechead">
+      <div><div class="eyebrow">Tabla general</div><h2>🏆 Ranking oficial</h2></div>
+      <div class="hint">Suma de puntos en los partidos jugados. 2 acierto de resultado · 4 + margen · 6 marcador exacto.</div>
+    </div>
+    <div class="podium" id="podium"></div>
+    <div class="tablecard" style="margin-top:16px">
+      <table>
+        <thead><tr>
+          <th>#</th><th class="l">Jugador</th>
+          <th title="Partidos puntuando">🎯 Puntúa</th>
+          <th title="Partidos sin puntos">🥶 En blanco</th>
+          <th title="Marcadores exactos (6 pts)">🔥 Exactos</th>
+          <th>Puntos</th>
+        </tr></thead>
+        <tbody id="rankBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="destacados">
+    <div class="sechead">
+      <div><div class="eyebrow">Los números de la polla</div><h2>Destacados</h2></div>
+      <div class="hint">Se cuentan solo los partidos ya jugados.</div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="resultados">
+    <div class="sechead">
+      <div><div class="eyebrow">Marcadores oficiales · solo lectura</div><h2>Resultados</h2></div>
+      <div class="hint">Los marcadores los completa la API automáticamente. Nadie los edita a mano.</div>
+    </div>
+    <div id="groups"></div>
+    <div class="note">Los resultados llegan desde <b id="provName">la API</b> y se guardan en <code>resultados.json</code>, que actualiza un proceso automático del repositorio. La <b>fase de llave</b> se suma cuando se conozcan los cruces.</div>
+  </section>
+
+</div>
+
+<div class="flash" id="flash"></div>
+<footer>Polla Mundial 2026 · resultados vía API · predicciones de 10 jugadores empaquetadas</footer>
+
+<script>
+const DATA = {"fixtures":[{"grupo":"A","fecha":"11 jun","local":"México","visitante":"Sudáfrica"},{"grupo":"A","fecha":"11 jun","local":"Corea del Sur","visitante":"Chequia"},{"grupo":"A","fecha":"18 jun","local":"Chequia","visitante":"Sudáfrica"},{"grupo":"A","fecha":"18 jun","local":"México","visitante":"Corea del Sur"},{"grupo":"A","fecha":"24 jun","local":"Chequia","visitante":"México"},{"grupo":"A","fecha":"24 jun","local":"Sudáfrica","visitante":"Corea del Sur"},{"grupo":"B","fecha":"12 jun","local":"Canadá","visitante":"Bosnia y Herzegovina"},{"grupo":"B","fecha":"13 jun","local":"Qatar","visitante":"Suiza"},{"grupo":"B","fecha":"18 jun","local":"Suiza","visitante":"Bosnia y Herzegovina"},{"grupo":"B","fecha":"18 jun","local":"Canadá","visitante":"Qatar"},{"grupo":"B","fecha":"24 jun","local":"Suiza","visitante":"Canadá"},{"grupo":"B","fecha":"24 jun","local":"Bosnia y Herzegovina","visitante":"Qatar"},{"grupo":"C","fecha":"13 jun","local":"Brasil","visitante":"Marruecos"},{"grupo":"C","fecha":"13 jun","local":"Haití","visitante":"Escocia"},{"grupo":"C","fecha":"19 jun","local":"Escocia","visitante":"Marruecos"},{"grupo":"C","fecha":"19 jun","local":"Brasil","visitante":"Haití"},{"grupo":"C","fecha":"24 jun","local":"Escocia","visitante":"Brasil"},{"grupo":"C","fecha":"24 jun","local":"Marruecos","visitante":"Haití"},{"grupo":"D","fecha":"12 jun","local":"Estados Unidos","visitante":"Paraguay"},{"grupo":"D","fecha":"13 jun","local":"Australia","visitante":"Turquía"},{"grupo":"D","fecha":"19 jun","local":"Estados Unidos","visitante":"Australia"},{"grupo":"D","fecha":"19 jun","local":"Turquía","visitante":"Paraguay"},{"grupo":"D","fecha":"25 jun","local":"Turquía","visitante":"Estados Unidos"},{"grupo":"D","fecha":"25 jun","local":"Paraguay","visitante":"Australia"},{"grupo":"E","fecha":"14 jun","local":"Alemania","visitante":"Curazao"},{"grupo":"E","fecha":"14 jun","local":"Costa de Marfil","visitante":"Ecuador"},{"grupo":"E","fecha":"20 jun","local":"Alemania","visitante":"Costa de Marfil"},{"grupo":"E","fecha":"20 jun","local":"Ecuador","visitante":"Curazao"},{"grupo":"E","fecha":"25 jun","local":"Ecuador","visitante":"Alemania"},{"grupo":"E","fecha":"25 jun","local":"Curazao","visitante":"Costa de Marfil"},{"grupo":"F","fecha":"14 jun","local":"Países Bajos","visitante":"Japón"},{"grupo":"F","fecha":"14 jun","local":"Suecia","visitante":"Túnez"},{"grupo":"F","fecha":"20 jun","local":"Países Bajos","visitante":"Suecia"},{"grupo":"F","fecha":"20 jun","local":"Túnez","visitante":"Japón"},{"grupo":"F","fecha":"25 jun","local":"Japón","visitante":"Suecia"},{"grupo":"F","fecha":"25 jun","local":"Túnez","visitante":"Países Bajos"},{"grupo":"G","fecha":"15 jun","local":"Bélgica","visitante":"Egipto"},{"grupo":"G","fecha":"15 jun","local":"Irán","visitante":"Nueva Zelanda"},{"grupo":"G","fecha":"21 jun","local":"Bélgica","visitante":"Irán"},{"grupo":"G","fecha":"21 jun","local":"Nueva Zelanda","visitante":"Egipto"},{"grupo":"G","fecha":"26 jun","local":"Egipto","visitante":"Irán"},{"grupo":"G","fecha":"26 jun","local":"Nueva Zelanda","visitante":"Bélgica"},{"grupo":"H","fecha":"15 jun","local":"España","visitante":"Cabo Verde"},{"grupo":"H","fecha":"15 jun","local":"Arabia Saudita","visitante":"Uruguay"},{"grupo":"H","fecha":"21 jun","local":"España","visitante":"Arabia Saudita"},{"grupo":"H","fecha":"21 jun","local":"Uruguay","visitante":"Cabo Verde"},{"grupo":"H","fecha":"26 jun","local":"Cabo Verde","visitante":"Arabia Saudita"},{"grupo":"H","fecha":"26 jun","local":"Uruguay","visitante":"España"},{"grupo":"I","fecha":"16 jun","local":"Francia","visitante":"Senegal"},{"grupo":"I","fecha":"16 jun","local":"Iraq","visitante":"Noruega"},{"grupo":"I","fecha":"22 jun","local":"Francia","visitante":"Iraq"},{"grupo":"I","fecha":"22 jun","local":"Noruega","visitante":"Senegal"},{"grupo":"I","fecha":"26 jun","local":"Noruega","visitante":"Francia"},{"grupo":"I","fecha":"26 jun","local":"Senegal","visitante":"Iraq"},{"grupo":"J","fecha":"16 jun","local":"Argentina","visitante":"Argelia"},{"grupo":"J","fecha":"16 jun","local":"Austria","visitante":"Jordania"},{"grupo":"J","fecha":"22 jun","local":"Argentina","visitante":"Austria"},{"grupo":"J","fecha":"22 jun","local":"Jordania","visitante":"Argelia"},{"grupo":"J","fecha":"27 jun","local":"Argelia","visitante":"Austria"},{"grupo":"J","fecha":"27 jun","local":"Jordania","visitante":"Argentina"},{"grupo":"K","fecha":"17 jun","local":"Portugal","visitante":"DR Congo"},{"grupo":"K","fecha":"17 jun","local":"Uzbekistán","visitante":"Colombia"},{"grupo":"K","fecha":"23 jun","local":"Portugal","visitante":"Uzbekistán"},{"grupo":"K","fecha":"23 jun","local":"Colombia","visitante":"DR Congo"},{"grupo":"K","fecha":"27 jun","local":"Colombia","visitante":"Portugal"},{"grupo":"K","fecha":"27 jun","local":"DR Congo","visitante":"Uzbekistán"},{"grupo":"L","fecha":"17 jun","local":"Inglaterra","visitante":"Croacia"},{"grupo":"L","fecha":"17 jun","local":"Ghana","visitante":"Panamá"},{"grupo":"L","fecha":"23 jun","local":"Inglaterra","visitante":"Ghana"},{"grupo":"L","fecha":"23 jun","local":"Panamá","visitante":"Croacia"},{"grupo":"L","fecha":"27 jun","local":"Panamá","visitante":"Inglaterra"},{"grupo":"L","fecha":"27 jun","local":"Croacia","visitante":"Ghana"}],"real":[[1,2],[2,2],[1,1],[1,3],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null]],"players":[{"name":"Pelao","preds":[[0,1],[1,1],[1,0],[1,1],[0,1],[1,2],[1,1],[0,2],[2,1],[2,0],[1,0],[1,1],[2,0],[0,2],[1,1],[3,0],[0,1],[3,0],[2,1],[1,2],[1,1],[2,1],[0,1],[1,1],[3,0],[1,2],[2,0],[2,0],[0,1],[0,2],[2,1],[1,1],[2,0],[0,2],[1,1],[0,2],[2,0],[1,0],[1,1],[0,1],[1,2],[0,2],[3,0],[0,2],[2,0],[2,1],[0,1],[1,2],[2,1],[0,2],[3,0],[1,1],[0,2],[2,0],[2,0],[2,0],[2,1],[1,2],[1,1],[0,3],[3,0],[0,2],[2,1],[2,0],[1,1],[1,0],[2,0],[0,1],[2,0],[0,2],[0,2],[1,1]],"nrows":72},{"name":"Demian","preds":[[2,0],[1,0],[1,0],[1,0],[0,1],[0,1],[1,0],[0,2],[2,0],[1,0],[1,0],[1,1],[1,0],[0,1],[0,1],[3,0],[0,2],[2,0],[1,0],[0,1],[1,0],[1,0],[0,1],[0,1],[3,0],[0,1],[1,0],[2,0],[0,1],[0,1],[1,0],[0,1],[2,0],[0,1],[1,0],[0,2],[1,0],[1,0],[1,0],[0,1],[0,1],[0,2],[4,0],[0,2],[4,0],[2,0],[0,1],[0,1],[2,0],[0,1],[3,0],[0,1],[0,2],[1,0],[3,0],[1,0],[2,0],[0,1],[0,1],[0,3],[2,0],[0,2],[2,0],[2,0],[0,1],[0,1],[1,0],[0,1],[3,0],[0,1],[0,2],[2,0]],"nrows":72},{"name":"Paula","preds":[[2,0],[1,0],[1,1],[3,1],[1,2],[0,0],[3,2],[0,3],[1,2],[2,0],[2,2],[1,0],[5,0],[0,3],[2,1],[4,0],[1,3],[1,0],[2,1],[1,0],[2,0],[1,1],[0,2],[1,2],[4,0],[0,1],[5,0],[1,0],[0,3],[1,0],[3,1],[2,0],[2,1],[0,2],[2,2],[0,3],[2,0],[0,1],[3,0],[1,2],[2,0],[0,2],[4,0],[0,1],[3,0],[2,0],[1,1],[1,3],[4,0],[0,2],[3,0],[2,0],[1,3],[1,2],[4,1],[3,1],[2,0],[1,0],[0,3],[0,4],[3,0],[1,2],[3,0],[2,0],[1,3],[1,0],[3,2],[2,0],[4,1],[0,3],[0,4],[3,1]],"nrows":72},{"name":"Raul","preds":[[1,1],[2,1],[2,0],[0,2],[2,1],[1,3],[0,2],[0,2],[1,1],[1,0],[1,1],[2,0],[2,2],[0,3],[1,2],[5,0],[2,3],[4,0],[1,2],[1,3],[2,1],[2,1],[1,1],[2,0],[6,0],[1,3],[2,0],[4,0],[1,2],[0,3],[1,2],[2,0],[3,1],[1,3],[2,1],[0,2],[2,1],[1,1],[3,0],[0,1],[1,1],[0,4],[5,0],[0,2],[3,1],[3,1],[0,1],[1,2],[3,1],[0,2],[4,0],[2,1],[1,1],[1,0],[3,0],[5,0],[2,0],[0,2],[1,2],[0,6],[4,1],[0,3],[4,0],[2,1],[1,1],[1,1],[2,1],[2,0],[1,0],[0,3],[1,3],[2,0]],"nrows":72},{"name":"Six","preds":[[1,0],[0,1],[3,1],[1,1],[3,1],[0,0],[2,1],[0,4],[2,1],[1,1],[4,1],[1,0],[3,1],[0,4],[2,1],[5,0],[2,3],[3,1],[1,0],[2,0],[1,3],[1,0],[1,1],[1,0],[7,0],[3,2],[2,2],[3,0],[2,2],[1,3],[4,2],[1,0],[2,1],[2,2],[3,2],[1,4],[2,1],[1,0],[3,1],[2,0],[2,2],[2,3],[5,1],[1,4],[2,0],[3,0],[1,1],[3,2],[2,2],[1,3],[3,1],[2,3],[0,2],[1,0],[2,0],[1,0],[1,0],[1,2],[1,0],[0,1],[2,0],[0,2],[3,0],[1,0],[1,3],[3,2],[3,2],[3,1],[2,2],[3,3],[2,3],[3,2]],"nrows":72},{"name":"ClaudIA","preds":[[2,1],[2,1],[2,1],[2,1],[1,2],[1,2],[2,1],[1,2],[2,1],[2,1],[2,1],[1,2],[2,1],[1,2],[1,2],[3,0],[1,2],[2,0],[2,1],[1,2],[2,1],[2,1],[1,2],[1,2],[2,0],[1,2],[2,1],[2,1],[1,2],[1,2],[2,1],[2,1],[2,1],[1,2],[2,1],[1,2],[2,1],[2,0],[2,1],[1,2],[1,2],[0,2],[3,0],[1,2],[2,0],[2,1],[1,2],[1,2],[2,1],[1,2],[2,0],[1,2],[1,2],[2,1],[2,1],[2,1],[2,1],[1,2],[1,2],[0,3],[2,1],[1,2],[2,1],[2,1],[1,2],[2,1],[2,1],[1,2],[3,0],[1,2],[1,2],[2,0]],"nrows":72},{"name":"Jano","preds":[[2,1],[1,1],[1,0],[2,1],[1,2],[1,1],[1,1],[0,2],[2,0],[1,0],[1,1],[2,0],[2,1],[1,2],[1,1],[3,0],[0,2],[2,0],[1,1],[1,2],[1,1],[1,1],[1,0],[1,1],[3,0],[1,0],[2,1],[1,0],[1,2],[0,2],[2,1],[1,0],[2,1],[0,1],[1,0],[0,2],[2,0],[1,1],[2,1],[0,1],[1,1],[0,2],[3,0],[1,2],[2,0],[2,0],[1,1],[1,2],[2,0],[0,2],[3,0],[1,0],[1,2],[1,0],[2,0],[2,0],[2,1],[0,1],[1,1],[0,3],[2,0],[0,2],[2,0],[2,1],[1,2],[1,1],[2,1],[1,0],[2,1],[0,2],[0,3],[2,0]],"nrows":72},{"name":"Bob","preds":[[2,1],[1,1],[2,0],[1,1],[0,2],[1,2],[2,1],[1,2],[2,0],[2,0],[1,1],[1,1],[2,1],[0,1],[0,2],[3,0],[0,2],[3,1],[2,1],[0,2],[2,0],[2,1],[1,1],[2,1],[3,0],[1,2],[2,1],[2,0],[1,2],[0,2],[2,1],[1,0],[1,1],[0,2],[2,1],[0,3],[2,0],[2,0],[2,0],[0,2],[0,1],[0,3],[3,1],[0,1],[3,1],[2,0],[1,2],[1,2],[3,1],[0,3],[3,0],[2,1],[1,2],[2,0],[2,0],[2,0],[2,1],[1,3],[0,1],[0,3],[2,0],[0,2],[3,0],[2,1],[1,2],[3,1],[2,1],[2,1],[2,0],[0,2],[1,3],[2,1]],"nrows":72},{"name":"Jlo","preds":[[1,0],[0,0],[1,0],[1,1],[0,0],[0,2],[2,0],[0,1],[2,0],[1,0],[0,0],[1,1],[1,0],[0,3],[1,2],[3,0],[1,2],[3,0],[1,0],[0,0],[2,0],[0,0],[1,0],[1,0],[4,0],[0,0],[2,1],[3,0],[0,0],[0,2],[0,0],[1,0],[1,1],[0,2],[0,0],[0,3],[0,1],[1,0],[0,0],[0,1],[1,1],[0,3],[3,0],[0,1],[2,0],[3,0],[0,1],[2,2],[2,1],[0,1],[3,0],[0,0],[1,1],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[0,2],[2,0],[0,2],[3,0],[1,0],[0,1],[1,1],[1,1],[3,0],[2,0],[0,3],[0,2],[0,0]],"nrows":72},{"name":"Nacho","preds":[[1,0],[1,1],[1,0],[1,0],[0,1],[0,1],[1,0],[0,1],[2,1],[2,0],[1,0],[1,0],[1,0],[0,1],[0,1],[3,0],[1,2],[2,0],[1,0],[0,1],[2,1],[1,1],[1,1],[1,0],[3,0],[0,0],[2,1],[2,0],[1,2],[0,2],[2,1],[1,0],[2,1],[0,1],[2,1],[1,2],[2,1],[1,0],[2,1],[0,1],[1,1],[0,2],[2,0],[0,1],[2,0],[2,1],[1,1],[1,2],[2,1],[0,2],[2,0],[2,1],[1,2],[2,1],[2,0],[2,0],[2,1],[1,2],[0,1],[0,2],[2,0],[0,1],[2,0],[1,0],[0,1],[1,1],[2,1],[2,1],[2,0],[0,1],[0,2],[1,0]],"nrows":72}]};
+const SEED = DATA.real;            // respaldo si no hay resultados.json (p.ej. abriendo el archivo localmente)
+const GROUPS = "ABCDEFGHIJKL".split("");
+const N = DATA.fixtures.length;
+let real = SEED.map(x=>[x[0],x[1]]);
+
+const sgn = x => x>0?1:x<0?-1:0;
+function scoreOne(pred, r){
+  const [pgl,pgv]=pred, [rgl,rgv]=r;
+  if(pgl==null||pgv==null||rgl==null||rgv==null) return null;
+  if(sgn(pgl-pgv)!==sgn(rgl-rgv)) return 0;
+  if(pgl===rgl && pgv===rgv) return 6;
+  if((pgl-pgv)===(rgl-rgv)) return 4;
+  return 2;
+}
+const isPlayed = i => real[i] && real[i][0]!=null && real[i][1]!=null;
+function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function compute(){
+  const played = real.reduce((a,_,i)=>a+(isPlayed(i)?1:0),0);
+  const rows = DATA.players.map(p=>{
+    let total=0,scored=0,blank=0,exact=0;
+    for(let i=0;i<N;i++){ if(!isPlayed(i)) continue;
+      const s=scoreOne(p.preds[i],real[i]); total+=s;
+      if(s>0)scored++; else blank++; if(s===6)exact++;
+    }
+    return {name:p.name,total,scored,blank,exact};
+  });
+  rows.sort((a,b)=> b.total-a.total||b.exact-a.exact||b.scored-a.scored||a.blank-b.blank||a.name.localeCompare(b.name));
+  rows.forEach(r=> r.pos = 1 + rows.filter(o=>o.total>r.total).length);
+  return {rows, played};
+}
+function leader(rows,key){
+  const max=Math.max(...rows.map(r=>r[key]));
+  if(max<=0) return null;
+  const top=rows.filter(r=>r[key]===max).sort((a,b)=>a.name.localeCompare(b.name));
+  const rest=rows.filter(r=>r[key]>0&&r[key]<max).sort((a,b)=>b[key]-a[key]||a.name.localeCompare(b.name)).slice(0,3);
+  return {max,names:top.map(t=>t.name),rest};
+}
+
+function renderRanking(){
+  const {rows} = compute();
+  const pod=document.getElementById("podium");
+  const order=[1,0,2]; const top3=rows.slice(0,3);
+  pod.innerHTML = order.map(idx=>{
+    const r=top3[idx]; if(!r) return '<div></div>';
+    const cls=idx===0?"tile gold":"tile";
+    return `<div class="${cls}"><div class="medal">${idx+1}</div>
+      <div class="pname">${esc(r.name)}</div>
+      <div class="pscore">${r.total}</div><div class="plab">puntos</div>
+      <div class="mini"><span>🎯<b>${r.scored}</b></span><span>🔥<b>${r.exact}</b></span></div></div>`;
+  }).join("");
+  document.getElementById("rankBody").innerHTML = rows.map(r=>`
+    <tr class="${r.pos===1?'top1':''}">
+      <td class="pos">${r.pos}</td><td class="l nm">${esc(r.name)}</td>
+      <td><span class="chip ${r.scored?'g':'zero'}">${r.scored}</span></td>
+      <td><span class="chip ${r.blank?'b':'zero'}">${r.blank}</span></td>
+      <td><span class="chip ${r.exact?'e':'zero'}">${r.exact}</span></td>
+      <td class="tot">${r.total}</td></tr>`).join("");
+  const defs=[
+    {k:'scored',cls:'g',ico:'🎯',h:'Más partidos puntuando',sub:'Quien más veces ha sumado algún punto.'},
+    {k:'blank',cls:'b',ico:'🥶',h:'Más partidos en blanco',sub:'Quien más veces se quedó sin puntos.'},
+    {k:'exact',cls:'e',ico:'🔥',h:'Más marcadores exactos',sub:'Quien más veces clavó el 6 (resultado exacto).'},
+  ];
+  document.getElementById("cards").innerHTML = defs.map(d=>{
+    const L=leader(rows,d.k);
+    const body=L?`<div class="lead"><span class="who">${L.names.map(esc).join(", ")}</span><span class="val">${L.max}</span></div>
+       ${L.rest.length?`<div class="runners">${L.rest.map(x=>`<span><b>${esc(x.name)}</b> · ${x[d.k]}</span>`).join("")}</div>`:""}`
+      :`<div class="lead"><span class="who" style="color:var(--muted);font-weight:600;font-size:14px">Aún sin datos</span><span class="val">—</span></div>`;
+    return `<div class="card ${d.cls}"><div class="stripe"></div><div class="ico">${d.ico}</div><h3>${d.h}</h3><div class="sub">${d.sub}</div>${body}</div>`;
+  }).join("");
+}
+
+function renderResults(){
+  const cont=document.getElementById("groups");
+  cont.innerHTML = GROUPS.map(g=>{
+    const idxs=DATA.fixtures.map((f,i)=>({f,i})).filter(o=>o.f.grupo===g);
+    const done=idxs.filter(o=>isPlayed(o.i)).length;
+    const rows=idxs.map(({f,i})=>{
+      const p=isPlayed(i);
+      const sc=p?`<div class="sc"><span>${real[i][0]}</span><span class="col">:</span><span>${real[i][1]}</span></div>`
+                :`<div class="sc pend">por jugarse</div>`;
+      return `<div class="match ${p?'played':''}">
+        <div class="tm lo">${esc(f.local)}</div>${sc}<div class="tm vi">${esc(f.visitante)}</div>
+        <div class="dt">${esc(f.fecha||"")}</div>${p?'<div class="badge">final</div>':''}</div>`;
+    }).join("");
+    return `<details class="grp" ${g==='A'?'open':''}><summary><span class="gbadge">${g}</span> Grupo ${g}
+      <span class="gcount">${done}/${idxs.length}</span><span class="chev">▾</span></summary>
+      <div class="matches">${rows}</div></details>`;
+  }).join("");
+}
+
+function flash(m){const f=document.getElementById("flash");f.textContent=m;f.classList.add("show");clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove("show"),1800);}
+function hace(iso){
+  if(!iso) return "";
+  const s=Math.max(0,(Date.now()-new Date(iso))/1000);
+  if(s<60) return "hace instantes";
+  if(s<3600) return "hace "+Math.floor(s/60)+" min";
+  if(s<86400) return "hace "+Math.floor(s/3600)+" h";
+  return "hace "+Math.floor(s/86400)+" días";
+}
+
+async function load(showFlash){
+  const btn=document.getElementById("btnReload"); btn.classList.add("loading");
+  try{
+    const res=await fetch("./resultados.json",{cache:"no-store"});
+    if(!res.ok) throw new Error("http "+res.status);
+    const j=await res.json();
+    const arr=Array.isArray(j)?j:j.real;
+    if(!Array.isArray(arr)||arr.length!==N) throw new Error("formato");
+    real=arr.map(x=>[x&&x[0]!=null?x[0]:null, x&&x[1]!=null?x[1]:null]);
+    document.getElementById("srcDot").classList.remove("warn");
+    document.getElementById("srcTxt").textContent = (j.source||"resultados.json");
+    document.getElementById("srcUpd").textContent = j.updatedAt?("actualizado "+hace(j.updatedAt)):"";
+    document.getElementById("provName").textContent = (j.source||"la API");
+    if(showFlash) flash("Resultados actualizados");
+  }catch(e){
+    real=SEED.map(x=>[x[0],x[1]]);
+    document.getElementById("srcDot").classList.add("warn");
+    document.getElementById("srcTxt").textContent="vista previa (sin resultados.json)";
+    document.getElementById("srcUpd").textContent="";
+  }finally{
+    renderRanking(); renderResults();
+    setTimeout(()=>btn.classList.remove("loading"),400);
+  }
+}
+
+document.getElementById("btnReload").onclick=()=>load(true);
+load(false);
+setInterval(()=>load(false), 120000); // auto-refresca cada 2 min
+</script>
+</body>
+</html>
