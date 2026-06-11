@@ -562,7 +562,7 @@ EXTRA = {
  "Irán":["IR Iran"], "Estados Unidos":["United States"],
  "Costa de Marfil":["Cote dIvoire","Ivory Coast"], "Curazao":["Curacao"],
  "Chequia":["Czechia"], "Cabo Verde":["Cabo Verde","Cape Verde"],
- "Turquía":["Turkiye","Turkey"], "DR Congo":["Congo DR","DR Congo"],
+ "Turquía":["Turkiye","Turkey"], "DR Congo":["Congo DR","DR Congo","Congo RD","Democratic Republic of Congo","RD Congo"],
 }
 for es, al in EXTRA.items():
     for name in al:
