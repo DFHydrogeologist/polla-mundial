@@ -586,10 +586,13 @@ def fetch_apifootball():
 
 def fetch_footballdata():
     tok = os.environ["FOOTBALLDATA_TOKEN"]
-    url = "https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED"
+    # El plan gratis a veces no expone la competencia WC, pero sí lista los partidos
+    # en el endpoint general /matches. Pedimos todos los FINISHED y luego el filtrado
+    # por nombres de equipo (mapeo del fixture) se queda solo con los del Mundial.
+    url = "https://api.football-data.org/v4/matches?status=FINISHED"
     data = http_get(url, {"X-Auth-Token": tok})
     matches = data.get("matches", []) or []
-    print(f"[diag] football-data.org · partidos FINISHED recibidos: {len(matches)}")
+    print(f"[diag] football-data.org · partidos FINISHED recibidos (todas las competencias): {len(matches)}")
     out = []
     for m in matches:
         h = m["homeTeam"]["name"]; a = m["awayTeam"]["name"]
@@ -616,14 +619,32 @@ def main():
         by_pair[(eh, ea)] = (gh, ga)
         by_pair[(ea, eh)] = (ga, gh)   # por si la API invierte local/visitante
 
+    # Partir del resultados.json existente para NO perder partidos de días previos
+    prev = [[None, None] for _ in FIXTURE]
+    try:
+        with open(OUT, encoding="utf-8") as fp:
+            old = json.load(fp)
+        oa = old.get("real") if isinstance(old, dict) else old
+        if isinstance(oa, list) and len(oa) == len(FIXTURE):
+            prev = [[x[0] if x and x[0] is not None else None,
+                     x[1] if x and x[1] is not None else None] for x in oa]
+    except Exception:
+        pass
+
     real = []
-    encontrados = 0
-    for f in FIXTURE:
+    nuevos = 0
+    total_con_dato = 0
+    for i, f in enumerate(FIXTURE):
         key = (f["local"], f["visitante"])
-        if key in by_pair:
-            gl, gv = by_pair[key]; real.append([gl, gv]); encontrados += 1
-        else:
-            real.append([None, None])
+        if key in by_pair:                       # resultado fresco desde la API
+            gl, gv = by_pair[key]
+            if prev[i][0] is None and prev[i][1] is None:
+                nuevos += 1
+            real.append([gl, gv])
+        else:                                    # no vino ahora: conservar lo guardado
+            real.append(prev[i])
+        if real[i][0] is not None and real[i][1] is not None:
+            total_con_dato += 1
 
     payload = {
         "source": "API-Football" if PROVIDER=="apifootball" else "football-data.org",
@@ -633,7 +654,7 @@ def main():
     with open(OUT, "w", encoding="utf-8") as fp:
         json.dump(payload, fp, ensure_ascii=False, indent=0)
 
-    print(f"[{PROVIDER}] partidos finalizados recibidos: {len(results)} · mapeados al fixture: {encontrados}/72")
+    print(f"[{PROVIDER}] partidos del Mundial mapeados ahora: {len(by_pair)//2} · nuevos cargados: {nuevos} · total en la polla: {total_con_dato}/72")
     if unmatched:
         print("OJO, equipos sin mapear (revisa ALIASES):")
         for h,a in unmatched: print("  -", h, "vs", a)
