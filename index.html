@@ -96,16 +96,32 @@ summary .gcount{margin-left:auto;font-family:var(--mono);font-size:12px;color:va
 summary .chev{color:var(--muted);transition:.2s}
 details[open] summary .chev{transform:rotate(180deg)}
 .matches{padding:2px 12px 10px}
-.match{display:grid;grid-template-columns:1fr 86px 1fr;align-items:center;gap:10px;padding:9px 4px;border-top:1px solid #F0F3F8}
+.match{border-top:1px solid #F0F3F8}
 .match:first-child{border-top:none}
-.match .tm{font-size:13.5px;font-weight:600}
-.match .tm.lo{text-align:right} .match .tm.vi{text-align:left}
-.match .sc{display:flex;align-items:center;justify-content:center;gap:7px;font-family:var(--mono);font-weight:700;font-size:17px}
-.match .sc .col{color:var(--muted)}
-.match .sc.pend{color:#B3C0D0;font-family:var(--body);font-weight:600;font-size:11px;letter-spacing:.04em}
-.match .dt{grid-column:1/-1;text-align:center;font-family:var(--mono);font-size:10px;color:#A9B6C6;letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+.mrow{display:grid;grid-template-columns:1fr 86px 1fr;align-items:center;gap:10px;padding:9px 30px 9px 4px;position:relative;cursor:pointer;border-radius:8px}
+.mrow:hover{background:#F7FAFE}
+.mrow .tm{font-size:13.5px;font-weight:600}
+.mrow .tm.lo{text-align:right} .mrow .tm.vi{text-align:left}
+.mrow .sc{display:flex;align-items:center;justify-content:center;gap:7px;font-family:var(--mono);font-weight:700;font-size:17px}
+.mrow .sc .col{color:var(--muted)}
+.mrow .sc.pend{color:#B3C0D0;font-family:var(--body);font-weight:600;font-size:11px;letter-spacing:.04em}
+.mrow .dt{grid-column:1/-1;text-align:center;font-family:var(--mono);font-size:10px;color:#A9B6C6;letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
 .match.played .sc{color:var(--ink)}
-.match .badge{grid-column:1/-1;justify-self:center;margin-top:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);font-weight:700}
+.mrow .badge{grid-column:1/-1;justify-self:center;margin-top:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);font-weight:700}
+.mrow .exp{position:absolute;right:8px;top:11px;color:#B3C0D0;font-size:12px;transition:.2s}
+.match.open .mrow .exp{transform:rotate(180deg);color:var(--blue2)}
+.match.open .mrow{background:#F2F7FD}
+.preds{display:none;padding:4px 6px 12px}
+.match.open .preds{display:block}
+.preds .ph{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin:2px 0 8px}
+.prow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:5px 10px;border-radius:7px;font-size:13px}
+.prow:nth-child(even){background:#FAFCFF}
+.prow .pn{font-weight:600}
+.prow .pg{font-family:var(--mono);font-weight:700;color:var(--muted)}
+.prow .pp{font-family:var(--mono);font-weight:700;min-width:34px;text-align:center;padding:2px 8px;border-radius:7px;font-size:12px}
+.pp.p6{color:#9a2c14;background:#FCE3DC} .pp.p4{color:#8a5a00;background:#FBEFD0}
+.pp.p2{color:#0c6b48;background:#DCF5EC} .pp.p0{color:#9aa7b6;background:#F0F3F8}
+.pp.pend{color:#7d8da0;background:#EDF1F7;font-family:var(--body);font-weight:600;font-size:10px;letter-spacing:.03em}
 
 .note{font-size:12.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin-top:14px}
 footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
@@ -170,7 +186,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
   <section id="resultados">
     <div class="sechead">
       <div><div class="eyebrow">Marcadores oficiales · solo lectura</div><h2>Resultados</h2></div>
-      <div class="hint">Los marcadores los completa la API automáticamente. Nadie los edita a mano.</div>
+      <div class="hint">Los marcadores los completa la API automáticamente. Toca un partido para ver qué marcó cada participante y sus puntos.</div>
     </div>
     <div id="groups"></div>
     <div class="note">Los resultados llegan desde <b id="provName">la API</b> y se guardan en <code>resultados.json</code>, que actualiza un proceso automático del repositorio. La <b>fase de llave</b> se suma cuando se conozcan los cruces.</div>
@@ -264,14 +280,49 @@ function renderResults(){
       const p=isPlayed(i);
       const sc=p?`<div class="sc"><span>${real[i][0]}</span><span class="col">:</span><span>${real[i][1]}</span></div>`
                 :`<div class="sc pend">por jugarse</div>`;
-      return `<div class="match ${p?'played':''}">
-        <div class="tm lo">${esc(f.local)}</div>${sc}<div class="tm vi">${esc(f.visitante)}</div>
-        <div class="dt">${esc(f.fecha||"")}</div>${p?'<div class="badge">final</div>':''}</div>`;
+      return `<div class="match ${p?'played':''}" data-i="${i}">
+        <div class="mrow">
+          <div class="tm lo">${esc(f.local)}</div>${sc}<div class="tm vi">${esc(f.visitante)}</div>
+          <div class="dt">${esc(f.fecha||"")}</div>${p?'<div class="badge">final</div>':''}
+          <span class="exp">▾</span>
+        </div>
+        <div class="preds"></div></div>`;
     }).join("");
     return `<details class="grp" ${g==='A'?'open':''}><summary><span class="gbadge">${g}</span> Grupo ${g}
       <span class="gcount">${done}/${idxs.length}</span><span class="chev">▾</span></summary>
       <div class="matches">${rows}</div></details>`;
   }).join("");
+  // click en una fila -> abre/cierra el panel con los pronósticos de cada participante
+  cont.querySelectorAll(".match").forEach(m=>{
+    m.querySelector(".mrow").addEventListener("click", ()=>{
+      const open = m.classList.toggle("open");
+      const panel = m.querySelector(".preds");
+      if(open && !panel.dataset.built){ panel.innerHTML = buildPredsPanel(+m.dataset.i); panel.dataset.built="1"; }
+    });
+  });
+}
+
+function buildPredsPanel(i){
+  const played = isPlayed(i);
+  const rows = DATA.players.map(p=>{
+    const pr = p.preds[i];
+    const has = pr && pr[0]!=null && pr[1]!=null;
+    const pred = has ? `${pr[0]}-${pr[1]}` : "—";
+    const s = played ? scoreOne(pr, real[i]) : null;
+    return {name:p.name, pred, s};
+  });
+  if(played) rows.sort((a,b)=> b.s-a.s || a.name.localeCompare(b.name));
+  else rows.sort((a,b)=> a.name.localeCompare(b.name));
+  const head = played
+    ? `<div class="ph">Pronósticos y puntos de este partido</div>`
+    : `<div class="ph">Pronósticos · el partido aún no se juega</div>`;
+  const body = rows.map(r=>{
+    const pp = played
+      ? `<span class="pp p${r.s}">${r.s} pt${r.s===1?"":"s"}</span>`
+      : `<span class="pp pend">pendiente</span>`;
+    return `<div class="prow"><span class="pn">${esc(r.name)}</span><span class="pg">${r.pred}</span>${pp}</div>`;
+  }).join("");
+  return head + body;
 }
 
 function flash(m){const f=document.getElementById("flash");f.textContent=m;f.classList.add("show");clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove("show"),1800);}
