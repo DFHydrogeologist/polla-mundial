@@ -567,8 +567,13 @@ def fetch_apifootball():
     key = os.environ["APIFOOTBALL_KEY"]
     url = "https://v3.football.api-sports.io/fixtures?league=1&season=2026"
     data = http_get(url, {"x-apisports-key": key})
+    resp = data.get("response", []) or []
+    errs = data.get("errors")
+    print(f"[diag] API-Football · fixtures recibidos: {len(resp)} · results={data.get('results')} · errors={errs}")
+    if errs:   # API-Football devuelve errores aquí (key inválida, plan sin esta liga, etc.)
+        print("[diag] >>> La API devolvió un error. Revisa la key o si tu plan incluye el Mundial (league=1).")
     out = []
-    for it in data.get("response", []):
+    for it in resp:
         st = (it.get("fixture",{}).get("status",{}) or {}).get("short","")
         if st not in ("FT","AET","PEN"):     # solo finalizados
             continue
@@ -576,21 +581,23 @@ def fetch_apifootball():
         gh = it["goals"]["home"]; ga = it["goals"]["away"]
         if gh is None or ga is None: continue
         out.append((h, a, int(gh), int(ga)))
+    print(f"[diag] de esos, finalizados con marcador: {len(out)}")
     return out
 
 def fetch_footballdata():
     tok = os.environ["FOOTBALLDATA_TOKEN"]
     url = "https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED"
     data = http_get(url, {"X-Auth-Token": tok})
+    matches = data.get("matches", []) or []
+    print(f"[diag] football-data.org · partidos FINISHED recibidos: {len(matches)}")
     out = []
-    for m in data.get("matches", []):
-        if m.get("stage") not in (None,"GROUP_STAGE","REGULAR_SEASON"):  # solo grupos
-            pass
+    for m in matches:
         h = m["homeTeam"]["name"]; a = m["awayTeam"]["name"]
         ft = m.get("score",{}).get("fullTime",{})
         gh, ga = ft.get("home"), ft.get("away")
         if gh is None or ga is None: continue
         out.append((h, a, int(gh), int(ga)))
+    print(f"[diag] de esos, con marcador válido: {len(out)}")
     return out
 
 def main():
