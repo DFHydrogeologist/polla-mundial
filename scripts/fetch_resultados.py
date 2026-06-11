@@ -555,13 +555,58 @@ for es, al in ALIASES.items():
     for name in [es] + al:
         LOOKUP[norm(name)] = es
 
+# alias extra para variantes que usan ESPN / football-data
+EXTRA = {
+ "Corea del Sur":["Korea Republic","Korea, South"],
+ "Bosnia y Herzegovina":["Bosnia-Herzegovina","Bosnia Herzegovina"],
+ "Irán":["IR Iran"], "Estados Unidos":["United States"],
+ "Costa de Marfil":["Cote dIvoire","Ivory Coast"], "Curazao":["Curacao"],
+ "Chequia":["Czechia"], "Cabo Verde":["Cabo Verde","Cape Verde"],
+ "Turquía":["Turkiye","Turkey"], "DR Congo":["Congo DR","DR Congo"],
+}
+for es, al in EXTRA.items():
+    for name in al:
+        LOOKUP[norm(name)] = es
+
 def to_es(api_name):
     return LOOKUP.get(norm(api_name))
 
-def http_get(url, headers):
-    req = urllib.request.Request(url, headers=headers)
+def http_get(url, headers=None):
+    req = urllib.request.Request(url, headers=headers or {})
     with urllib.request.urlopen(req, timeout=40) as r:
         return json.loads(r.read().decode())
+
+def _ventana_dias(antes=3, despues=1, fmt="%Y-%m-%d"):
+    hoy = datetime.datetime.now(datetime.timezone.utc).date()
+    return ((hoy - datetime.timedelta(days=antes)).strftime(fmt),
+            (hoy + datetime.timedelta(days=despues)).strftime(fmt))
+
+def fetch_espn():
+    # ESPN: público, sin key, suele traer marcadores al instante.
+    d1, d2 = _ventana_dias(fmt="%Y%m%d")
+    url = (f"https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/"
+           f"scoreboard?dates={d1}-{d2}&limit=200")
+    data = http_get(url)
+    events = data.get("events", []) or []
+    print(f"[diag] ESPN · ventana {d1}-{d2} · eventos recibidos: {len(events)}")
+    out = []
+    for ev in events:
+        comp = (ev.get("competitions") or [{}])[0]
+        done = (((ev.get("status") or {}).get("type") or {}).get("completed")) is True
+        if not done:
+            continue
+        home = away = None; gh = ga = None
+        for c in comp.get("competitors", []):
+            nm = (c.get("team") or {}).get("displayName") or (c.get("team") or {}).get("name")
+            sc = c.get("score")
+            try: sc = int(sc)
+            except (TypeError, ValueError): sc = None
+            if c.get("homeAway") == "home": home, gh = nm, sc
+            elif c.get("homeAway") == "away": away, ga = nm, sc
+        if home and away and gh is not None and ga is not None:
+            out.append((home, away, gh, ga))
+    print(f"[diag] ESPN · finalizados con marcador: {len(out)}")
+    return out
 
 def fetch_apifootball():
     key = os.environ["APIFOOTBALL_KEY"]
@@ -613,20 +658,37 @@ def fetch_footballdata():
     return out
 
 def main():
-    fetch = {"apifootball":fetch_apifootball, "footballdata":fetch_footballdata}.get(PROVIDER)
-    if not fetch:
-        print("POLLA_PROVIDER inválido:", PROVIDER); sys.exit(1)
+    # Fuentes a intentar, en orden de prioridad. La primera que entregue un
+    # marcador válido para un partido, gana. ESPN va primero (gratis y rápido).
+    fuentes = [("ESPN", fetch_espn)]
+    if os.environ.get("FOOTBALLDATA_TOKEN"):
+        fuentes.append(("football-data.org", fetch_footballdata))
+    if os.environ.get("APIFOOTBALL_KEY"):
+        fuentes.append(("API-Football", fetch_apifootball))
 
-    results = fetch()
-    # índice por par (local_es, visitante_es) -> (gl, gv)
-    by_pair = {}
+    by_pair = {}            # (local_es, visitante_es) -> (gl, gv)
+    fuente_de = {}          # (local_es, visitante_es) -> nombre de la fuente que lo aportó
     unmatched = []
-    for h, a, gh, ga in results:
-        eh, ea = to_es(h), to_es(a)
-        if not eh or not ea:
-            unmatched.append((h, a)); continue
-        by_pair[(eh, ea)] = (gh, ga)
-        by_pair[(ea, eh)] = (ga, gh)   # por si la API invierte local/visitante
+    aportes = {}            # cuántos partidos aportó cada fuente
+
+    for nombre, fn in fuentes:
+        try:
+            results = fn()
+        except Exception as e:
+            print(f"[diag] {nombre} falló: {e}")
+            continue
+        n = 0
+        for h, a, gh, ga in results:
+            eh, ea = to_es(h), to_es(a)
+            if not eh or not ea:
+                unmatched.append((nombre, h, a)); continue
+            if (eh, ea) in by_pair:        # ya lo aportó una fuente de mayor prioridad
+                continue
+            by_pair[(eh, ea)] = (gh, ga)
+            by_pair[(ea, eh)] = (ga, gh)   # por si la fuente invierte local/visitante
+            fuente_de[(eh, ea)] = nombre
+            n += 1
+        aportes[nombre] = n
 
     # Partir del resultados.json existente para NO perder partidos de días previos
     prev = [[None, None] for _ in FIXTURE]
@@ -640,34 +702,34 @@ def main():
     except Exception:
         pass
 
-    real = []
-    nuevos = 0
-    total_con_dato = 0
+    real = []; nuevos = 0; total_con_dato = 0
     for i, f in enumerate(FIXTURE):
         key = (f["local"], f["visitante"])
-        if key in by_pair:                       # resultado fresco desde la API
+        if key in by_pair:
             gl, gv = by_pair[key]
             if prev[i][0] is None and prev[i][1] is None:
                 nuevos += 1
+                print(f"[diag] NUEVO: {f['local']} {gl}-{gv} {f['visitante']}  (fuente: {fuente_de.get(key,'?')})")
             real.append([gl, gv])
-        else:                                    # no vino ahora: conservar lo guardado
+        else:
             real.append(prev[i])
         if real[i][0] is not None and real[i][1] is not None:
             total_con_dato += 1
 
+    activas = [n for n in aportes]
     payload = {
-        "source": "API-Football" if PROVIDER=="apifootball" else "football-data.org",
+        "source": " + ".join(activas) if activas else "sin fuente",
         "updatedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "real": real,
     }
     with open(OUT, "w", encoding="utf-8") as fp:
         json.dump(payload, fp, ensure_ascii=False, indent=0)
 
-    print(f"[{PROVIDER}] partidos del Mundial mapeados ahora: {len(by_pair)//2} · nuevos cargados: {nuevos} · total en la polla: {total_con_dato}/72")
+    print("[resumen] aportes por fuente:", {k:v for k,v in aportes.items()})
+    print(f"[resumen] nuevos cargados ahora: {nuevos} · total en la polla: {total_con_dato}/72")
     if unmatched:
-        print("OJO, equipos sin mapear (revisa ALIASES):")
-        for h,a in unmatched: print("  -", h, "vs", a)
+        print("OJO, equipos sin mapear (revisa ALIASES/EXTRA):")
+        for src,h,a in unmatched[:20]: print(f"  - [{src}] {h} vs {a}")
 
 if __name__ == "__main__":
     main()
-
