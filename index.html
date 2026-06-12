@@ -134,6 +134,21 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
   .cards{grid-template-columns:1fr}
   .podium{grid-template-columns:1fr;gap:9px} .tile.gold{order:-1}
 }
+.livewrap{margin-bottom:14px}
+.livebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:linear-gradient(90deg,#8a0f0f,#c81818);color:#fff;border-radius:12px;padding:11px 15px;font-family:var(--display);letter-spacing:.08em;text-transform:uppercase;font-size:14px;box-shadow:0 8px 22px -12px rgba(200,24,24,.7)}
+.livedot{width:11px;height:11px;border-radius:50%;background:#fff;animation:pulse 1.3s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 9px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.livegames{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--body);text-transform:none;letter-spacing:0}
+.lg{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:600}
+.lg b{font-family:var(--mono);margin:0 3px}
+.lg i{font-style:normal;font-family:var(--mono);opacity:.85;margin-left:5px;font-size:11px}
+.provnote{font-size:12px;color:var(--muted);margin-top:7px;text-align:center}
+.provnote b{color:var(--fire)}
+.ej{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--fire);border-radius:6px;padding:1px 6px;margin-left:6px}
+.badge.live{color:#fff !important;background:var(--fire);padding:1px 7px;border-radius:6px}
+.match.live .mrow{background:rgba(239,75,39,.06)}
+.match.live .sc{color:var(--fire)}
+.provtag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--fire);border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -160,6 +175,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
       <div><div class="eyebrow">Tabla general</div><h2>🏆 Ranking oficial</h2></div>
       <div class="hint">Suma de puntos en los partidos jugados. 2 acierto de resultado · 4 + margen · 6 marcador exacto.</div>
     </div>
+    <div class="livewrap" id="liveWrap" style="display:none"></div>
     <div class="podium" id="podium"></div>
     <div class="tablecard" style="margin-top:16px">
       <table>
@@ -199,10 +215,17 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 
 <script>
 const DATA = {"fixtures":[{"grupo":"A","fecha":"11 jun","local":"México","visitante":"Sudáfrica"},{"grupo":"A","fecha":"11 jun","local":"Corea del Sur","visitante":"Chequia"},{"grupo":"A","fecha":"18 jun","local":"Chequia","visitante":"Sudáfrica"},{"grupo":"A","fecha":"18 jun","local":"México","visitante":"Corea del Sur"},{"grupo":"A","fecha":"24 jun","local":"Chequia","visitante":"México"},{"grupo":"A","fecha":"24 jun","local":"Sudáfrica","visitante":"Corea del Sur"},{"grupo":"B","fecha":"12 jun","local":"Canadá","visitante":"Bosnia y Herzegovina"},{"grupo":"B","fecha":"13 jun","local":"Qatar","visitante":"Suiza"},{"grupo":"B","fecha":"18 jun","local":"Suiza","visitante":"Bosnia y Herzegovina"},{"grupo":"B","fecha":"18 jun","local":"Canadá","visitante":"Qatar"},{"grupo":"B","fecha":"24 jun","local":"Suiza","visitante":"Canadá"},{"grupo":"B","fecha":"24 jun","local":"Bosnia y Herzegovina","visitante":"Qatar"},{"grupo":"C","fecha":"13 jun","local":"Brasil","visitante":"Marruecos"},{"grupo":"C","fecha":"13 jun","local":"Haití","visitante":"Escocia"},{"grupo":"C","fecha":"19 jun","local":"Escocia","visitante":"Marruecos"},{"grupo":"C","fecha":"19 jun","local":"Brasil","visitante":"Haití"},{"grupo":"C","fecha":"24 jun","local":"Escocia","visitante":"Brasil"},{"grupo":"C","fecha":"24 jun","local":"Marruecos","visitante":"Haití"},{"grupo":"D","fecha":"12 jun","local":"Estados Unidos","visitante":"Paraguay"},{"grupo":"D","fecha":"13 jun","local":"Australia","visitante":"Turquía"},{"grupo":"D","fecha":"19 jun","local":"Estados Unidos","visitante":"Australia"},{"grupo":"D","fecha":"19 jun","local":"Turquía","visitante":"Paraguay"},{"grupo":"D","fecha":"25 jun","local":"Turquía","visitante":"Estados Unidos"},{"grupo":"D","fecha":"25 jun","local":"Paraguay","visitante":"Australia"},{"grupo":"E","fecha":"14 jun","local":"Alemania","visitante":"Curazao"},{"grupo":"E","fecha":"14 jun","local":"Costa de Marfil","visitante":"Ecuador"},{"grupo":"E","fecha":"20 jun","local":"Alemania","visitante":"Costa de Marfil"},{"grupo":"E","fecha":"20 jun","local":"Ecuador","visitante":"Curazao"},{"grupo":"E","fecha":"25 jun","local":"Ecuador","visitante":"Alemania"},{"grupo":"E","fecha":"25 jun","local":"Curazao","visitante":"Costa de Marfil"},{"grupo":"F","fecha":"14 jun","local":"Países Bajos","visitante":"Japón"},{"grupo":"F","fecha":"14 jun","local":"Suecia","visitante":"Túnez"},{"grupo":"F","fecha":"20 jun","local":"Países Bajos","visitante":"Suecia"},{"grupo":"F","fecha":"20 jun","local":"Túnez","visitante":"Japón"},{"grupo":"F","fecha":"25 jun","local":"Japón","visitante":"Suecia"},{"grupo":"F","fecha":"25 jun","local":"Túnez","visitante":"Países Bajos"},{"grupo":"G","fecha":"15 jun","local":"Bélgica","visitante":"Egipto"},{"grupo":"G","fecha":"15 jun","local":"Irán","visitante":"Nueva Zelanda"},{"grupo":"G","fecha":"21 jun","local":"Bélgica","visitante":"Irán"},{"grupo":"G","fecha":"21 jun","local":"Nueva Zelanda","visitante":"Egipto"},{"grupo":"G","fecha":"26 jun","local":"Egipto","visitante":"Irán"},{"grupo":"G","fecha":"26 jun","local":"Nueva Zelanda","visitante":"Bélgica"},{"grupo":"H","fecha":"15 jun","local":"España","visitante":"Cabo Verde"},{"grupo":"H","fecha":"15 jun","local":"Arabia Saudita","visitante":"Uruguay"},{"grupo":"H","fecha":"21 jun","local":"España","visitante":"Arabia Saudita"},{"grupo":"H","fecha":"21 jun","local":"Uruguay","visitante":"Cabo Verde"},{"grupo":"H","fecha":"26 jun","local":"Cabo Verde","visitante":"Arabia Saudita"},{"grupo":"H","fecha":"26 jun","local":"Uruguay","visitante":"España"},{"grupo":"I","fecha":"16 jun","local":"Francia","visitante":"Senegal"},{"grupo":"I","fecha":"16 jun","local":"Iraq","visitante":"Noruega"},{"grupo":"I","fecha":"22 jun","local":"Francia","visitante":"Iraq"},{"grupo":"I","fecha":"22 jun","local":"Noruega","visitante":"Senegal"},{"grupo":"I","fecha":"26 jun","local":"Noruega","visitante":"Francia"},{"grupo":"I","fecha":"26 jun","local":"Senegal","visitante":"Iraq"},{"grupo":"J","fecha":"16 jun","local":"Argentina","visitante":"Argelia"},{"grupo":"J","fecha":"16 jun","local":"Austria","visitante":"Jordania"},{"grupo":"J","fecha":"22 jun","local":"Argentina","visitante":"Austria"},{"grupo":"J","fecha":"22 jun","local":"Jordania","visitante":"Argelia"},{"grupo":"J","fecha":"27 jun","local":"Argelia","visitante":"Austria"},{"grupo":"J","fecha":"27 jun","local":"Jordania","visitante":"Argentina"},{"grupo":"K","fecha":"17 jun","local":"Portugal","visitante":"DR Congo"},{"grupo":"K","fecha":"17 jun","local":"Uzbekistán","visitante":"Colombia"},{"grupo":"K","fecha":"23 jun","local":"Portugal","visitante":"Uzbekistán"},{"grupo":"K","fecha":"23 jun","local":"Colombia","visitante":"DR Congo"},{"grupo":"K","fecha":"27 jun","local":"Colombia","visitante":"Portugal"},{"grupo":"K","fecha":"27 jun","local":"DR Congo","visitante":"Uzbekistán"},{"grupo":"L","fecha":"17 jun","local":"Inglaterra","visitante":"Croacia"},{"grupo":"L","fecha":"17 jun","local":"Ghana","visitante":"Panamá"},{"grupo":"L","fecha":"23 jun","local":"Inglaterra","visitante":"Ghana"},{"grupo":"L","fecha":"23 jun","local":"Panamá","visitante":"Croacia"},{"grupo":"L","fecha":"27 jun","local":"Panamá","visitante":"Inglaterra"},{"grupo":"L","fecha":"27 jun","local":"Croacia","visitante":"Ghana"}],"real":[[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null],[null,null]],"players":[{"name":"Pelao","preds":[[0,1],[1,1],[1,0],[1,1],[0,1],[1,2],[1,1],[0,2],[2,1],[2,0],[1,0],[1,1],[2,0],[0,2],[1,1],[3,0],[0,1],[3,0],[2,1],[1,2],[1,1],[2,1],[0,1],[1,1],[3,0],[1,2],[2,0],[2,0],[0,1],[0,2],[2,1],[1,1],[2,0],[0,2],[1,1],[0,2],[2,0],[1,0],[1,1],[0,1],[1,2],[0,2],[3,0],[0,2],[2,0],[2,1],[0,1],[1,2],[2,1],[0,2],[3,0],[1,1],[0,2],[2,0],[2,0],[2,0],[2,1],[1,2],[1,1],[0,3],[3,0],[0,2],[2,1],[2,0],[1,1],[1,0],[2,0],[0,1],[2,0],[0,2],[0,2],[1,1]]},{"name":"Demian","preds":[[2,0],[1,0],[1,0],[1,0],[0,1],[0,1],[1,0],[0,2],[2,0],[1,0],[1,0],[1,1],[1,0],[0,1],[0,1],[3,0],[0,2],[2,0],[1,0],[0,1],[1,0],[1,0],[0,1],[0,1],[3,0],[0,1],[1,0],[2,0],[0,1],[0,1],[1,0],[0,1],[2,0],[0,1],[1,0],[0,2],[1,0],[1,0],[1,0],[0,1],[0,1],[0,2],[4,0],[0,2],[4,0],[2,0],[0,1],[0,1],[2,0],[0,1],[3,0],[0,1],[0,2],[1,0],[3,0],[1,0],[2,0],[0,1],[0,1],[0,3],[2,0],[0,2],[2,0],[2,0],[0,1],[0,1],[1,0],[0,1],[3,0],[0,1],[0,2],[2,0]]},{"name":"Paula","preds":[[2,0],[1,0],[1,1],[3,1],[1,2],[0,0],[3,2],[0,3],[1,2],[2,0],[2,2],[1,0],[5,0],[0,3],[2,1],[4,0],[1,3],[1,0],[2,1],[1,0],[2,0],[1,1],[0,2],[1,2],[4,0],[0,1],[5,0],[1,0],[0,3],[1,0],[3,1],[2,0],[2,1],[0,2],[2,2],[0,3],[2,0],[0,1],[3,0],[1,2],[2,0],[0,2],[4,0],[0,1],[3,0],[2,0],[1,1],[1,3],[4,0],[0,2],[3,0],[2,0],[1,3],[1,2],[4,1],[3,1],[2,0],[1,0],[0,3],[0,4],[3,0],[1,2],[3,0],[2,0],[1,3],[1,0],[3,2],[2,0],[4,1],[0,3],[0,4],[3,1]]},{"name":"Raul","preds":[[1,1],[2,1],[2,0],[0,2],[2,1],[1,3],[0,2],[0,2],[1,1],[1,0],[1,1],[2,0],[2,2],[0,3],[1,2],[5,0],[2,3],[4,0],[1,2],[1,3],[2,1],[2,1],[1,1],[2,0],[6,0],[1,3],[2,0],[4,0],[1,2],[0,3],[1,2],[2,0],[3,1],[1,3],[2,1],[0,2],[2,1],[1,1],[3,0],[0,1],[1,1],[0,4],[5,0],[0,2],[3,1],[3,1],[0,1],[1,2],[3,1],[0,2],[4,0],[2,1],[1,1],[1,0],[3,0],[5,0],[2,0],[0,2],[1,2],[0,6],[4,1],[0,3],[4,0],[2,1],[1,1],[1,1],[2,1],[2,0],[1,0],[0,3],[1,3],[2,0]]},{"name":"Six","preds":[[1,0],[0,1],[3,1],[1,1],[3,1],[0,0],[2,1],[0,4],[2,1],[1,1],[4,1],[1,0],[3,1],[0,4],[2,1],[5,0],[2,3],[3,1],[1,0],[2,0],[1,3],[1,0],[1,1],[1,0],[7,0],[3,2],[2,2],[3,0],[2,2],[1,3],[4,2],[1,0],[2,1],[2,2],[3,2],[1,4],[2,1],[1,0],[3,1],[2,0],[2,2],[2,3],[5,1],[1,4],[2,0],[3,0],[1,1],[3,2],[2,2],[1,3],[3,1],[2,3],[0,2],[1,0],[2,0],[1,0],[1,0],[1,2],[1,0],[0,1],[2,0],[0,2],[3,0],[1,0],[1,3],[3,2],[3,2],[3,1],[2,2],[3,3],[2,3],[3,2]]},{"name":"ClaudIA","preds":[[2,1],[2,1],[2,1],[2,1],[1,2],[1,2],[2,1],[1,2],[2,1],[2,1],[2,1],[1,2],[2,1],[1,2],[1,2],[3,0],[1,2],[2,0],[2,1],[1,2],[2,1],[2,1],[1,2],[1,2],[2,0],[1,2],[2,1],[2,1],[1,2],[1,2],[2,1],[2,1],[2,1],[1,2],[2,1],[1,2],[2,1],[2,0],[2,1],[1,2],[1,2],[0,2],[3,0],[1,2],[2,0],[2,1],[1,2],[1,2],[2,1],[1,2],[2,0],[1,2],[1,2],[2,1],[2,1],[2,1],[2,1],[1,2],[1,2],[0,3],[2,1],[1,2],[2,1],[2,1],[1,2],[2,1],[2,1],[1,2],[3,0],[1,2],[1,2],[2,0]]},{"name":"Jano","preds":[[2,1],[1,1],[1,0],[2,1],[1,2],[1,1],[1,1],[0,2],[2,0],[1,0],[1,1],[2,0],[2,1],[1,2],[1,1],[3,0],[0,2],[2,0],[1,1],[1,2],[1,1],[1,1],[1,0],[1,1],[3,0],[1,0],[2,1],[1,0],[1,2],[0,2],[2,1],[1,0],[2,1],[0,1],[1,0],[0,2],[2,0],[1,1],[2,1],[0,1],[1,1],[0,2],[3,0],[1,2],[2,0],[2,0],[1,1],[1,2],[2,0],[0,2],[3,0],[1,0],[1,2],[1,0],[2,0],[2,0],[2,1],[0,1],[1,1],[0,3],[2,0],[0,2],[2,0],[2,1],[1,2],[1,1],[2,1],[1,0],[2,1],[0,2],[0,3],[2,0]]},{"name":"Bob","preds":[[2,1],[1,1],[2,0],[1,1],[0,2],[1,2],[2,1],[1,2],[2,0],[2,0],[1,1],[1,1],[2,1],[0,1],[0,2],[3,0],[0,2],[3,1],[2,1],[0,2],[2,0],[2,1],[1,1],[2,1],[3,0],[1,2],[2,1],[2,0],[1,2],[0,2],[2,1],[1,0],[1,1],[0,2],[2,1],[0,3],[2,0],[2,0],[2,0],[0,2],[0,1],[0,3],[3,1],[0,1],[3,1],[2,0],[1,2],[1,2],[3,1],[0,3],[3,0],[2,1],[1,2],[2,0],[2,0],[2,0],[2,1],[1,3],[0,1],[0,3],[2,0],[0,2],[3,0],[2,1],[1,2],[3,1],[2,1],[2,1],[2,0],[0,2],[1,3],[2,1]]},{"name":"Jlo","preds":[[1,0],[0,0],[1,0],[1,1],[0,0],[0,2],[2,0],[0,1],[2,0],[1,0],[0,0],[1,1],[1,0],[0,3],[1,2],[3,0],[1,2],[3,0],[1,0],[0,0],[2,0],[0,0],[1,0],[1,0],[4,0],[0,0],[2,1],[3,0],[0,0],[0,2],[0,0],[1,0],[1,1],[0,2],[0,0],[0,3],[0,1],[1,0],[0,0],[0,1],[1,1],[0,3],[3,0],[0,1],[2,0],[3,0],[0,1],[2,2],[2,1],[0,1],[3,0],[0,0],[1,1],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[0,2],[2,0],[0,2],[3,0],[1,0],[0,1],[1,1],[1,1],[3,0],[2,0],[0,3],[0,2],[0,0]]},{"name":"Nacho","preds":[[1,0],[1,1],[1,0],[1,0],[0,1],[0,1],[1,0],[0,1],[2,1],[2,0],[1,0],[1,0],[1,0],[0,1],[0,1],[3,0],[1,2],[2,0],[1,0],[0,1],[2,1],[1,1],[1,1],[1,0],[3,0],[0,0],[2,1],[2,0],[1,2],[0,2],[2,1],[1,0],[2,1],[0,1],[2,1],[1,2],[2,1],[1,0],[2,1],[0,1],[1,1],[0,2],[2,0],[0,1],[2,0],[2,1],[1,1],[1,2],[2,1],[0,2],[2,0],[2,1],[1,2],[2,1],[2,0],[2,0],[2,1],[1,2],[0,1],[0,2],[2,0],[0,1],[2,0],[1,0],[0,1],[1,1],[2,1],[2,1],[2,0],[0,1],[0,2],[1,0]]},{"name":"Chorero","preds":[[2,0],[1,1],[1,0],[2,2],[1,1],[1,1],[2,1],[0,2],[2,1],[2,1],[1,1],[1,1],[2,2],[0,2],[0,1],[3,0],[0,2],[3,0],[2,2],[0,1],[2,0],[1,1],[1,1],[1,0],[4,0],[2,2],[2,0],[2,0],[1,2],[0,2],[2,1],[2,1],[1,0],[0,2],[1,1],[0,2],[2,0],[1,0],[1,0],[0,1],[1,1],[0,3],[3,0],[1,2],[3,1],[2,0],[0,1],[1,2],[2,0],[0,2],[3,0],[1,1],[1,1],[2,0],[2,0],[2,0],[2,1],[0,1],[1,1],[0,2],[3,0],[0,2],[2,0],[2,0],[1,2],[0,0],[2,1],[0,1],[3,0],[0,1],[0,2],[1,0]]},{"name":"Chapa","preds":[[1,1],[2,0],[0,1],[3,1],[0,3],[1,1],[2,0],[0,2],[2,0],[3,1],[1,1],[1,3],[2,1],[0,3],[1,1],[5,0],[1,1],[3,1],[2,1],[1,1],[1,0],[0,0],[1,2],[1,0],[7,0],[2,3],[3,1],[3,0],[1,2],[0,3],[4,1],[2,0],[3,1],[0,1],[0,1],[1,4],[2,2],[1,0],[2,0],[0,1],[2,0],[0,2],[10,0],[1,2],[3,0],[4,0],[0,2],[1,2],[3,1],[0,0],[3,0],[1,1],[0,2],[1,0],[3,0],[1,0],[3,1],[1,1],[0,1],[0,2],[3,1],[0,3],[4,0],[2,1],[1,1],[2,2],[2,0],[1,0],[2,0],[0,1],[1,3],[1,1]]}]};
-const SEED = DATA.real;            // respaldo si no hay resultados.json (p.ej. abriendo el archivo localmente)
+const TEAM_LOOKUP = {"mexico":"México","sudafrica":"Sudáfrica","southafrica":"Sudáfrica","coreadelsur":"Corea del Sur","southkorea":"Corea del Sur","korearepublic":"Corea del Sur","chequia":"Chequia","czechrepublic":"Chequia","czechia":"Chequia","canada":"Canadá","suiza":"Suiza","switzerland":"Suiza","qatar":"Qatar","catar":"Qatar","bosniayherzegovina":"Bosnia y Herzegovina","bosniaandherzegovina":"Bosnia y Herzegovina","bosniaherzegovina":"Bosnia y Herzegovina","bosnia":"Bosnia y Herzegovina","brasil":"Brasil","brazil":"Brasil","marruecos":"Marruecos","morocco":"Marruecos","haiti":"Haití","escocia":"Escocia","scotland":"Escocia","estadosunidos":"Estados Unidos","usa":"Estados Unidos","unitedstates":"Estados Unidos","unitedstatesofamerica":"Estados Unidos","paraguay":"Paraguay","australia":"Australia","turquia":"Turquía","turkey":"Turquía","turkiye":"Turquía","alemania":"Alemania","germany":"Alemania","curazao":"Curazao","curacao":"Curazao","costademarfil":"Costa de Marfil","ivorycoast":"Costa de Marfil","cotedivoire":"Costa de Marfil","ecuador":"Ecuador","paisesbajos":"Países Bajos","netherlands":"Países Bajos","holland":"Países Bajos","japon":"Japón","japan":"Japón","tunez":"Túnez","tunisia":"Túnez","suecia":"Suecia","sweden":"Suecia","belgica":"Bélgica","belgium":"Bélgica","egipto":"Egipto","egypt":"Egipto","iran":"Irán","iranislamicrepublicof":"Irán","nuevazelanda":"Nueva Zelanda","newzealand":"Nueva Zelanda","espana":"España","spain":"España","caboverde":"Cabo Verde","capeverdeislands":"Cabo Verde","capeverde":"Cabo Verde","arabiasaudita":"Arabia Saudita","saudiarabia":"Arabia Saudita","uruguay":"Uruguay","francia":"Francia","france":"Francia","senegal":"Senegal","noruega":"Noruega","norway":"Noruega","iraq":"Iraq","iraqrepublic":"Iraq","argentina":"Argentina","argelia":"Argelia","algeria":"Argelia","austria":"Austria","jordania":"Jordania","jordan":"Jordania","portugal":"Portugal","colombia":"Colombia","uzbekistan":"Uzbekistán","drcongo":"DR Congo","congodr":"DR Congo","democraticrepublicofcongo":"DR Congo","inglaterra":"Inglaterra","england":"Inglaterra","croacia":"Croacia","croatia":"Croacia","ghana":"Ghana","panama":"Panamá","koreasouth":"Corea del Sur","iriran":"Irán","congord":"DR Congo","rdcongo":"DR Congo"};     // nombre normalizado (EN o ES) -> nombre canónico ES
+const SEED = DATA.real;                   // respaldo si no hay resultados.json
 const GROUPS = "ABCDEFGHIJKL".split("");
 const N = DATA.fixtures.length;
-let real = SEED.map(x=>[x[0],x[1]]);
+
+let realOficial = SEED.map(x=>[x[0],x[1]]);  // confirmados por el Action (solo finalizados)
+let real = realOficial.map(x=>[x[0],x[1]]);  // mezcla: oficial + en vivo (provisional)
+let liveIdx = new Set();                      // índices de partidos en vivo ahora
+let liveInfo = {};                            // idx -> reloj (ej "35'")
+let liveList = [];                            // partidos en vivo para el banner
+let espnLive = [], espnPost = [];             // crudo parseado de ESPN
 
 const sgn = x => x>0?1:x<0?-1:0;
 function scoreOne(pred, r){
@@ -216,15 +239,37 @@ function scoreOne(pred, r){
 const isPlayed = i => real[i] && real[i][0]!=null && real[i][1]!=null;
 function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 
+// --- mapeo de nombres de ESPN -> índice del fixture ---
+function norm(s){ return String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+function teamES(name){ return TEAM_LOOKUP[norm(name)] || null; }
+const FIX_BY_PAIR = (()=>{ const m={}; DATA.fixtures.forEach((f,i)=>{ m[f.local+'@@'+f.visitante]=i; }); return m; })();
+function fixtureIndex(homeES, awayES){
+  if(homeES+'@@'+awayES in FIX_BY_PAIR) return {i:FIX_BY_PAIR[homeES+'@@'+awayES], swap:false};
+  if(awayES+'@@'+homeES in FIX_BY_PAIR) return {i:FIX_BY_PAIR[awayES+'@@'+homeES], swap:true};
+  return null;
+}
+
+// reconstruye `real` = oficial + overlay de ESPN (terminados que falten + en vivo)
+function applyEspn(){
+  real = realOficial.map(x=>[x[0],x[1]]);
+  liveIdx = new Set(); liveInfo = {}; liveList = [];
+  espnPost.forEach(m=>{ if(real[m.i][0]==null) real[m.i]=[m.gl,m.gv]; });   // llena finalizados aún no commiteados
+  espnLive.forEach(m=>{
+    real[m.i]=[m.gl,m.gv]; liveIdx.add(m.i); liveInfo[m.i]=m.clock;
+    liveList.push(m);
+  });
+}
+
 function compute(){
   const played = real.reduce((a,_,i)=>a+(isPlayed(i)?1:0),0);
   const rows = DATA.players.map(p=>{
-    let total=0,scored=0,blank=0,exact=0;
+    let total=0,scored=0,blank=0,exact=0,enJuego=0;
     for(let i=0;i<N;i++){ if(!isPlayed(i)) continue;
-      const s=scoreOne(p.preds[i],real[i]); total+=s;
-      if(s>0)scored++; else blank++; if(s===6)exact++;
+      let s=scoreOne(p.preds[i],real[i]); if(s===null) s=0;
+      total+=s; if(s>0)scored++; else blank++; if(s===6)exact++;
+      if(liveIdx.has(i)) enJuego+=s;
     }
-    return {name:p.name,total,scored,blank,exact};
+    return {name:p.name,total,scored,blank,exact,enJuego};
   });
   rows.sort((a,b)=> b.total-a.total||b.exact-a.exact||b.scored-a.scored||a.blank-b.blank||a.name.localeCompare(b.name));
   rows.forEach(r=> r.pos = 1 + rows.filter(o=>o.total>r.total).length);
@@ -238,17 +283,30 @@ function leader(rows,key){
   return {max,names:top.map(t=>t.name),rest};
 }
 
+function renderLive(){
+  const wrap=document.getElementById("liveWrap");
+  if(!liveList.length){ wrap.style.display="none"; wrap.innerHTML=""; return; }
+  wrap.style.display="";
+  const games = liveList.map(m=>
+    `<span class="lg">${esc(m.homeES)} <b>${m.gl}-${m.gv}</b> ${esc(m.awayES)} <i>${esc(m.clock||"")}</i></span>`).join("");
+  wrap.innerHTML = `<div class="livebar"><span class="livedot"></span> En vivo
+      <div class="livegames">${games}</div></div>
+    <div class="provnote">El ranking de abajo es <b>provisional</b>: incluye los partidos en vivo y puede cambiar hasta que terminen.</div>`;
+}
+
 function renderRanking(){
   const {rows} = compute();
+  const prov = liveIdx.size>0;
   const pod=document.getElementById("podium");
   const order=[1,0,2]; const top3=rows.slice(0,3);
   pod.innerHTML = order.map(idx=>{
     const r=top3[idx]; if(!r) return '<div></div>';
     const cls=idx===0?"tile gold":"tile";
+    const ej = r.enJuego>0?`<span class="ej">🔴+${r.enJuego}</span>`:"";
     return `<div class="${cls}"><div class="medal">${idx+1}</div>
       <div class="pname">${esc(r.name)}</div>
-      <div class="pscore">${r.total}</div><div class="plab">puntos</div>
-      <div class="mini"><span>🎯<b>${r.scored}</b></span><span>🔥<b>${r.exact}</b></span></div></div>`;
+      <div class="pscore">${r.total}</div><div class="plab">puntos${ej?" · en juego":""}</div>
+      <div class="mini"><span>🎯<b>${r.scored}</b></span><span>🔥<b>${r.exact}</b></span>${ej}</div></div>`;
   }).join("");
   document.getElementById("rankBody").innerHTML = rows.map(r=>`
     <tr class="${r.pos===1?'top1':''}">
@@ -256,7 +314,10 @@ function renderRanking(){
       <td><span class="chip ${r.scored?'g':'zero'}">${r.scored}</span></td>
       <td><span class="chip ${r.blank?'b':'zero'}">${r.blank}</span></td>
       <td><span class="chip ${r.exact?'e':'zero'}">${r.exact}</span></td>
-      <td class="tot">${r.total}</td></tr>`).join("");
+      <td class="tot">${r.total}${r.enJuego>0?` <span class="ej">🔴+${r.enJuego}</span>`:""}</td></tr>`).join("");
+  // marca provisional en el título
+  const h2=document.querySelector("#ranking h2");
+  if(h2) h2.innerHTML = "🏆 Ranking oficial" + (prov?'<span class="provtag">🔴 provisional</span>':"");
   const defs=[
     {k:'scored',cls:'g',ico:'🎯',h:'Más partidos puntuando',sub:'Quien más veces ha sumado algún punto.'},
     {k:'blank',cls:'b',ico:'🥶',h:'Más partidos en blanco',sub:'Quien más veces se quedó sin puntos.'},
@@ -275,15 +336,16 @@ function renderResults(){
   const cont=document.getElementById("groups");
   cont.innerHTML = GROUPS.map(g=>{
     const idxs=DATA.fixtures.map((f,i)=>({f,i})).filter(o=>o.f.grupo===g);
-    const done=idxs.filter(o=>isPlayed(o.i)).length;
+    const done=idxs.filter(o=>isPlayed(o.i) && !liveIdx.has(o.i)).length;
     const rows=idxs.map(({f,i})=>{
-      const p=isPlayed(i);
+      const live=liveIdx.has(i); const p=isPlayed(i);
       const sc=p?`<div class="sc"><span>${real[i][0]}</span><span class="col">:</span><span>${real[i][1]}</span></div>`
                 :`<div class="sc pend">por jugarse</div>`;
-      return `<div class="match ${p?'played':''}" data-i="${i}">
+      const badge=live?`<div class="badge live">🔴 En vivo ${esc(liveInfo[i]||"")}</div>`:(p?'<div class="badge">final</div>':'');
+      return `<div class="match ${p?'played':''} ${live?'live':''}" data-i="${i}">
         <div class="mrow">
           <div class="tm lo">${esc(f.local)}</div>${sc}<div class="tm vi">${esc(f.visitante)}</div>
-          <div class="dt">${esc(f.fecha||"")}</div>${p?'<div class="badge">final</div>':''}
+          <div class="dt">${esc(f.fecha||"")}</div>${badge}
           <span class="exp">▾</span>
         </div>
         <div class="preds"></div></div>`;
@@ -292,34 +354,34 @@ function renderResults(){
       <span class="gcount">${done}/${idxs.length}</span><span class="chev">▾</span></summary>
       <div class="matches">${rows}</div></details>`;
   }).join("");
-  // click en una fila -> abre/cierra el panel con los pronósticos de cada participante
   cont.querySelectorAll(".match").forEach(m=>{
     m.querySelector(".mrow").addEventListener("click", ()=>{
       const open = m.classList.toggle("open");
       const panel = m.querySelector(".preds");
-      if(open && !panel.dataset.built){ panel.innerHTML = buildPredsPanel(+m.dataset.i); panel.dataset.built="1"; }
+      panel.innerHTML = buildPredsPanel(+m.dataset.i);  // siempre re-render (puede estar en vivo)
     });
   });
 }
 
 function buildPredsPanel(i){
-  const played = isPlayed(i);
+  const played = isPlayed(i); const live = liveIdx.has(i);
   const rows = DATA.players.map(p=>{
     const pr = p.preds[i];
     const has = pr && pr[0]!=null && pr[1]!=null;
     const pred = has ? `${pr[0]}-${pr[1]}` : "—";
-    const s = played ? scoreOne(pr, real[i]) : null;
-    return {name:p.name, pred, s};
+    let s = played ? scoreOne(pr, real[i]) : null;
+    if(played && s===null) s=0;
+    return {name:p.name, pred, s, has};
   });
   if(played) rows.sort((a,b)=> b.s-a.s || a.name.localeCompare(b.name));
   else rows.sort((a,b)=> a.name.localeCompare(b.name));
-  const head = played
-    ? `<div class="ph">Pronósticos y puntos de este partido</div>`
+  const head = live ? `<div class="ph">🔴 Puntos en vivo (provisional)</div>`
+    : played ? `<div class="ph">Pronósticos y puntos de este partido</div>`
     : `<div class="ph">Pronósticos · el partido aún no se juega</div>`;
   const body = rows.map(r=>{
     const pp = played
       ? `<span class="pp p${r.s}">${r.s} pt${r.s===1?"":"s"}</span>`
-      : `<span class="pp pend">pendiente</span>`;
+      : `<span class="pp pend">${r.has?"pendiente":"sin pronóstico"}</span>`;
     return `<div class="prow"><span class="pn">${esc(r.name)}</span><span class="pg">${r.pred}</span>${pp}</div>`;
   }).join("");
   return head + body;
@@ -335,34 +397,69 @@ function hace(iso){
   return "hace "+Math.floor(s/86400)+" días";
 }
 
-async function load(showFlash){
-  const btn=document.getElementById("btnReload"); btn.classList.add("loading");
+function recompute(){ applyEspn(); renderLive(); renderRanking(); renderResults(); }
+
+async function loadOficial(showFlash){
   try{
     const res=await fetch("./resultados.json",{cache:"no-store"});
     if(!res.ok) throw new Error("http "+res.status);
     const j=await res.json();
     const arr=Array.isArray(j)?j:j.real;
     if(!Array.isArray(arr)||arr.length!==N) throw new Error("formato");
-    real=arr.map(x=>[x&&x[0]!=null?x[0]:null, x&&x[1]!=null?x[1]:null]);
+    realOficial=arr.map(x=>[x&&x[0]!=null?x[0]:null, x&&x[1]!=null?x[1]:null]);
     document.getElementById("srcDot").classList.remove("warn");
     document.getElementById("srcTxt").textContent = (j.source||"resultados.json");
     document.getElementById("srcUpd").textContent = j.updatedAt?("actualizado "+hace(j.updatedAt)):"";
-    document.getElementById("provName").textContent = (j.source||"la API");
+    const pn=document.getElementById("provName"); if(pn) pn.textContent=(j.source||"la API");
     if(showFlash) flash("Resultados actualizados");
   }catch(e){
-    real=SEED.map(x=>[x[0],x[1]]);
+    realOficial=SEED.map(x=>[x[0],x[1]]);
     document.getElementById("srcDot").classList.add("warn");
     document.getElementById("srcTxt").textContent="vista previa (sin resultados.json)";
     document.getElementById("srcUpd").textContent="";
-  }finally{
-    renderRanking(); renderResults();
-    setTimeout(()=>btn.classList.remove("loading"),400);
-  }
+  }finally{ recompute(); }
 }
 
-document.getElementById("btnReload").onclick=()=>load(true);
-load(false);
-setInterval(()=>load(false), 120000); // auto-refresca cada 2 min
+async function loadVivo(){
+  try{
+    const url="https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
+    const res=await fetch(url,{cache:"no-store"});
+    if(!res.ok) throw new Error("http "+res.status);
+    const j=await res.json();
+    const live=[], post=[];
+    (j.events||[]).forEach(ev=>{
+      const comp=(ev.competitions||[])[0]; if(!comp) return;
+      const state=(((ev.status||{}).type)||{}).state;          // 'pre' | 'in' | 'post'
+      const clock=(((ev.status||{}).type)||{}).shortDetail || ((ev.status||{}).displayClock) || "";
+      let hN,aN,gh,ga;
+      (comp.competitors||[]).forEach(c=>{
+        const nm=(c.team||{}).displayName || (c.team||{}).name;
+        let sc=parseInt(c.score,10); if(isNaN(sc)) sc=null;
+        if(c.homeAway==="home"){ hN=nm; gh=sc; } else if(c.homeAway==="away"){ aN=nm; ga=sc; }
+      });
+      const he=teamES(hN), ae=teamES(aN);
+      if(!he||!ae||gh==null||ga==null) return;
+      const fx=fixtureIndex(he,ae); if(!fx) return;
+      const gl=fx.swap?ga:gh, gv=fx.swap?gh:ga;
+      const homeES=fx.swap?ae:he, awayES=fx.swap?he:ae;
+      if(state==="in") live.push({i:fx.i, gl, gv, clock, homeES, awayES});
+      else if(state==="post") post.push({i:fx.i, gl, gv});
+    });
+    espnLive=live; espnPost=post;
+  }catch(e){
+    espnLive=[]; espnPost=[];   // si ESPN falla o bloquea CORS, seguimos con lo oficial
+  }finally{ recompute(); }
+}
+
+function refreshAll(flashIt){
+  const btn=document.getElementById("btnReload"); btn.classList.add("loading");
+  Promise.all([loadOficial(flashIt), loadVivo()]).finally(()=>setTimeout(()=>btn.classList.remove("loading"),400));
+}
+
+document.getElementById("btnReload").onclick=()=>refreshAll(true);
+refreshAll(false);
+setInterval(loadOficial, 120000); // oficial cada 2 min
+setInterval(loadVivo, 60000);     // en vivo cada 1 min
 </script>
 </body>
 </html>
