@@ -422,12 +422,15 @@ async function loadOficial(showFlash){
 
 async function loadVivo(){
   try{
-    const url="https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
-    const res=await fetch(url,{cache:"no-store"});
-    if(!res.ok) throw new Error("http "+res.status);
-    const j=await res.json();
-    const live=[], post=[];
-    (j.events||[]).forEach(ev=>{
+    const hoy=new Date(),ayer=new Date(hoy-86400000);
+const fmt=d=>d.toISOString().slice(0,10).replace(/-/g,'');
+const base="https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=";
+const [r1,r2]=await Promise.all([fetch(base+fmt(hoy),{cache:"no-store"}),fetch(base+fmt(ayer),{cache:"no-store"})]);
+if(!r1.ok&&!r2.ok) throw new Error("http");
+const [j1,j2]=await Promise.all([r1.json(),r2.json()]);
+const live=[], post=[];
+const eventos=[...(j1.events||[]),...(j2.events||[])];
+eventos.forEach(ev=>{
       const comp=(ev.competitions||[])[0]; if(!comp) return;
       const state=(((ev.status||{}).type)||{}).state;          // 'pre' | 'in' | 'post'
       const clock=(((ev.status||{}).type)||{}).shortDetail || ((ev.status||{}).displayClock) || "";
