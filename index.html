@@ -149,6 +149,17 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .match.live .mrow{background:rgba(239,75,39,.06)}
 .match.live .sc{color:var(--fire)}
 .provtag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--fire);border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+
+.chartcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.chartbox{width:100%}
+.chartempty{padding:54px 20px;text-align:center;color:var(--muted);font-size:13px}
+.chartlegend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.legitem{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-size:12.5px;font-weight:600;color:var(--ink);background:#F4F6FA;border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;transition:.15s}
+.legitem:hover{background:#E9EFF7}
+.legitem.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.legitem .dot{width:10px;height:10px;border-radius:50%}
+.legitem b{font-family:var(--mono);opacity:.85}
+.legitem.on b{opacity:1}
 </style>
 </head>
 <body>
@@ -166,6 +177,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
   <a href="#ranking">Ranking oficial</a>
   <a href="#destacados">Destacados</a>
   <a href="#resultados">Resultados</a>
+  <a href="#estadistica">📈 Estadística</a>
 </div></div>
 
 <div class="wrap">
@@ -206,6 +218,17 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
     </div>
     <div id="groups"></div>
     <div class="note">Los resultados llegan desde <b id="provName">la API</b> y se guardan en <code>resultados.json</code>, que actualiza un proceso automático del repositorio. La <b>fase de llave</b> se suma cuando se conozcan los cruces.</div>
+  </section>
+
+  <section id="estadistica">
+    <div class="sechead">
+      <div><div class="eyebrow">La carrera de la polla</div><h2>📈 Estadística</h2></div>
+      <div class="hint">Puntos acumulados de cada jugador, partido a partido. Toca un nombre para resaltar su línea.</div>
+    </div>
+    <div class="chartcard">
+      <div id="chartLegend" class="chartlegend"></div>
+      <div id="chartBox" class="chartbox"></div>
+    </div>
   </section>
 
 </div>
@@ -397,7 +420,57 @@ function hace(iso){
   return "hace "+Math.floor(s/86400)+" días";
 }
 
-function recompute(){ applyEspn(); renderLive(); renderRanking(); renderResults(); }
+
+let chartHL = null;
+const MONTHS = {ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,oct:10,nov:11,dic:12};
+function dateKey(i){
+  const f=DATA.fixtures[i]; const m=(f.fecha||"").trim().toLowerCase().match(/(\d+)\s*([a-z]+)/);
+  if(!m) return 9999;
+  return (MONTHS[m[2].slice(0,3)]||12)*100 + parseInt(m[1],10);
+}
+const PAL=["#1F4E79","#EF4B27","#16A571","#E2A100","#7A4DB8","#E84393","#0AA1A1","#9C6B1E","#5BA8D6","#C0392B","#2E8B57","#8E44AD"];
+function evolution(){
+  const idxs=DATA.fixtures.map((f,i)=>i).filter(i=>isPlayed(i));
+  idxs.sort((a,b)=> dateKey(a)-dateKey(b) || a-b);
+  const series=DATA.players.map((p,pi)=>({name:p.name,color:PAL[pi%PAL.length],cum:[],total:0}));
+  idxs.forEach(i=>series.forEach((S,pi)=>{
+    let s=scoreOne(DATA.players[pi].preds[i],real[i]); if(s===null)s=0;
+    S.total+=s; S.cum.push(S.total);
+  }));
+  return {idxs,series};
+}
+function renderChart(){
+  const box=document.getElementById("chartBox"), leg=document.getElementById("chartLegend");
+  if(!box) return;
+  const {idxs,series}=evolution(); const n=idxs.length;
+  if(n===0){ box.innerHTML='<div class="chartempty">Aún no hay partidos jugados. El gráfico se va llenando a medida que cargan los resultados. 📊</div>'; leg.innerHTML=""; return; }
+  const W=860,H=430,mL=34,mR=12,mT=14,mB=42, plotW=W-mL-mR, plotH=H-mT-mB;
+  const maxY=Math.max(6,...series.map(s=>s.total));
+  const X=k=> mL+(n===1?plotW/2:plotW*k/(n-1));
+  const Y=v=> mT+plotH-plotH*v/maxY;
+  let grid="";
+  for(let t=0;t<=5;t++){ const v=Math.round(maxY*t/5), y=Y(v);
+    grid+=`<line x1="${mL}" y1="${y}" x2="${W-mR}" y2="${y}" stroke="#E2E8F0"/>`;
+    grid+=`<text x="${mL-5}" y="${y+3}" text-anchor="end" font-size="10" fill="#5B6B7F" font-family="ui-monospace,monospace">${v}</text>`;
+  }
+  let xlab=""; const step=Math.max(1,Math.ceil(n/12));
+  idxs.forEach((idx,k)=>{ if(k%step===0||k===n-1)
+    xlab+=`<text x="${X(k)}" y="${H-mB+15}" text-anchor="middle" font-size="9" fill="#5B6B7F" font-family="ui-monospace,monospace">${k+1}</text>`; });
+  xlab+=`<text x="${(mL+W-mR)/2}" y="${H-6}" text-anchor="middle" font-size="10" fill="#9aa7b6">partidos jugados (en orden)</text>`;
+  let paths="";
+  series.forEach(S=>{
+    const hl=chartHL===S.name, dim=chartHL&&!hl;
+    const pts=S.cum.map((v,k)=>`${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+    paths+=`<polyline points="${pts}" fill="none" stroke="${S.color}" stroke-width="${hl?4:2}" opacity="${dim?0.12:1}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    paths+=`<circle cx="${X(n-1).toFixed(1)}" cy="${Y(S.total).toFixed(1)}" r="${hl?4.5:3}" fill="${S.color}" opacity="${dim?0.12:1}"/>`;
+  });
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block">${grid}${xlab}${paths}</svg>`;
+  const ordered=series.slice().sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));
+  leg.innerHTML=ordered.map(S=>`<button class="legitem ${chartHL===S.name?'on':''}" data-name="${esc(S.name)}"><span class="dot" style="background:${S.color}"></span>${esc(S.name)} <b>${S.total}</b></button>`).join("");
+  leg.querySelectorAll(".legitem").forEach(b=>b.onclick=()=>{ const nm=b.dataset.name; chartHL=(chartHL===nm)?null:nm; renderChart(); });
+}
+
+function recompute(){ applyEspn(); renderLive(); renderRanking(); renderResults(); renderChart(); }
 
 async function loadOficial(showFlash){
   try{
