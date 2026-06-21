@@ -139,9 +139,26 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .livedot{width:11px;height:11px;border-radius:50%;background:#fff;animation:pulse 1.3s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 9px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
 .livegames{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--body);text-transform:none;letter-spacing:0}
-.lg{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:600}
+.lg{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:3px;color:#fff}
+.lg:hover{background:rgba(255,255,255,.28)}
+.lg.on{background:#fff;color:#c81818;border-color:#fff}
 .lg b{font-family:var(--mono);margin:0 3px}
 .lg i{font-style:normal;font-family:var(--mono);opacity:.85;margin-left:5px;font-size:11px}
+.lg .car{font-family:var(--body);font-size:13px;margin-left:5px;transition:.2s;opacity:.9}
+.lg.on .car{transform:rotate(180deg)}
+.livegames.solo .lg{cursor:default;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25);color:#fff}
+.livegames.solo .lg:hover{background:rgba(255,255,255,.14)}
+.livegames.solo .lg .car{display:none}
+.livetap{font-size:11.5px;color:var(--muted);margin-top:6px;font-style:italic}
+.livepanel{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;animation:lpfade .2s ease}
+@keyframes lpfade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.lp-head{background:var(--navy);color:#fff;padding:13px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lp-head .mt{font-weight:700;font-size:15px}
+.lp-head .scr{font-family:var(--mono);font-weight:700;font-size:19px;color:var(--gold);margin:0 4px}
+.lp-head .lvtag{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;background:var(--fire);padding:3px 9px;border-radius:6px}
+.lp-ph{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;padding:9px 0 3px}
+.lp-foot{padding:9px 16px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.lp-foot b{color:var(--ink)}
 .provnote{font-size:12px;color:var(--muted);margin-top:7px;text-align:center}
 .provnote b{color:var(--fire)}
 .ej{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--fire);border-radius:6px;padding:1px 6px;margin-left:6px}
@@ -249,6 +266,7 @@ let liveIdx = new Set();                      // índices de partidos en vivo ah
 let liveInfo = {};                            // idx -> reloj (ej "35'")
 let liveList = [];                            // partidos en vivo para el banner
 let espnLive = [], espnPost = [];             // crudo parseado de ESPN
+let bannerOpen = null;                        // índice de fixture abierto en el banner en vivo
 
 const sgn = x => x>0?1:x<0?-1:0;
 function scoreOne(pred, r){
@@ -308,13 +326,42 @@ function leader(rows,key){
 
 function renderLive(){
   const wrap=document.getElementById("liveWrap");
-  if(!liveList.length){ wrap.style.display="none"; wrap.innerHTML=""; return; }
+  if(!liveList.length){ wrap.style.display="none"; wrap.innerHTML=""; bannerOpen=null; return; }
   wrap.style.display="";
+  // si el partido abierto ya no está en vivo (terminó), se cierra solo
+  if(bannerOpen!=null && !liveList.some(m=>m.i===bannerOpen)) bannerOpen=null;
+  const solo = liveList.length===1;
+  if(solo) bannerOpen = liveList[0].i;   // un solo partido: el detalle se abre solo
   const games = liveList.map(m=>
-    `<span class="lg">${esc(m.homeES)} <b>${m.gl}-${m.gv}</b> ${esc(m.awayES)} <i>${esc(m.clock||"")}</i></span>`).join("");
+    `<span class="lg ${bannerOpen===m.i?'on':''}" data-i="${m.i}">${esc(m.homeES)} <b>${m.gl}-${m.gv}</b> ${esc(m.awayES)}<i>${esc(m.clock||"")}</i><span class="car">▾</span></span>`).join("");
   wrap.innerHTML = `<div class="livebar"><span class="livedot"></span> En vivo
-      <div class="livegames">${games}</div></div>
-    <div class="provnote">El ranking de abajo es <b>provisional</b>: incluye los partidos en vivo y puede cambiar hasta que terminen.</div>`;
+      <div class="livegames${solo?' solo':''}">${games}</div></div>
+    <div class="provnote">El ranking de abajo es <b>provisional</b>: incluye los partidos en vivo y puede cambiar hasta que terminen.</div>
+    ${solo?"":'<div class="livetap">Toca un partido para ver las apuestas.</div>'}
+    <div id="livePanel">${bannerOpen!=null?buildBannerPanel(bannerOpen):""}</div>`;
+  if(!solo) wrap.querySelectorAll(".lg").forEach(el=>el.addEventListener("click",()=>{
+    const i=+el.dataset.i; bannerOpen=(bannerOpen===i)?null:i; renderLive();
+  }));
+}
+
+function buildBannerPanel(idx){
+  const m = liveList.find(x=>x.i===idx); if(!m) return "";
+  const f = DATA.fixtures[idx];
+  const rows = DATA.players.map(p=>{
+    const pr=p.preds[idx]; const has = pr && pr[0]!=null && pr[1]!=null;
+    let s=scoreOne(pr, real[idx]); if(s===null) s=0;
+    return {name:p.name, pred:has?`${pr[0]}-${pr[1]}`:"—", s};
+  });
+  rows.sort((a,b)=> b.s-a.s || a.name.localeCompare(b.name));
+  const sumando=rows.filter(r=>r.s>0).length, exactos=rows.filter(r=>r.s===6).length;
+  const body=rows.map(r=>
+    `<div class="prow"><span class="pn">${esc(r.name)}</span><span class="pg">${r.pred}</span><span class="pp p${r.s}">${r.s} pt${r.s===1?"":"s"}</span></div>`).join("");
+  return `<div class="livepanel">
+    <div class="lp-head"><span class="mt">${esc(f.local)}</span><span class="scr">${m.gl}-${m.gv}</span><span class="mt">${esc(f.visitante)}</span><span class="lvtag">${esc(m.clock||"en vivo")} · provisional</span></div>
+    <div class="lp-ph">Puntos en vivo de este partido</div>
+    ${body}
+    <div class="lp-foot"><span>🎯 Sumando: <b>${sumando}</b> de ${rows.length}</span><span>🔥 Exactos: <b>${exactos}</b></span></div>
+  </div>`;
 }
 
 function renderRanking(){
