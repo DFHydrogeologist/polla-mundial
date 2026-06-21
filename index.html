@@ -177,6 +177,22 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .legitem .dot{width:10px;height:10px;border-radius:50%}
 .legitem b{font-family:var(--mono);opacity:.85}
 .legitem.on b{opacity:1}
+
+.tickerwrap{margin:16px 0 2px}
+.ticker{display:flex;align-items:stretch;background:var(--navy);border-radius:10px;overflow:hidden;border:1px solid #143557;box-shadow:0 10px 26px -16px rgba(10,37,64,.7)}
+.ticker .tag{flex:none;display:flex;align-items:center;gap:7px;background:var(--gold);color:var(--navy);font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:13px;padding:0 14px}
+.ticker .tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--fire);animation:tpulse 1.2s infinite}
+@keyframes tpulse{0%{box-shadow:0 0 0 0 rgba(239,75,39,.6)}70%{box-shadow:0 0 0 6px rgba(239,75,39,0)}100%{box-shadow:0 0 0 0 rgba(239,75,39,0)}}
+.ticker .view{flex:1;overflow:hidden;position:relative}
+.ticker .track{display:inline-flex;align-items:center;white-space:nowrap;padding:11px 0;will-change:transform;animation:tscroll var(--tdur,38s) linear infinite}
+.ticker:hover .track{animation-play-state:paused}
+@keyframes tscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker .item{color:#EAF1FA;font-size:13.5px;font-weight:500;padding:0 22px;display:inline-flex;align-items:center;gap:7px}
+.ticker .item .em{color:var(--gold);font-weight:700}
+.ticker .item .hot{color:#FFB36B;font-weight:700}
+.ticker .item.sep{color:#3E5A7C;padding:0}
+@media(prefers-reduced-motion:reduce){.ticker .track{animation:none}}
+@media(max-width:720px){.ticker .tag{font-size:11px;padding:0 10px}.ticker .item{font-size:12.5px;padding:0 16px}}
 </style>
 </head>
 <body>
@@ -198,6 +214,13 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 </div></div>
 
 <div class="wrap">
+
+  <div class="tickerwrap">
+    <div class="ticker" id="ticker">
+      <div class="tag"><span class="pulse"></span> En la polla</div>
+      <div class="view"><div class="track" id="tickerTrack"></div></div>
+    </div>
+  </div>
 
   <section id="ranking">
     <div class="sechead">
@@ -517,7 +540,50 @@ function renderChart(){
   leg.querySelectorAll(".legitem").forEach(b=>b.onclick=()=>{ const nm=b.dataset.name; chartHL=(chartHL===nm)?null:nm; renderChart(); });
 }
 
-function recompute(){ applyEspn(); renderLive(); renderRanking(); renderResults(); renderChart(); }
+function playedOrder(){ return DATA.fixtures.map((_,i)=>i).filter(isPlayed).sort((a,b)=>dateKey(a)-dateKey(b)||a-b); }
+function streakOf(player,order){ let n=0; for(let k=order.length-1;k>=0;k--){ let s=scoreOne(player.preds[order[k]],real[order[k]]); if(s&&s>0)n++; else break; } return n; }
+function tkE(t){ return `<span class="em">${esc(t)}</span>`; }
+function tkH(t){ return `<span class="hot">${esc(t)}</span>`; }
+function buildTickerItems(){
+  const {rows,played}=compute();
+  const it=[];
+  if(played===0){
+    it.push(`🏁 La polla aún no arranca`);
+    it.push(`⚽ ${tkE(N)} partidos por delante`);
+    it.push(`👥 ${tkE(DATA.players.length)} jugadores listos`);
+    it.push(`🎯 Reglas: ${tkE("2")} resultado · ${tkE("4")} margen · ${tkE("6")} exacto`);
+    it.push(`🔥 Que gane el mejor pronóstico`);
+    return it;
+  }
+  const lead=rows[0], tied=rows.filter(r=>r.total===lead.total);
+  if(tied.length>1) it.push(`🥇 Empate en la cima: ${tkE(tied.map(t=>t.name).join(" y "))} con ${tkE(lead.total)} pts`);
+  else it.push(`🥇 ${tkE(lead.name)} lidera con ${tkE(lead.total+" pts")}`);
+  rows.slice(1,5).forEach(r=>{ const d=lead.total-r.total; if(d>0) it.push(`${esc(r.name)} está a ${tkH(d+" pts")} del puntero`); });
+  const maxEx=Math.max(...rows.map(r=>r.exact));
+  if(maxEx>0){ const who=rows.filter(r=>r.exact===maxEx).map(r=>r.name); it.push(`🔥 ${tkE(who.join(", "))} ${who.length>1?"lideran":"lidera"} en exactos con ${tkH(maxEx)}`); }
+  const maxSc=Math.max(...rows.map(r=>r.scored));
+  if(maxSc>0){ const cons=rows.filter(r=>r.scored===maxSc).map(r=>r.name); it.push(`🎯 ${tkE(cons.join(", "))} ${cons.length>1?"han":"ha"} puntuado en ${tkH(maxSc)} partidos`); }
+  const order=playedOrder();
+  let best={n:0,name:""}; DATA.players.forEach(p=>{ const n=streakOf(p,order); if(n>best.n)best={n,name:p.name}; });
+  if(best.n>=2) it.push(`📈 ${tkE(best.name)} acumula ${tkH(best.n)} partidos seguidos sumando`);
+  for(let k=order.length-1;k>=0;k--){ const i=order[k];
+    const hit=DATA.players.filter(p=>scoreOne(p.preds[i],real[i])===6).map(p=>p.name);
+    if(hit.length){ const f=DATA.fixtures[i]; it.push(`💥 ${tkE(hit.join(", "))} clavó el ${tkH(real[i][0]+"-"+real[i][1])} de ${esc(f.local)}-${esc(f.visitante)}`); break; } }
+  let totalEx=0; order.forEach(i=>DATA.players.forEach(p=>{ if(scoreOne(p.preds[i],real[i])===6)totalEx++; }));
+  if(totalEx>0) it.push(`📊 ${tkE(totalEx)} marcadores exactos en la polla hasta ahora`);
+  const last=rows[rows.length-1];
+  it.push(`🐌 ${esc(last.name)} cierra la tabla con ${esc(last.total)} pts… aún hay torneo`);
+  return it;
+}
+function renderTicker(){
+  const track=document.getElementById("tickerTrack"); if(!track) return;
+  const items=buildTickerItems();
+  const html=items.map(t=>`<span class="item">${t}</span><span class="item sep">•</span>`).join("");
+  track.innerHTML=html+html;                         // duplicado para loop continuo
+  track.style.setProperty("--tdur", Math.max(22, items.length*5)+"s");
+}
+
+function recompute(){ applyEspn(); renderTicker(); renderLive(); renderRanking(); renderResults(); renderChart(); }
 
 async function loadOficial(showFlash){
   try{
