@@ -118,15 +118,31 @@ def fetch_csv(tab):
         text = r.read().decode("utf-8")
     return parse_csv_text(text)
 
-def deducir_pasa(local, visita, gl, gv, pasa_celda):
-    """Quién avanza: por marcador si no hay empate; si empatan, lo que diga la celda Pasa."""
+def avance_real(local, visita, gl, gv, pasa_celda):
+    """Avance REAL (objetivo): gana el del marcador; si hay empate a los 90, lo que
+    pongas en la celda Pasa de Resultados (penales). No se sobreescribe un ganador claro."""
     if gl is None or gv is None:
         return clean(pasa_celda) or None
     if gl > gv:
         return local
     if gv > gl:
         return visita
-    return clean(pasa_celda) or None   # empate -> manda la celda (penales)
+    return clean(pasa_celda) or None     # empate -> manda la celda (penales)
+
+def avance_pred(local, visita, gl, gv, pasa_celda):
+    """Avance de un PRONÓSTICO: la columna Pasa manda SIEMPRE, aunque contradiga el marcador
+    (algunos apuestan 'pierde pero igual avanza'). Si Pasa está vacía, respaldo: ganador del
+    marcador, o None si la persona predijo empate sin indicar quién pasa."""
+    p = clean(pasa_celda)
+    if p:
+        return p
+    if gl is None or gv is None:
+        return None
+    if gl > gv:
+        return local
+    if gv > gl:
+        return visita
+    return None
 
 # ─────────────────────────── core ───────────────────────────
 
@@ -141,7 +157,7 @@ def build_llaves(rows):
             "visita": r["visita"],
             "realGL": r["gl"],
             "realGV": r["gv"],
-            "realPasa": deducir_pasa(r["local"], r["visita"], r["gl"], r["gv"], r["pasa"]),
+            "realPasa": avance_real(r["local"], r["visita"], r["gl"], r["gv"], r["pasa"]),
         })
     return llaves
 
@@ -210,7 +226,7 @@ def main():
         for r in prows:
             k = (norm(r["ronda"]), norm(r["cruce"]))
             sheet_ap[k] = [r["gl"], r["gv"],
-                           deducir_pasa(r["local"], r["visita"], r["gl"], r["gv"], r["pasa"])]
+                           avance_pred(r["local"], r["visita"], r["gl"], r["gv"], r["pasa"])]
 
         lista = []
         leidos = 0
