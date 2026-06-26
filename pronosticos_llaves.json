@@ -1,0 +1,2247 @@
+{
+ "updatedAt": "2026-06-26T20:59:35.676053+00:00",
+ "deadlines": {
+  "rondade32": "2026-06-28T18:00:00+00:00",
+  "octavos": "2026-07-04T18:00:00+00:00",
+  "cuartos": "2026-07-09T18:00:00+00:00",
+  "semifinal": "2026-07-14T18:00:00+00:00",
+  "3erpuesto": "2026-07-18T18:00:00+00:00",
+  "final": "2026-07-19T18:00:00+00:00"
+ },
+ "llaves": [
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 1",
+   "local": "Alemania",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 2",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 3",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 4",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 5",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 6",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 7",
+   "local": "USA",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 8",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 9",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 10",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 11",
+   "local": "México",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 12",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 13",
+   "local": "Argentina",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 14",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 15",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Ronda de 32",
+   "cruce": "Cruce 16",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 1",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 2",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 3",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 4",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 5",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 6",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 7",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Octavos",
+   "cruce": "Cruce 8",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Cuartos",
+   "cruce": "Cruce 1",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Cuartos",
+   "cruce": "Cruce 2",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Cuartos",
+   "cruce": "Cruce 3",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Cuartos",
+   "cruce": "Cruce 4",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Semifinal",
+   "cruce": "Cruce 1",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "Semifinal",
+   "cruce": "Cruce 2",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "3er puesto",
+   "cruce": "Único",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  },
+  {
+   "ronda": "FINAL",
+   "cruce": "Único",
+   "local": "",
+   "visita": "",
+   "realGL": null,
+   "realGV": null,
+   "realPasa": null
+  }
+ ],
+ "pronosticos": {
+  "Demian": [
+   [
+    1,
+    3,
+    ""
+   ],
+   [
+    1,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Nacho": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Bob": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Chorero": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Jlo": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Paula": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Chapa": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Six": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Pelao": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Jano": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Claudia": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ],
+  "Raul": [
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
+   ]
+  ]
+ }
+}
