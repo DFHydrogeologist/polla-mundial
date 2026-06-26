@@ -1,7 +1,7 @@
 {
- "updatedAt": "2026-06-26T23:30:46.953343+00:00",
+ "updatedAt": "2026-06-26T23:57:17.242205+00:00",
  "deadlines": {
-  "rondade32": "2026-06-28T18:00:00+00:00",
+  "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
   "cuartos": "2026-07-09T18:00:00+00:00",
   "semifinal": "2026-07-14T18:00:00+00:00",
@@ -21,7 +21,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 2",
-   "local": "Equipo",
+   "local": "Alto Control",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
@@ -30,8 +30,8 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 3",
-   "local": "Equipo",
-   "visita": "Equipo",
+   "local": "Sudáfrica",
+   "visita": "Canadá",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -39,8 +39,8 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 4",
-   "local": "Equipo",
-   "visita": "Equipo",
+   "local": "Países Bajos",
+   "visita": "Marruecos",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -67,7 +67,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 7",
    "local": "USA",
-   "visita": "Equipo",
+   "visita": "Bosnia y Herzegovina",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -84,8 +84,8 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 9",
-   "local": "Equipo",
-   "visita": "Equipo",
+   "local": "Brasil",
+   "visita": "Japón",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -93,8 +93,8 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 10",
-   "local": "Equipo",
-   "visita": "Equipo",
+   "local": "Costa de Marfil",
+   "visita": "Noruega",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -129,7 +129,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 14",
-   "local": "Equipo",
+   "local": "Australia",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
@@ -138,7 +138,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 15",
-   "local": "Equipo",
+   "local": "Suiza",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
