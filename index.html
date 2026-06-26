@@ -206,6 +206,23 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .kostat.ok{color:var(--ink)}
 .kostat b{color:var(--green)}
 .kocruce.pend{opacity:.6}
+.komatch{border-top:1px dashed var(--line)}
+.komatch:first-child{border-top:none}
+.komatch .kocruce{border-top:none}
+.komatch.clk .kocruce{cursor:pointer;position:relative;padding-right:26px;border-radius:8px}
+.komatch.clk .kocruce:hover{background:#F7FAFE}
+.koexp{position:absolute;right:6px;top:50%;transform:translateY(-50%);color:#B3C0D0;font-size:11px;transition:.2s}
+.komatch.open .koexp{transform:translateY(-50%) rotate(180deg);color:var(--blue2)}
+.komatch.open .kocruce{background:#F2F7FD}
+.kopreds{display:none;padding:8px 6px 10px}
+.komatch.open .kopreds{display:block}
+.koprow{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:9px;padding:5px 10px;border-radius:7px;font-size:12.5px}
+.koprow:nth-child(even){background:#FAFCFF}
+.koprow .pn{font-weight:600}
+.koprow .pg{font-family:var(--mono);font-weight:700;color:var(--muted)}
+.koav{font-size:11px;color:var(--frost);font-weight:600}
+.koav.none{color:#B3C0D0}
+.kobonus{font-family:var(--mono);font-size:10px;color:var(--green);font-weight:700}
 </style>
 </head>
 <body>
@@ -671,21 +688,69 @@ function renderLlaves(){
         <td class="tot">${r.total}</td></tr>`).join("")}</tbody></table>
     ${algoJugado?"":'<div class="ph" style="padding:12px">Todavía no se carga ningún resultado real de llaves. Los puntos aparecen a medida que completes los marcadores en la pestaña Resultados.</div>'}`;
 
-  // cruces agrupados por ronda, en el orden del JSON
+  // cruces agrupados por ronda, en el orden del JSON (con índice global k)
   const orden=[]; const porRonda={};
-  LL.llaves.forEach(m=>{ if(!(m.ronda in porRonda)){ porRonda[m.ronda]=[]; orden.push(m.ronda); } porRonda[m.ronda].push(m); });
+  LL.llaves.forEach((m,k)=>{ if(!(m.ronda in porRonda)){ porRonda[m.ronda]=[]; orden.push(m.ronda); } porRonda[m.ronda].push({m,k}); });
   roundsBox.innerHTML = orden.map(ronda=>{
-    const cruces = porRonda[ronda].map(m=>{
+    const cruces = porRonda[ronda].map(({m,k})=>{
       const jugado = m.realGL!=null && m.realGV!=null;
+      const definido = !!(m.local && m.visita);            // tiene los dos equipos
+      const clk = jugado || definido;                       // expandible si hay algo que mostrar
       const loc = esc(m.local||"—"), vis = esc(m.visita||"—");
+      const exp = clk ? `<span class="koexp">▾</span>` : "";
+      let row;
       if(!jugado){
-        return `<div class="kocruce pend"><span class="kot">${loc}</span><span class="kovs">vs</span><span class="kot">${vis}</span><span class="kostat">por jugar</span></div>`;
+        row = `<div class="kocruce pend"><span class="kot">${loc}</span><span class="kovs">vs</span><span class="kot">${vis}</span><span class="kostat">por jugar</span>${exp}</div>`;
+      }else{
+        const av = m.realPasa?` · avanza <b>${esc(m.realPasa)}</b>`:"";
+        row = `<div class="kocruce"><span class="kot">${loc}</span><span class="koscore">${m.realGL}-${m.realGV}</span><span class="kot">${vis}</span><span class="kostat ok">jugado${av}</span>${exp}</div>`;
       }
-      const av = m.realPasa?` · avanza <b>${esc(m.realPasa)}</b>`:"";
-      return `<div class="kocruce"><span class="kot">${loc}</span><span class="koscore">${m.realGL}-${m.realGV}</span><span class="kot">${vis}</span><span class="kostat ok">jugado${av}</span></div>`;
+      return `<div class="komatch ${jugado?'played':''} ${clk?'clk':''}" data-k="${k}">${row}<div class="kopreds"></div></div>`;
     }).join("");
     return `<div class="koround"><div class="korhead">${esc(ronda)} <span class="korb">+${KO_BONUS[norm(ronda)]||0} por avance</span></div>${cruces}</div>`;
   }).join("");
+
+  roundsBox.querySelectorAll(".komatch.clk").forEach(el=>{
+    el.querySelector(".kocruce").addEventListener("click", ()=>{
+      el.classList.toggle("open");
+      el.querySelector(".kopreds").innerHTML = buildKoPredsPanel(+el.dataset.k);
+    });
+  });
+}
+
+function buildKoPredsPanel(k){
+  if(!LL || !LL.llaves[k]) return "";
+  const m = LL.llaves[k];
+  const jugado = m.realGL!=null && m.realGV!=null;
+  const b = KO_BONUS[norm(m.ronda)] || 0;
+  const rows = Object.keys(LL.pronosticos||{}).map(name=>{
+    const pr = (LL.pronosticos[name]||[])[k] || [null,null,null];
+    const has = pr[0]!=null && pr[1]!=null;
+    const pred = has ? `${pr[0]}-${pr[1]}` : "—";
+    let mk = jugado ? scoreOne([pr[0],pr[1]],[m.realGL,m.realGV]) : null;
+    if(jugado && mk===null) mk=0;
+    let bn = 0;
+    if(jugado && b && pr[2] && m.realPasa && norm(pr[2])===norm(m.realPasa)) bn=b;
+    const tot = jugado ? mk+bn : null;
+    return {name, pred, avanza:pr[2]||null, mk, bn, tot, has};
+  });
+  if(jugado) rows.sort((a,b)=> b.tot-a.tot || a.name.localeCompare(b.name));
+  else rows.sort((a,b)=> a.name.localeCompare(b.name));
+  const head = jugado ? `<div class="ph">Apuestas y puntos de este cruce</div>`
+                      : `<div class="ph">Apuestas · el cruce aún no se juega</div>`;
+  const body = rows.map(r=>{
+    const av = r.avanza ? `<span class="koav">→ ${esc(r.avanza)}</span>` : `<span class="koav none">→ —</span>`;
+    let pp;
+    if(jugado){
+      const cls = r.mk===6?'p6':(r.tot>0?(r.mk===4?'p4':'p2'):'p0');
+      const bonusTag = r.bn>0 ? ` <span class="kobonus">${r.mk}+${r.bn}</span>` : "";
+      pp = `<span class="pp ${cls}">${r.tot} pt${r.tot===1?"":"s"}${bonusTag}</span>`;
+    }else{
+      pp = `<span class="pp pend">${r.has?"pendiente":"sin apuesta"}</span>`;
+    }
+    return `<div class="koprow"><span class="pn">${esc(r.name)}</span><span class="pg">${r.pred}</span>${av}${pp}</div>`;
+  }).join("");
+  return head + body;
 }
 
 function recompute(){ applyEspn(); renderTicker(); renderLive(); renderRanking(); renderResults(); renderLlaves(); renderChart(); }
