@@ -22,21 +22,29 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Traer resultados desde la API
+      - name: Traer resultados de grupos desde la API
         env:
           POLLA_PROVIDER: ${{ vars.POLLA_PROVIDER || 'apifootball' }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           FOOTBALLDATA_TOKEN: ${{ secrets.FOOTBALLDATA_TOKEN }}
         run: python scripts/fetch_resultados.py
 
-      - name: Commit si cambió
+      - name: Traer apuestas de llaves desde el Google Sheets
+        env:
+          # El Sheets es público (solo lectura), así que el ID no es secreto.
+          # Lo dejo configurable por si algún día cambias de planilla.
+          POLLA_SHEET_ID: ${{ vars.POLLA_SHEET_ID || '1y6omPkb9NWIfSITMSJKmzXF4AIAo5oevW6t9DfDn_bc' }}
+          POLLA_PERSONAS: ${{ vars.POLLA_PERSONAS || 'Demian,Nacho,Bob,Chorero,Jlo,Paula,Chapa,Six,Pelao,Jano,Claudia,Raul' }}
+        run: python scripts/leer_apuestas.py
+
+      - name: Commit si cambió algo
         run: |
           git config user.name  "polla-bot"
           git config user.email "polla-bot@users.noreply.github.com"
-          if ! git diff --quiet -- resultados.json; then
-            git add resultados.json
-            git commit -m "Actualizar resultados ($(date -u +%FT%TZ))"
+          git add resultados.json pronosticos_llaves.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualizar polla ($(date -u +%FT%TZ))"
             git push
           else
-            echo "Sin cambios en resultados.json"
+            echo "Sin cambios"
           fi
