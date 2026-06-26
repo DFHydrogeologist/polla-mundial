@@ -193,6 +193,19 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .ticker .item.sep{color:#3E5A7C;padding:0}
 @media(prefers-reduced-motion:reduce){.ticker .track{animation:none}}
 @media(max-width:720px){.ticker .tag{font-size:11px;padding:0 10px}.ticker .item{font-size:12.5px;padding:0 16px}}
+.koround{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.korhead{font-family:var(--display);font-size:16px;color:var(--ink);display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.korb{font-family:var(--mono);font-size:11px;color:var(--green);background:rgba(22,165,113,.1);padding:2px 8px;border-radius:20px}
+.kocruce{display:grid;grid-template-columns:1fr auto 1fr auto;align-items:center;gap:10px;padding:7px 4px;border-top:1px dashed var(--line);font-size:13.5px}
+.kocruce:first-of-type{border-top:none}
+.kocruce .kot{font-weight:600}
+.kocruce .kot:first-child{text-align:right}
+.koscore{font-family:var(--mono);font-weight:700;background:var(--navy);color:#fff;padding:2px 9px;border-radius:7px;font-size:13px}
+.kovs{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.kostat{font-size:11px;color:var(--muted);justify-self:end}
+.kostat.ok{color:var(--ink)}
+.kostat b{color:var(--green)}
+.kocruce.pend{opacity:.6}
 </style>
 </head>
 <body>
@@ -210,6 +223,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
   <a href="#ranking">Ranking oficial</a>
   <a href="#destacados">Destacados</a>
   <a href="#resultados">Resultados</a>
+  <a href="#llaves">🗝️ Llaves</a>
   <a href="#estadistica">📈 Estadística</a>
 </div></div>
 
@@ -258,6 +272,16 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
     </div>
     <div id="groups"></div>
     <div class="note">Los resultados llegan desde <b id="provName">la API</b> y se guardan en <code>resultados.json</code>, que actualiza un proceso automático del repositorio. La <b>fase de llave</b> se suma cuando se conozcan los cruces.</div>
+  </section>
+
+  <section id="llaves">
+    <div class="sechead">
+      <div><div class="eyebrow">Fase final · eliminación directa</div><h2>🗝️ Llaves</h2></div>
+      <div class="hint">Marcador a los 90' con el mismo puntaje (2 · 4 · 6) más bonus por acertar quién avanza: dieciseisavos +2, octavos +3, cuartos +4, semis +5, tercer puesto +6, final +7.</div>
+    </div>
+    <div id="koStandings" class="tablecard"></div>
+    <div id="koRounds" style="margin-top:18px"></div>
+    <div class="note">Las apuestas las cargan los jugadores en el Google Sheets y las consolida el proceso automático en <code>pronosticos_llaves.json</code>. El marcador real de cada cruce —y quién avanza si hubo penales— lo completas en la pestaña <b>Resultados</b> de la planilla.</div>
   </section>
 
   <section id="estadistica">
@@ -313,6 +337,31 @@ function fixtureIndex(homeES, awayES){
   return null;
 }
 
+// ───────────── Fase de llaves (pronosticos_llaves.json) ─────────────
+let LL = null;            // crudo del JSON de llaves
+let koByName = {};        // norm(nombre) -> {total, marker, bonus, exact, scored, played}
+const KO_BONUS = {rondade32:2, octavos:3, cuartos:4, semifinal:5, "3erpuesto":6, final:7};
+
+function computeKo(){
+  koByName = {};
+  if(!LL || !Array.isArray(LL.llaves) || !LL.pronosticos) return;
+  const lv = LL.llaves;
+  for(const name in LL.pronosticos){
+    const preds = LL.pronosticos[name] || [];
+    let marker=0, bonus=0, exact=0, scored=0, played=0;
+    lv.forEach((m,k)=>{
+      if(m.realGL==null || m.realGV==null) return;   // cruce aún no jugado
+      played++;
+      const pr = preds[k] || [null,null,null];
+      let s = scoreOne([pr[0],pr[1]],[m.realGL,m.realGV]); if(s===null) s=0;
+      marker+=s; if(s>0)scored++; if(s===6)exact++;
+      const b = KO_BONUS[norm(m.ronda)] || 0;        // bonus por acertar quién avanza
+      if(b && pr[2] && m.realPasa && norm(pr[2])===norm(m.realPasa)) bonus+=b;
+    });
+    koByName[norm(name)] = {total:marker+bonus, marker, bonus, exact, scored, played};
+  }
+}
+
 // reconstruye `real` = oficial + overlay de ESPN (terminados que falten + en vivo)
 function applyEspn(){
   real = realOficial.map(x=>[x[0],x[1]]);
@@ -333,7 +382,12 @@ function compute(){
       total+=s; if(s>0)scored++; else blank++; if(s===6)exact++;
       if(liveIdx.has(i)) enJuego+=s;
     }
-    return {name:p.name,total,scored,blank,exact,enJuego};
+    const ko = koByName[norm(p.name)] || {total:0,scored:0,exact:0,played:0,marker:0,bonus:0};
+    total += ko.total;                       // suma fase de llaves al total
+    scored += ko.scored;                     // contadores combinados (todo el torneo)
+    exact += ko.exact;
+    blank += (ko.played - ko.scored);
+    return {name:p.name,total,scored,blank,exact,enJuego,ko};
   });
   rows.sort((a,b)=> b.total-a.total||b.exact-a.exact||b.scored-a.scored||a.blank-b.blank||a.name.localeCompare(b.name));
   rows.forEach(r=> r.pos = 1 + rows.filter(o=>o.total>r.total).length);
@@ -583,7 +637,58 @@ function renderTicker(){
   track.style.setProperty("--tdur", Math.max(22, items.length*5)+"s");
 }
 
-function recompute(){ applyEspn(); renderTicker(); renderLive(); renderRanking(); renderResults(); renderChart(); }
+function renderLlaves(){
+  const standings=document.getElementById("koStandings");
+  const roundsBox=document.getElementById("koRounds");
+  if(!standings||!roundsBox) return;
+
+  if(!LL || !Array.isArray(LL.llaves)){
+    standings.innerHTML = `<div class="ph" style="padding:18px">Aún no hay datos de la fase de llaves. Aparecerán cuando el proceso automático lea el Google Sheets.</div>`;
+    roundsBox.innerHTML = "";
+    return;
+  }
+
+  // tabla de puntos de llaves por jugador
+  const ranked = Object.keys(LL.pronosticos||{}).map(name=>{
+    const k = koByName[norm(name)] || {total:0,marker:0,bonus:0,exact:0,played:0};
+    return {name, ...k};
+  }).sort((a,b)=> b.total-a.total || b.bonus-a.bonus || b.exact-a.exact || a.name.localeCompare(b.name));
+  ranked.forEach(r=> r.pos = 1 + ranked.filter(o=>o.total>r.total).length);
+
+  const algoJugado = LL.llaves.some(m=>m.realGL!=null);
+  standings.innerHTML = `<table>
+    <thead><tr><th>#</th><th class="l">Jugador</th>
+      <th title="Puntos por marcador (90')">⚽ Marcador</th>
+      <th title="Bonus por acertar quién avanza">➡️ Avance</th>
+      <th title="Marcadores exactos en llaves">🔥 Exactos</th>
+      <th>Puntos llaves</th></tr></thead>
+    <tbody>${ranked.map(r=>`
+      <tr class="${r.pos===1&&r.total>0?'top1':''}">
+        <td class="pos">${r.pos}</td><td class="l nm">${esc(r.name)}</td>
+        <td><span class="chip ${r.marker?'g':'zero'}">${r.marker}</span></td>
+        <td><span class="chip ${r.bonus?'e':'zero'}">${r.bonus}</span></td>
+        <td><span class="chip ${r.exact?'e':'zero'}">${r.exact}</span></td>
+        <td class="tot">${r.total}</td></tr>`).join("")}</tbody></table>
+    ${algoJugado?"":'<div class="ph" style="padding:12px">Todavía no se carga ningún resultado real de llaves. Los puntos aparecen a medida que completes los marcadores en la pestaña Resultados.</div>'}`;
+
+  // cruces agrupados por ronda, en el orden del JSON
+  const orden=[]; const porRonda={};
+  LL.llaves.forEach(m=>{ if(!(m.ronda in porRonda)){ porRonda[m.ronda]=[]; orden.push(m.ronda); } porRonda[m.ronda].push(m); });
+  roundsBox.innerHTML = orden.map(ronda=>{
+    const cruces = porRonda[ronda].map(m=>{
+      const jugado = m.realGL!=null && m.realGV!=null;
+      const loc = esc(m.local||"—"), vis = esc(m.visita||"—");
+      if(!jugado){
+        return `<div class="kocruce pend"><span class="kot">${loc}</span><span class="kovs">vs</span><span class="kot">${vis}</span><span class="kostat">por jugar</span></div>`;
+      }
+      const av = m.realPasa?` · avanza <b>${esc(m.realPasa)}</b>`:"";
+      return `<div class="kocruce"><span class="kot">${loc}</span><span class="koscore">${m.realGL}-${m.realGV}</span><span class="kot">${vis}</span><span class="kostat ok">jugado${av}</span></div>`;
+    }).join("");
+    return `<div class="koround"><div class="korhead">${esc(ronda)} <span class="korb">+${KO_BONUS[norm(ronda)]||0} por avance</span></div>${cruces}</div>`;
+  }).join("");
+}
+
+function recompute(){ applyEspn(); renderTicker(); renderLive(); renderRanking(); renderResults(); renderLlaves(); renderChart(); }
 
 async function loadOficial(showFlash){
   try{
@@ -640,15 +745,25 @@ eventos.forEach(ev=>{
   }finally{ recompute(); }
 }
 
+async function loadLlaves(){
+  try{
+    const res=await fetch("./pronosticos_llaves.json",{cache:"no-store"});
+    if(!res.ok) throw new Error("http "+res.status);
+    LL = await res.json();
+  }catch(e){ LL = null; }
+  finally{ computeKo(); recompute(); }
+}
+
 function refreshAll(flashIt){
   const btn=document.getElementById("btnReload"); btn.classList.add("loading");
-  Promise.all([loadOficial(flashIt), loadVivo()]).finally(()=>setTimeout(()=>btn.classList.remove("loading"),400));
+  Promise.all([loadOficial(flashIt), loadVivo(), loadLlaves()]).finally(()=>setTimeout(()=>btn.classList.remove("loading"),400));
 }
 
 document.getElementById("btnReload").onclick=()=>refreshAll(true);
 refreshAll(false);
 setInterval(loadOficial, 120000); // oficial cada 2 min
 setInterval(loadVivo, 60000);     // en vivo cada 1 min
+setInterval(loadLlaves, 120000);  // llaves cada 2 min
 </script>
 </body>
 </html>
