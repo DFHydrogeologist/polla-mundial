@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-26T22:44:10.516121+00:00",
+ "updatedAt": "2026-06-26T23:30:46.953343+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T18:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -13,7 +13,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 1",
    "local": "Alemania",
-   "visita": "Equipo",
+   "visita": "Chile",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -303,7 +303,7 @@
    [
     1,
     3,
-    "Equipo"
+    "Chile"
    ],
    [
     1,
