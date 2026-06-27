@@ -32,7 +32,7 @@ LLAVES_TAB = "Llaves"
 
 # Nombres EXACTOS de las pestañas de cada persona (= nombre del participante).
 # Si tienen tilde funciona igual (se url-encodea), pero sin tilde es más a prueba de tontos.
-PERSONAS = os.environ.get("POLLA_PERSONAS", "Demian,Jano,Nacho").split(",")
+PERSONAS = os.environ.get("POLLA_PERSONAS", "Demian,Jano,Nacho,Pelao,Raul,Jlo,Paula,Six,Chapa,Bob,Claudia,Chorero").split(",")
 
 # Deadlines por ronda (UTC). Pon ~30 min antes del primer partido de cada ronda.
 # Mundial 2026: R32 arranca 28-jun, final 19-jul. Ajusta las horas a los kickoffs reales.
