@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-27T12:30:52.625107+00:00",
+ "updatedAt": "2026-06-27T13:28:27.694141+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -75,7 +75,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 8",
-   "local": "Equipo",
+   "local": "Bélgica",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
@@ -130,7 +130,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 14",
    "local": "Australia",
-   "visita": "Equipo",
+   "visita": "Egipto",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -301,11 +301,6 @@
  "pronosticos": {
   "Demian": [
    [
-    1,
-    0,
-    "Alemania"
-   ],
-   [
     null,
     null,
     null
@@ -321,9 +316,14 @@
     null
    ],
    [
-    1,
-    0,
-    "Alto Control"
+    null,
+    null,
+    null
+   ],
+   [
+    null,
+    null,
+    null
    ],
    [
     null,
