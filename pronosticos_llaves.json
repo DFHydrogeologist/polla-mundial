@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-27T14:45:58.938518+00:00",
+ "updatedAt": "2026-06-27T15:02:48.439775+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -1597,14 +1597,14 @@
   ],
   "Pelao": [
    [
-    0,
-    1,
-    "Alemania"
+    null,
+    null,
+    null
    ],
    [
-    0,
-    5,
-    "Francia"
+    null,
+    null,
+    null
    ],
    [
     null,
@@ -1617,9 +1617,9 @@
     null
    ],
    [
-    1,
-    2,
-    "Alto Control"
+    null,
+    null,
+    null
    ],
    [
     null,
