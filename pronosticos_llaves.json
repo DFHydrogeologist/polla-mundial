@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-27T22:33:11.311800+00:00",
+ "updatedAt": "2026-06-27T22:34:39.919352+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -1597,9 +1597,9 @@
   ],
   "Pelao": [
    [
-    null,
-    null,
-    null
+    22,
+    33,
+    "Paraguay"
    ],
    [
     null,
@@ -1612,14 +1612,14 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Países Bajos"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Alto Control"
    ],
    [
     null,
