@@ -418,17 +418,21 @@ function computeKo(){
   for(const name in LL.pronosticos){
     const preds = LL.pronosticos[name] || [];
     let marker=0, bonus=0, exact=0, scored=0, played=0;
+    const perMatch = [];                              // puntos (marcador+bonus) por cruce jugado, para rachas
     lv.forEach((m,k)=>{
       const R = koReal(k);
-      if(R.gl==null || R.gv==null) return;            // cruce aún no jugado
+      if(R.gl==null || R.gv==null){ perMatch.push(null); return; }   // cruce aún no jugado
       played++;
       const pr = preds[k] || [null,null,null];
       let s = scoreOne([pr[0],pr[1]],[R.gl,R.gv]); if(s===null) s=0;   // puntaje sobre los 90'
       marker+=s; if(s>0)scored++; if(s===6)exact++;
       const b = KO_BONUS[norm(m.ronda)] || 0;          // bonus por acertar quién avanza
-      if(b && pr[2] && R.pasa && norm(pr[2])===norm(R.pasa)) bonus+=b;
+      let bn = 0;
+      if(b && pr[2] && R.pasa && norm(pr[2])===norm(R.pasa)) bn=b;
+      bonus+=bn;
+      perMatch.push(s+bn);
     });
-    koByName[norm(name)] = {total:marker+bonus, marker, bonus, exact, scored, played};
+    koByName[norm(name)] = {total:marker+bonus, marker, bonus, exact, scored, played, perMatch};
   }
 }
 
@@ -457,7 +461,10 @@ function compute(){
     scored += ko.scored;                     // contadores combinados (todo el torneo)
     exact += ko.exact;
     blank += (ko.played - ko.scored);
-    return {name:p.name,total,scored,blank,exact,enJuego,ko};
+    const seq = combinedPoints(p);                       // rachas sobre todo el torneo
+    const streakHit = longestRun(seq, v=>v>0);           // mejor racha puntuando
+    const streakCold = longestRun(seq, v=>v===0);        // peor racha en blanco
+    return {name:p.name,total,scored,blank,exact,enJuego,ko,streakHit,streakCold};
   });
   rows.sort((a,b)=> b.total-a.total||b.exact-a.exact||b.scored-a.scored||a.blank-b.blank||a.name.localeCompare(b.name));
   rows.forEach(r=> r.pos = 1 + rows.filter(o=>o.total>r.total).length);
@@ -539,6 +546,8 @@ function renderRanking(){
     {k:'scored',cls:'g',ico:'🎯',h:'Más partidos puntuando',sub:'Quien más veces ha sumado algún punto.'},
     {k:'blank',cls:'b',ico:'🥶',h:'Más partidos en blanco',sub:'Quien más veces se quedó sin puntos.'},
     {k:'exact',cls:'e',ico:'🔥',h:'Más marcadores exactos',sub:'Quien más veces clavó el 6 (resultado exacto).'},
+    {k:'streakHit',cls:'g',ico:'⚡',h:'Mejor racha puntuando',sub:'Más partidos seguidos sumando, en todo el torneo.'},
+    {k:'streakCold',cls:'b',ico:'🧊',h:'Peor racha en blanco',sub:'Más partidos seguidos sin sumar, en todo el torneo.'},
   ];
   document.getElementById("cards").innerHTML = defs.map(d=>{
     const L=leader(rows,d.k);
@@ -666,6 +675,17 @@ function renderChart(){
 
 function playedOrder(){ return DATA.fixtures.map((_,i)=>i).filter(isPlayed).sort((a,b)=>dateKey(a)-dateKey(b)||a-b); }
 function streakOf(player,order){ let n=0; for(let k=order.length-1;k>=0;k--){ let s=scoreOne(player.preds[order[k]],real[order[k]]); if(s&&s>0)n++; else break; } return n; }
+
+// secuencia de puntos de un jugador en TODOS sus partidos jugados: grupos (por fecha) + llaves (orden del JSON)
+function combinedPoints(player){
+  const seq=[];
+  playedOrder().forEach(i=>{ let s=scoreOne(player.preds[i],real[i]); if(s===null)s=0; seq.push(s); });
+  const ko = koByName[norm(player.name)];
+  if(ko && ko.perMatch) ko.perMatch.forEach(v=>{ if(v!=null) seq.push(v); });
+  return seq;
+}
+// racha más larga donde se cumple `pred` (ej. puntuó / quedó en blanco)
+function longestRun(seq, pred){ let best=0,cur=0; for(const v of seq){ if(pred(v)){cur++; if(cur>best)best=cur;} else cur=0; } return best; }
 function tkE(t){ return `<span class="em">${esc(t)}</span>`; }
 function tkH(t){ return `<span class="hot">${esc(t)}</span>`; }
 function buildTickerItems(){
