@@ -213,6 +213,17 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .kostat.live .livedot{width:7px;height:7px;border-radius:50%;background:var(--fire);animation:lpulse 1.2s infinite}
 @keyframes lpulse{0%,100%{opacity:1}50%{opacity:.3}}
 .komatch.live .kocruce{background:rgba(239,75,39,.06)}
+.carrera{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.carrera-h{font-family:var(--display);font-size:16px;margin-bottom:10px}
+.crow{display:grid;grid-template-columns:120px 1fr auto auto;align-items:center;gap:10px;padding:4px 0;font-size:13px}
+.crow .cn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbar{height:9px;background:var(--paper);border-radius:6px;overflow:hidden}
+.cfill{display:block;height:100%;background:var(--frost);border-radius:6px}
+.cfill.first{background:var(--gold)}
+.cpts{font-family:var(--mono);font-weight:700;min-width:28px;text-align:right}
+.cg{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:38px;text-align:right}
+.cg.lead{color:var(--gold);font-weight:700}
+@media(max-width:560px){.crow{grid-template-columns:90px 1fr auto auto}}
 .kotraza{background:#F2F7FD;border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin:2px 4px 10px}
 .ktr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 0;font-size:12.5px}
 .ktr+.ktr{border-top:1px dashed var(--line)}
@@ -284,6 +295,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
         <tbody id="rankBody"></tbody>
       </table>
     </div>
+    <div class="carrera" id="carreraBox"></div>
   </section>
 
   <section id="destacados">
@@ -555,6 +567,46 @@ function renderRanking(){
        ${L.rest.length?`<div class="runners">${L.rest.map(x=>`<span><b>${esc(x.name)}</b> · ${x[d.k]}</span>`).join("")}</div>`:""}`
       :`<div class="lead"><span class="who" style="color:var(--muted);font-weight:600;font-size:14px">Aún sin datos</span><span class="val">—</span></div>`;
     return `<div class="card ${d.cls}"><div class="stripe"></div><div class="ico">${d.ico}</div><h3>${d.h}</h3><div class="sub">${d.sub}</div>${body}</div>`;
+  }).join("") + buildCustomCards(rows);
+
+  renderCarrera(rows);
+}
+
+// tarjetas extra: arriesgado vs conservador, y la cábala más fuerte
+function buildCustomCards(rows){
+  let out="";
+  const risk=DATA.players.map(p=>({name:p.name,r:riskIndex(p)})).filter(x=>x.r>0);
+  if(risk.length){
+    const arr=risk.slice().sort((a,b)=>b.r-a.r)[0], con=risk.slice().sort((a,b)=>a.r-b.r)[0];
+    out += `<div class="card g"><div class="stripe"></div><div class="ico">🎲</div>
+      <h3>Arriesgado vs conservador</h3><div class="sub">Promedio de goles que pronostica cada uno.</div>
+      <div class="lead"><span class="who">${esc(arr.name)}</span><span class="val">${arr.r.toFixed(1)}</span></div>
+      <div class="runners"><span>🎲 más jugado: <b>${esc(arr.name)}</b> · ${arr.r.toFixed(1)} goles/pred</span>
+        <span>🧊 más cauto: <b>${esc(con.name)}</b> · ${con.r.toFixed(1)} goles/pred</span></div></div>`;
+  }
+  let bond={pts:0,name:"",team:""};
+  DATA.players.forEach(p=>{ const tp=teamPoints(p); for(const t in tp){ if(tp[t]>bond.pts)bond={pts:tp[t],name:p.name,team:t}; } });
+  if(bond.pts>0){
+    out += `<div class="card e"><div class="stripe"></div><div class="ico">🍀</div>
+      <h3>La cábala</h3><div class="sub">El vínculo jugador–selección que más puntos ha dado.</div>
+      <div class="lead"><span class="who">${esc(bond.name)} con ${esc(bond.team)}</span><span class="val">${bond.pts}</span></div>
+      <div class="runners"><span>Cuando juega <b>${esc(bond.team)}</b>, ${esc(bond.name)} suele sumar</span></div></div>`;
+  }
+  return out;
+}
+
+// carrera al líder: barra de cada jugador relativa al puntero
+function renderCarrera(rows){
+  const box=document.getElementById("carreraBox"); if(!box) return;
+  const lead=rows[0]; if(!lead || lead.total<=0){ box.innerHTML=""; return; }
+  const max=lead.total;
+  box.innerHTML = `<div class="carrera-h">📊 La carrera al líder</div>` + rows.map((r,i)=>{
+    const pct=Math.max(3, Math.round(r.total/max*100));
+    const gap=max-r.total;
+    const tag=i===0?`<span class="cg lead">puntero</span>`:`<span class="cg">−${gap}</span>`;
+    return `<div class="crow"><span class="cn">${i+1}. ${esc(r.name)}</span>
+      <span class="cbar"><span class="cfill ${i===0?'first':''}" style="width:${pct}%"></span></span>
+      <span class="cpts">${r.total}</span>${tag}</div>`;
   }).join("");
 }
 
@@ -686,6 +738,35 @@ function combinedPoints(player){
 }
 // racha más larga donde se cumple `pred` (ej. puntuó / quedó en blanco)
 function longestRun(seq, pred){ let best=0,cur=0; for(const v of seq){ if(pred(v)){cur++; if(cur>best)best=cur;} else cur=0; } return best; }
+// racha ACTUAL (desde el final) donde se cumple `pred`
+function trailingRun(seq, pred){ let n=0; for(let k=seq.length-1;k>=0;k--){ if(pred(seq[k]))n++; else break; } return n; }
+
+// pronósticos de llaves de un jugador (calza por nombre normalizado con las pestañas del Sheet)
+function koPredsFor(name){
+  if(!LL || !LL.pronosticos) return null;
+  for(const k in LL.pronosticos){ if(norm(k)===norm(name)) return LL.pronosticos[k]; }
+  return null;
+}
+// índice de riesgo: promedio de goles totales que pronostica (alto = jugado, bajo = conservador)
+function riskIndex(player){
+  let g=0,n=0;
+  (player.preds||[]).forEach(pr=>{ if(pr&&pr[0]!=null&&pr[1]!=null){ g+=pr[0]+pr[1]; n++; } });
+  const kp=koPredsFor(player.name);
+  if(kp) kp.forEach(pr=>{ if(pr&&pr[0]!=null&&pr[1]!=null){ g+=pr[0]+pr[1]; n++; } });
+  return n? g/n : 0;
+}
+// puntos acumulados por selección (cábala): suma lo que sacó en partidos donde jugó cada equipo
+function teamPoints(player){
+  const acc={};
+  playedOrder().forEach(i=>{ let s=scoreOne(player.preds[i],real[i]); if(s===null)s=0;
+    const f=DATA.fixtures[i]; acc[f.local]=(acc[f.local]||0)+s; acc[f.visitante]=(acc[f.visitante]||0)+s; });
+  const ko=koByName[norm(player.name)];
+  if(ko && ko.perMatch && LL && LL.llaves){
+    ko.perMatch.forEach((v,k)=>{ if(v==null) return; const m=LL.llaves[k];
+      if(m.local) acc[m.local]=(acc[m.local]||0)+v; if(m.visita) acc[m.visita]=(acc[m.visita]||0)+v; });
+  }
+  return acc;
+}
 function tkE(t){ return `<span class="em">${esc(t)}</span>`; }
 function tkH(t){ return `<span class="hot">${esc(t)}</span>`; }
 function buildTickerItems(){
@@ -717,6 +798,24 @@ function buildTickerItems(){
   if(totalEx>0) it.push(`📊 ${tkE(totalEx)} marcadores exactos en la polla hasta ahora`);
   const last=rows[rows.length-1];
   it.push(`🐌 ${esc(last.name)} cierra la tabla con ${esc(last.total)} pts… aún hay torneo`);
+
+  // racha actual en blanco (pulla al que no achunta)
+  let cold={n:0,name:""}; DATA.players.forEach(p=>{ const n=trailingRun(combinedPoints(p),v=>v===0); if(n>cold.n)cold={n,name:p.name}; });
+  if(cold.n>=2) it.push(`💀 ${tkE(cold.name)} lleva ${tkH(cold.n)} partidos al hilo sin achuntarle`);
+
+  // el más arriesgado y el más conservador (estilo de pronóstico)
+  const risk=DATA.players.map(p=>({name:p.name,r:riskIndex(p)})).filter(x=>x.r>0);
+  if(risk.length){
+    const arr=risk.slice().sort((a,b)=>b.r-a.r)[0], con=risk.slice().sort((a,b)=>a.r-b.r)[0];
+    it.push(`🎲 ${tkE(arr.name)} es el más jugado: promedia ${tkH(arr.r.toFixed(1))} goles por pronóstico`);
+    it.push(`🧊 ${tkE(con.name)} el más cauto: ${tkH(con.r.toFixed(1))} goles por pronóstico`);
+  }
+
+  // la cábala más fuerte (mejor vínculo jugador-selección)
+  let bond={pts:0,name:"",team:""};
+  DATA.players.forEach(p=>{ const tp=teamPoints(p); for(const t in tp){ if(tp[t]>bond.pts)bond={pts:tp[t],name:p.name,team:t}; } });
+  if(bond.pts>0) it.push(`🍀 Cuando juega ${tkE(bond.team)}, ${tkE(bond.name)} suma (${tkH(bond.pts+" pts")} en total)`);
+
   return it;
 }
 function renderTicker(){
