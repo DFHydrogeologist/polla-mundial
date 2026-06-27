@@ -206,6 +206,18 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 .kostat.ok{color:var(--ink)}
 .kostat b{color:var(--green)}
 .kocruce.pend{opacity:.6}
+.kocruce.envivo{background:rgba(239,75,39,.06)}
+.koscorewrap{display:flex;flex-direction:column;align-items:center;gap:2px}
+.koet{font-family:var(--mono);font-size:9.5px;color:var(--muted);white-space:nowrap}
+.kostat.live{color:var(--fire);font-weight:700;display:inline-flex;align-items:center;gap:5px}
+.kostat.live .livedot{width:7px;height:7px;border-radius:50%;background:var(--fire);animation:lpulse 1.2s infinite}
+@keyframes lpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.komatch.live .kocruce{background:rgba(239,75,39,.06)}
+.kotraza{background:#F2F7FD;border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin:2px 4px 10px}
+.ktr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 0;font-size:12.5px}
+.ktr+.ktr{border-top:1px dashed var(--line)}
+.ktk{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ktv{font-weight:600;text-align:right}
 .komatch{border-top:1px dashed var(--line)}
 .komatch:first-child{border-top:none}
 .komatch .kocruce{border-top:none}
@@ -330,6 +342,7 @@ let liveIdx = new Set();                      // índices de partidos en vivo ah
 let liveInfo = {};                            // idx -> reloj (ej "35'")
 let liveList = [];                            // partidos en vivo para el banner
 let espnLive = [], espnPost = [];             // crudo parseado de ESPN
+let koLive = {};                              // k -> {state, clock, g90:[gl,gv], gFinal:[gl,gv], winner, wentET} desde ESPN para llaves
 let bannerOpen = null;                        // índice de fixture abierto en el banner en vivo
 
 const sgn = x => x>0?1:x<0?-1:0;
@@ -354,10 +367,49 @@ function fixtureIndex(homeES, awayES){
   return null;
 }
 
+// busca un cruce de llaves que enfrente a estos dos equipos (en cualquier orden)
+function koIndex(he, ae){
+  if(!LL || !Array.isArray(LL.llaves)) return null;
+  for(let k=0;k<LL.llaves.length;k++){
+    const m=LL.llaves[k];
+    if(!m.local || !m.visita) continue;
+    if(norm(m.local)===norm(he) && norm(m.visita)===norm(ae)) return {k, swap:false};
+    if(norm(m.local)===norm(ae) && norm(m.visita)===norm(he)) return {k, swap:true};
+  }
+  return null;
+}
+
+// goles de un competidor SOLO en los 90' reglamentarios.
+// HIPÓTESIS (a confirmar con un partido real con alargue): linescores trae un elemento por
+// período; los 90' son los dos primeros (1ª y 2ª parte). Alargue/penales vienen como períodos
+// extra (period>2) y se excluyen. Si no hay linescores, devuelve null y el caller usa el total.
+function goles90(comp){
+  const ls = comp && comp.linescores;
+  if(!Array.isArray(ls) || !ls.length) return null;
+  const tienePeriod = ls.some(p=>p && p.period!=null);
+  let s=0;
+  if(tienePeriod) ls.forEach(p=>{ if(p && p.period!=null && p.period<=2) s+=(+p.value||0); });
+  else ls.slice(0,2).forEach(p=> s+=(+p.value||0));   // sin period: primeros 2 elementos
+  return s;
+}
+
 // ───────────── Fase de llaves (pronosticos_llaves.json) ─────────────
 let LL = null;            // crudo del JSON de llaves
 let koByName = {};        // norm(nombre) -> {total, marker, bonus, exact, scored, played}
 const KO_BONUS = {rondade32:2, octavos:3, cuartos:4, semifinal:5, "3erpuesto":6, final:7};
+
+// resultado real de un cruce: ESPN (vivo/final) tiene prioridad; si no hay, lo del Sheet.
+// gl/gv son SIEMPRE los 90' (para el puntaje). pasa = ganador del partido (para el bonus).
+function koReal(k){
+  const m = LL.llaves[k]; const e = koLive[k];
+  if(e && e.g90 && e.g90[0]!=null && e.g90[1]!=null){
+    return {gl:e.g90[0], gv:e.g90[1], pasa:e.winner||m.realPasa||null,
+            live:e.state==='in', post:e.state==='post', wentET:!!e.wentET,
+            gFinal:e.gFinal||null, clock:e.clock||""};
+  }
+  return {gl:m.realGL, gv:m.realGV, pasa:m.realPasa,
+          live:false, post:(m.realGL!=null && m.realGV!=null), wentET:false, gFinal:null, clock:""};
+}
 
 function computeKo(){
   koByName = {};
@@ -367,13 +419,14 @@ function computeKo(){
     const preds = LL.pronosticos[name] || [];
     let marker=0, bonus=0, exact=0, scored=0, played=0;
     lv.forEach((m,k)=>{
-      if(m.realGL==null || m.realGV==null) return;   // cruce aún no jugado
+      const R = koReal(k);
+      if(R.gl==null || R.gv==null) return;            // cruce aún no jugado
       played++;
       const pr = preds[k] || [null,null,null];
-      let s = scoreOne([pr[0],pr[1]],[m.realGL,m.realGV]); if(s===null) s=0;
+      let s = scoreOne([pr[0],pr[1]],[R.gl,R.gv]); if(s===null) s=0;   // puntaje sobre los 90'
       marker+=s; if(s>0)scored++; if(s===6)exact++;
-      const b = KO_BONUS[norm(m.ronda)] || 0;        // bonus por acertar quién avanza
-      if(b && pr[2] && m.realPasa && norm(pr[2])===norm(m.realPasa)) bonus+=b;
+      const b = KO_BONUS[norm(m.ronda)] || 0;          // bonus por acertar quién avanza
+      if(b && pr[2] && R.pasa && norm(pr[2])===norm(R.pasa)) bonus+=b;
     });
     koByName[norm(name)] = {total:marker+bonus, marker, bonus, exact, scored, played};
   }
@@ -672,7 +725,7 @@ function renderLlaves(){
   }).sort((a,b)=> b.total-a.total || b.bonus-a.bonus || b.exact-a.exact || a.name.localeCompare(b.name));
   ranked.forEach(r=> r.pos = 1 + ranked.filter(o=>o.total>r.total).length);
 
-  const algoJugado = LL.llaves.some(m=>m.realGL!=null);
+  const algoJugado = LL.llaves.some((m,k)=>{ const R=koReal(k); return R.gl!=null; });
   standings.innerHTML = `<table>
     <thead><tr><th>#</th><th class="l">Jugador</th>
       <th title="Puntos por marcador (90')">⚽ Marcador</th>
@@ -686,26 +739,33 @@ function renderLlaves(){
         <td><span class="chip ${r.bonus?'e':'zero'}">${r.bonus}</span></td>
         <td><span class="chip ${r.exact?'e':'zero'}">${r.exact}</span></td>
         <td class="tot">${r.total}</td></tr>`).join("")}</tbody></table>
-    ${algoJugado?"":'<div class="ph" style="padding:12px">Todavía no se carga ningún resultado real de llaves. Los puntos aparecen a medida que completes los marcadores en la pestaña Resultados.</div>'}`;
+    ${algoJugado?"":'<div class="ph" style="padding:12px">Todavía no se juega ningún partido de llaves. Los puntos aparecen en vivo cuando arranquen.</div>'}`;
 
   // cruces agrupados por ronda, en el orden del JSON (con índice global k)
   const orden=[]; const porRonda={};
   LL.llaves.forEach((m,k)=>{ if(!(m.ronda in porRonda)){ porRonda[m.ronda]=[]; orden.push(m.ronda); } porRonda[m.ronda].push({m,k}); });
   roundsBox.innerHTML = orden.map(ronda=>{
     const cruces = porRonda[ronda].map(({m,k})=>{
-      const jugado = m.realGL!=null && m.realGV!=null;
-      const definido = !!(m.local && m.visita);            // tiene los dos equipos
-      const clk = jugado || definido;                       // expandible si hay algo que mostrar
+      const R = koReal(k);
+      const jugado = R.gl!=null && R.gv!=null;
+      const definido = !!(m.local && m.visita);
+      const clk = jugado || definido;
       const loc = esc(m.local||"—"), vis = esc(m.visita||"—");
       const exp = clk ? `<span class="koexp">▾</span>` : "";
       let row;
       if(!jugado){
         row = `<div class="kocruce pend"><span class="kot">${loc}</span><span class="kovs">vs</span><span class="kot">${vis}</span><span class="kostat">por jugar</span>${exp}</div>`;
       }else{
-        const av = m.realPasa?` · avanza <b>${esc(m.realPasa)}</b>`:"";
-        row = `<div class="kocruce"><span class="kot">${loc}</span><span class="koscore">${m.realGL}-${m.realGV}</span><span class="kot">${vis}</span><span class="kostat ok">jugado${av}</span>${exp}</div>`;
+        // marcador 90' (el que puntúa). Si fue a alargue, mostramos también el final.
+        const etTag = R.wentET && R.gFinal ? `<span class="koet">${R.gFinal[0]}-${R.gFinal[1]} c/alargue</span>` : "";
+        let estado;
+        if(R.live) estado = `<span class="kostat live"><span class="livedot"></span>en vivo ${esc(R.clock||"")}</span>`;
+        else estado = `<span class="kostat ok">${R.pasa?`avanza <b>${esc(R.pasa)}</b>`:"jugado"}</span>`;
+        row = `<div class="kocruce ${R.live?'envivo':''}"><span class="kot">${loc}</span>
+          <span class="koscorewrap"><span class="koscore">${R.gl}-${R.gv}</span>${etTag}</span>
+          <span class="kot">${vis}</span>${estado}${exp}</div>`;
       }
-      return `<div class="komatch ${jugado?'played':''} ${clk?'clk':''}" data-k="${k}">${row}<div class="kopreds"></div></div>`;
+      return `<div class="komatch ${jugado?'played':''} ${R.live?'live':''} ${clk?'clk':''}" data-k="${k}">${row}<div class="kopreds"></div></div>`;
     }).join("");
     return `<div class="koround"><div class="korhead">${esc(ronda)} <span class="korb">+${KO_BONUS[norm(ronda)]||0} por avance</span></div>${cruces}</div>`;
   }).join("");
@@ -721,23 +781,41 @@ function renderLlaves(){
 function buildKoPredsPanel(k){
   if(!LL || !LL.llaves[k]) return "";
   const m = LL.llaves[k];
-  const jugado = m.realGL!=null && m.realGV!=null;
+  const R = koReal(k);
+  const jugado = R.gl!=null && R.gv!=null;
   const b = KO_BONUS[norm(m.ronda)] || 0;
   const rows = Object.keys(LL.pronosticos||{}).map(name=>{
     const pr = (LL.pronosticos[name]||[])[k] || [null,null,null];
     const has = pr[0]!=null && pr[1]!=null;
     const pred = has ? `${pr[0]}-${pr[1]}` : "—";
-    let mk = jugado ? scoreOne([pr[0],pr[1]],[m.realGL,m.realGV]) : null;
+    let mk = jugado ? scoreOne([pr[0],pr[1]],[R.gl,R.gv]) : null;
     if(jugado && mk===null) mk=0;
     let bn = 0;
-    if(jugado && b && pr[2] && m.realPasa && norm(pr[2])===norm(m.realPasa)) bn=b;
+    if(jugado && b && pr[2] && R.pasa && norm(pr[2])===norm(R.pasa)) bn=b;
     const tot = jugado ? mk+bn : null;
     return {name, pred, avanza:pr[2]||null, mk, bn, tot, has};
   });
   if(jugado) rows.sort((a,b)=> b.tot-a.tot || a.name.localeCompare(b.name));
   else rows.sort((a,b)=> a.name.localeCompare(b.name));
-  const head = jugado ? `<div class="ph">Apuestas y puntos de este cruce</div>`
-                      : `<div class="ph">Apuestas · el cruce aún no se juega</div>`;
+
+  // bloque de trazabilidad: de dónde salen los puntos de este cruce
+  let traza = "";
+  if(jugado){
+    const loc = esc(m.local||"Local"), vis = esc(m.visita||"Visitante");
+    const r90 = `${R.gl}-${R.gv}`;
+    const rFull = (R.wentET && R.gFinal) ? `${R.gFinal[0]}-${R.gFinal[1]} (con alargue)` : r90;
+    const pasa = R.pasa ? esc(R.pasa) : "—";
+    const liveTag = R.live ? ` <span class="kobonus">en vivo</span>` : "";
+    traza = `<div class="kotraza">
+      <div class="ktr"><span class="ktk">90 minutos</span><span class="ktv">${loc} ${r90} ${vis}${liveTag}</span></div>
+      <div class="ktr"><span class="ktk">Resultado completo</span><span class="ktv">${loc} ${rFull} ${vis}</span></div>
+      <div class="ktr"><span class="ktk">Quién pasa</span><span class="ktv"><b>${pasa}</b></span></div>
+    </div>`;
+  }
+
+  const head = R.live ? `<div class="ph">🔴 Puntos en vivo (provisional, sobre los 90')</div>`
+              : jugado ? `<div class="ph">Apuestas y puntos de este cruce</div>`
+                       : `<div class="ph">Apuestas · el cruce aún no se juega</div>`;
   const body = rows.map(r=>{
     const av = r.avanza ? `<span class="koav">→ ${esc(r.avanza)}</span>` : `<span class="koav none">→ —</span>`;
     let pp;
@@ -750,10 +828,10 @@ function buildKoPredsPanel(k){
     }
     return `<div class="koprow"><span class="pn">${esc(r.name)}</span><span class="pg">${r.pred}</span>${av}${pp}</div>`;
   }).join("");
-  return head + body;
+  return traza + head + body;
 }
 
-function recompute(){ applyEspn(); renderTicker(); renderLive(); renderRanking(); renderResults(); renderLlaves(); renderChart(); }
+function recompute(){ applyEspn(); computeKo(); renderTicker(); renderLive(); renderRanking(); renderResults(); renderLlaves(); renderChart(); }
 
 async function loadOficial(showFlash){
   try{
@@ -784,29 +862,48 @@ const base="https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scor
 const [r1,r2]=await Promise.all([fetch(base+fmt(hoy),{cache:"no-store"}),fetch(base+fmt(ayer),{cache:"no-store"})]);
 if(!r1.ok&&!r2.ok) throw new Error("http");
 const [j1,j2]=await Promise.all([r1.json(),r2.json()]);
-const live=[], post=[];
+const live=[], post=[]; const koNew={};
 const eventos=[...(j1.events||[]),...(j2.events||[])];
 eventos.forEach(ev=>{
       const comp=(ev.competitions||[])[0]; if(!comp) return;
       const state=(((ev.status||{}).type)||{}).state;          // 'pre' | 'in' | 'post'
       const clock=(((ev.status||{}).type)||{}).shortDetail || ((ev.status||{}).displayClock) || "";
-      let hN,aN,gh,ga;
-      (comp.competitors||[]).forEach(c=>{
-        const nm=(c.team||{}).displayName || (c.team||{}).name;
-        let sc=parseInt(c.score,10); if(isNaN(sc)) sc=null;
-        if(c.homeAway==="home"){ hN=nm; gh=sc; } else if(c.homeAway==="away"){ aN=nm; ga=sc; }
-      });
+      let hC,aC;
+      (comp.competitors||[]).forEach(c=>{ if(c.homeAway==="home") hC=c; else if(c.homeAway==="away") aC=c; });
+      if(!hC||!aC) return;
+      const hN=(hC.team||{}).displayName||(hC.team||{}).name;
+      const aN=(aC.team||{}).displayName||(aC.team||{}).name;
+      let gh=parseInt(hC.score,10); if(isNaN(gh)) gh=null;
+      let ga=parseInt(aC.score,10); if(isNaN(ga)) ga=null;
       const he=teamES(hN), ae=teamES(aN);
       if(!he||!ae||gh==null||ga==null) return;
-      const fx=fixtureIndex(he,ae); if(!fx) return;
-      const gl=fx.swap?ga:gh, gv=fx.swap?gh:ga;
-      const homeES=fx.swap?ae:he, awayES=fx.swap?he:ae;
-      if(state==="in") live.push({i:fx.i, gl, gv, clock, homeES, awayES});
-      else if(state==="post") post.push({i:fx.i, gl, gv});
+
+      // GRUPOS: el marcador total es el de los 90' (no hay alargue). Igual que antes.
+      const fx=fixtureIndex(he,ae);
+      if(fx){
+        const gl=fx.swap?ga:gh, gv=fx.swap?gh:ga;
+        const homeES=fx.swap?ae:he, awayES=fx.swap?he:ae;
+        if(state==="in") live.push({i:fx.i, gl, gv, clock, homeES, awayES});
+        else if(state==="post") post.push({i:fx.i, gl, gv});
+      }
+
+      // LLAVES: 90' para el puntaje + ganador del partido para el bonus de avance.
+      const kx=koIndex(he,ae);
+      if(kx){
+        const g90h=goles90(hC), g90a=goles90(aC);
+        const l90 = g90h!=null ? g90h : gh;     // si no hay linescores, usa el total (válido sin alargue)
+        const v90 = g90a!=null ? g90a : ga;
+        const winnerNm = hC.winner===true ? he : (aC.winner===true ? ae : null);
+        const wentET = (Array.isArray(hC.linescores)&&hC.linescores.length>2) ||
+                       (Array.isArray(aC.linescores)&&aC.linescores.length>2);
+        const gl90=kx.swap?v90:l90, gv90=kx.swap?l90:v90;     // orientado a local/visitante del cruce
+        const glF =kx.swap?ga:gh,  gvF =kx.swap?gh:ga;        // marcador final (con alargue si hubo)
+        koNew[kx.k] = {state, clock, g90:[gl90,gv90], gFinal:[glF,gvF], winner:winnerNm, wentET};
+      }
     });
-    espnLive=live; espnPost=post;
+    espnLive=live; espnPost=post; koLive=koNew;
   }catch(e){
-    espnLive=[]; espnPost=[];   // si ESPN falla o bloquea CORS, seguimos con lo oficial
+    espnLive=[]; espnPost=[]; koLive={};   // si ESPN falla o bloquea CORS, seguimos con lo oficial/Sheet
   }finally{ recompute(); }
 }
 
