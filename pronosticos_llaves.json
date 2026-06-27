@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-27T21:00:45.444958+00:00",
+ "updatedAt": "2026-06-27T22:30:58.674610+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -1303,9 +1303,9 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "USA"
    ],
    [
     null,
@@ -1313,14 +1313,14 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Japón"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "noruega"
    ],
    [
     null,
@@ -1338,9 +1338,9 @@
     "argentina"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "egipto"
    ],
    [
     null,
