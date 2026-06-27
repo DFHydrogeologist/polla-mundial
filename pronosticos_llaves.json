@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-27T18:01:20.027744+00:00",
+ "updatedAt": "2026-06-27T19:51:56.261021+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -1273,9 +1273,24 @@
   ],
   "Chapa": [
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Alemania"
+   ],
+   [
+    2,
+    1,
+    "Francia"
+   ],
+   [
+    1,
+    1,
+    "Canadá"
+   ],
+   [
+    3,
+    1,
+    "Países Bajos"
    ],
    [
     null,
@@ -1318,24 +1333,9 @@
     null
    ],
    [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    0,
+    20,
+    "Cabo Verde"
    ],
    [
     null,
