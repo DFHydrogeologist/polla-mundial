@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-27T12:29:01.562338+00:00",
+ "updatedAt": "2026-06-27T12:30:52.625107+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -301,9 +301,9 @@
  "pronosticos": {
   "Demian": [
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Alemania"
    ],
    [
     null,
@@ -321,9 +321,9 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Alto Control"
    ],
    [
     null,
@@ -1597,9 +1597,9 @@
   ],
   "Pelao": [
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Paraguay"
    ],
    [
     null,
@@ -1617,9 +1617,9 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Alto Control"
    ],
    [
     null,
