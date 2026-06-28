@@ -1,7 +1,8 @@
 {
- "updatedAt": "2026-06-28T17:17:46.887976+00:00",
+ "updatedAt": "2026-06-28T17:34:48.889981+00:00",
  "deadlines": {
-  "rondade32": "2026-06-28T18:00:00+00:00",
+  "rondade32": "2026-06-29T15:30:00+00:00",
+  "rondade32e": "2026-06-28T18:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
   "cuartos": "2026-07-09T18:00:00+00:00",
   "semifinal": "2026-07-14T18:00:00+00:00",
@@ -28,7 +29,7 @@
    "realPasa": null
   },
   {
-   "ronda": "Ronda de 32",
+   "ronda": "Ronda de 32E",
    "cruce": "Cruce 3",
    "local": "Sudáfrica",
    "visita": "Canadá",
