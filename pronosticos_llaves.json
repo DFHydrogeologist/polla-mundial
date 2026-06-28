@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-28T00:00:29.006273+00:00",
+ "updatedAt": "2026-06-28T00:23:10.351286+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -49,7 +49,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 5",
    "local": "Alto Control",
-   "visita": "Equipo Raul Ugalde",
+   "visita": "Croacia",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -103,7 +103,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 11",
    "local": "México",
-   "visita": "Equipo",
+   "visita": "Ecuador",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -111,7 +111,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 12",
-   "local": "Equipo",
+   "local": "Inglaterra",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
@@ -148,7 +148,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 16",
    "local": "Equipo",
-   "visita": "Equipo",
+   "visita": "Ghana",
    "realGL": null,
    "realGV": null,
    "realPasa": null
