@@ -420,7 +420,7 @@ function goles90(comp){
 // ───────────── Fase de llaves (pronosticos_llaves.json) ─────────────
 let LL = null;            // crudo del JSON de llaves
 let koByName = {};        // norm(nombre) -> {total, marker, bonus, exact, scored, played}
-const KO_BONUS = {rondade32:2, octavos:3, cuartos:4, semifinal:5, "3erpuesto":6, final:7};
+const KO_BONUS = {rondade32:2, rondade32e:2, octavos:3, cuartos:4, semifinal:5, "3erpuesto":6, final:7};
 
 // resultado real de un cruce: ESPN (vivo/final) tiene prioridad; si no hay, lo del Sheet.
 // gl/gv son SIEMPRE los 90' (para el puntaje). pasa = ganador del partido (para el bonus).
