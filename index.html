@@ -467,8 +467,19 @@ function applyEspn(){
   espnPost.forEach(m=>{ if(real[m.i][0]==null) real[m.i]=[m.gl,m.gv]; });   // llena finalizados aún no commiteados
   espnLive.forEach(m=>{
     real[m.i]=[m.gl,m.gv]; liveIdx.add(m.i); liveInfo[m.i]=m.clock;
-    liveList.push(m);
+    liveList.push({...m, type:'g', id:'g'+m.i});     // grupo: id "g"+índice de fixture
   });
+  // LLAVES en vivo: también van al banner de arriba (antes solo salían en la sección Llaves)
+  if(koLive && typeof koLive==='object' && LL && Array.isArray(LL.llaves)){
+    LL.llaves.forEach((mm,k)=>{
+      const e = koLive[k];
+      if(e && e.state==="in" && Array.isArray(e.g90)){
+        liveList.push({type:'k', id:'k'+k, k,
+          homeES:mm.local||"—", awayES:mm.visita||"—",
+          gl:e.g90[0], gv:e.g90[1], clock:e.clock||""});
+      }
+    });
+  }
 }
 
 function compute(){
@@ -507,23 +518,29 @@ function renderLive(){
   if(!liveList.length){ wrap.style.display="none"; wrap.innerHTML=""; bannerOpen=null; return; }
   wrap.style.display="";
   // si el partido abierto ya no está en vivo (terminó), se cierra solo
-  if(bannerOpen!=null && !liveList.some(m=>m.i===bannerOpen)) bannerOpen=null;
+  if(bannerOpen!=null && !liveList.some(m=>m.id===bannerOpen)) bannerOpen=null;
   const solo = liveList.length===1;
-  if(solo) bannerOpen = liveList[0].i;   // un solo partido: el detalle se abre solo
+  if(solo) bannerOpen = liveList[0].id;   // un solo partido: el detalle se abre solo
   const games = liveList.map(m=>
-    `<span class="lg ${bannerOpen===m.i?'on':''}" data-i="${m.i}">${esc(m.homeES)} <b>${m.gl}-${m.gv}</b> ${esc(m.awayES)}<i>${esc(m.clock||"")}</i><span class="car">▾</span></span>`).join("");
+    `<span class="lg ${bannerOpen===m.id?'on':''}" data-id="${m.id}">${esc(m.homeES)} <b>${m.gl}-${m.gv}</b> ${esc(m.awayES)}<i>${esc(m.clock||"")}</i><span class="car">▾</span></span>`).join("");
   wrap.innerHTML = `<div class="livebar"><span class="livedot"></span> En vivo
       <div class="livegames${solo?' solo':''}">${games}</div></div>
     <div class="provnote">El ranking de abajo es <b>provisional</b>: incluye los partidos en vivo y puede cambiar hasta que terminen.</div>
     ${solo?"":'<div class="livetap">Toca un partido para ver las apuestas.</div>'}
     <div id="livePanel">${bannerOpen!=null?buildBannerPanel(bannerOpen):""}</div>`;
   if(!solo) wrap.querySelectorAll(".lg").forEach(el=>el.addEventListener("click",()=>{
-    const i=+el.dataset.i; bannerOpen=(bannerOpen===i)?null:i; renderLive();
+    const id=el.dataset.id; bannerOpen=(bannerOpen===id)?null:id; renderLive();
   }));
 }
 
-function buildBannerPanel(idx){
-  const m = liveList.find(x=>x.i===idx); if(!m) return "";
+function buildBannerPanel(id){
+  // llave en vivo: reutiliza el panel de la sección Llaves (apuestas + puntos del cruce)
+  if(typeof id==="string" && id[0]==="k"){
+    return buildKoPredsPanel(+id.slice(1));
+  }
+  // grupo en vivo
+  const m = liveList.find(x=>x.id===id); if(!m) return "";
+  const idx = m.i;
   const f = DATA.fixtures[idx];
   const rows = DATA.players.map(p=>{
     const pr=p.preds[idx]; const has = pr && pr[0]!=null && pr[1]!=null;
