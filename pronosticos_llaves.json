@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-28T00:23:10.351286+00:00",
+ "updatedAt": "2026-06-28T04:36:35.230165+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -48,7 +48,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 5",
-   "local": "Alto Control",
+   "local": "Portugal",
    "visita": "Croacia",
    "realGL": null,
    "realGV": null,
@@ -58,7 +58,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 6",
    "local": "España",
-   "visita": "Equipo",
+   "visita": "Austria",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -76,7 +76,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 8",
    "local": "Bélgica",
-   "visita": "Equipo",
+   "visita": "Senegal",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -112,7 +112,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 12",
    "local": "Inglaterra",
-   "visita": "Equipo",
+   "visita": "Congo",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -139,7 +139,7 @@
    "ronda": "Ronda de 32",
    "cruce": "Cruce 15",
    "local": "Suiza",
-   "visita": "Equipo",
+   "visita": "Argelia",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -147,7 +147,7 @@
   {
    "ronda": "Ronda de 32",
    "cruce": "Cruce 16",
-   "local": "Equipo",
+   "local": "Colombia",
    "visita": "Ghana",
    "realGL": null,
    "realGV": null,
@@ -949,9 +949,24 @@
   ],
   "Jlo": [
    [
-    null,
-    null,
-    null
+    3,
+    0,
+    "Alemania"
+   ],
+   [
+    4,
+    2,
+    "Francia"
+   ],
+   [
+    0,
+    2,
+    "Canada"
+   ],
+   [
+    1,
+    0,
+    "Países Bajos"
    ],
    [
     null,
@@ -964,9 +979,9 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "USA"
    ],
    [
     null,
@@ -974,9 +989,19 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Brasil"
+   ],
+   [
+    1,
+    2,
+    "Noruega"
+   ],
+   [
+    2,
+    2,
+    "Ecuador"
    ],
    [
     null,
@@ -984,39 +1009,14 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    3,
+    0,
+    "Argentina"
    ],
    [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    0,
+    2,
+    "Egipto"
    ],
    [
     null,
@@ -1435,84 +1435,84 @@
   ],
   "Six": [
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Alemania"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    0,
+    "Canadá"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Países Bajos"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Portugal"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "USA"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    0,
+    "Bélgica"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    0,
+    "Costa de Marfil"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "México"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    0,
+    "Egipto"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    2,
+    "Suiza"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    0,
+    "Colombia"
    ],
    [
     null,
