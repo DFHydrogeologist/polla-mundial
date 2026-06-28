@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-28T20:11:48.107236+00:00",
+ "updatedAt": "2026-06-28T21:37:22.053231+00:00",
  "deadlines": {
   "rondade32": "2026-06-29T15:30:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -33,9 +33,9 @@
    "cruce": "Cruce 3",
    "local": "Sudáfrica",
    "visita": "Canadá",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 0,
+   "realGV": 1,
+   "realPasa": "Canadá"
   },
   {
    "ronda": "Ronda de 32",
