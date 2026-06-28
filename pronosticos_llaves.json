@@ -1,7 +1,7 @@
 {
- "updatedAt": "2026-06-28T17:08:47.631495+00:00",
+ "updatedAt": "2026-06-28T17:17:46.887976+00:00",
  "deadlines": {
-  "rondade32": "2026-06-28T17:00:00+00:00",
+  "rondade32": "2026-06-28T18:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
   "cuartos": "2026-07-09T18:00:00+00:00",
   "semifinal": "2026-07-14T18:00:00+00:00",
@@ -804,67 +804,67 @@
    [
     null,
     null,
-    "Países Bajos"
+    null
    ],
    [
     null,
     null,
-    "Portugal"
+    null
    ],
    [
     null,
     null,
-    "España"
+    null
    ],
    [
     null,
     null,
-    "Estados Unidos"
+    null
    ],
    [
     null,
     null,
-    "Bélgica"
+    null
    ],
    [
     null,
     null,
-    "Brasil"
+    null
    ],
    [
     null,
     null,
-    "Noruega"
+    null
    ],
    [
     null,
     null,
-    "México"
+    null
    ],
    [
     null,
     null,
-    "Inglaterra"
+    null
    ],
    [
     null,
     null,
-    "Argentina"
+    null
    ],
    [
     null,
     null,
-    "Egipto"
+    null
    ],
    [
     null,
     null,
-    "Suiza"
+    null
    ],
    [
     null,
     null,
-    "Colombia"
+    null
    ],
    [
     null,
@@ -1111,84 +1111,84 @@
   ],
   "Paula": [
    [
-    null,
-    null,
-    null
+    3,
+    0,
+    "Alemania"
    ],
    [
-    null,
-    null,
-    null
+    3,
+    1,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Canadá"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    2,
+    "Marruecos"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    3,
+    "Portugal"
    ],
    [
-    null,
-    null,
-    null
+    4,
+    2,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Estados Unidos"
    ],
    [
-    null,
-    null,
-    null
+    3,
+    2,
+    "Bélgica"
    ],
    [
-    null,
-    null,
-    null
+    4,
+    3,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "Noruega"
    ],
    [
-    null,
-    null,
-    null
+    3,
+    3,
+    "Ecuador"
    ],
    [
-    null,
-    null,
-    null
+    4,
+    1,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    4,
+    0,
+    "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Egipto"
    ],
    [
-    null,
-    null,
-    null
+    3,
+    1,
+    "Suiza"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Colombia"
    ],
    [
     null,
@@ -1597,84 +1597,84 @@
   ],
   "Pelao": [
    [
-    22,
-    33,
-    "Paraguay"
+    2,
+    0,
+    "Alemania"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Canadá"
+   ],
+   [
+    1,
+    1,
+    "Marruecos"
+   ],
+   [
+    2,
+    1,
+    "Portugal"
+   ],
+   [
+    2,
+    0,
+    "España"
+   ],
+   [
+    2,
+    0,
+    "Estados Unidos"
+   ],
+   [
+    2,
+    1,
+    "Bélgica"
+   ],
+   [
+    2,
+    1,
+    "Brasil"
+   ],
+   [
+    1,
+    1,
+    "Noruega"
    ],
    [
     1,
     0,
-    "Países Bajos"
+    "México"
+   ],
+   [
+    2,
+    0,
+    "Inglaterra"
+   ],
+   [
+    3,
+    0,
+    "Argentina"
    ],
    [
     1,
+    1,
+    "Egipto"
+   ],
+   [
+    2,
     0,
-    "Alto Control"
+    "Suiza"
    ],
    [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Colombia"
    ],
    [
     null,
@@ -1921,84 +1921,84 @@
   ],
   "Claudia": [
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Alemania"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "Canadá"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Paises Bajos"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Croacia"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Estados Unidos"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Bélgica"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "Noruega"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "México"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Egipto"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Suiza"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Colombia"
    ],
    [
     null,
