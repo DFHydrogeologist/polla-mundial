@@ -1009,8 +1009,9 @@ eventos.forEach(ev=>{
       }
 
       // LLAVES: 90' para el puntaje + ganador del partido para el bonus de avance.
+      // SOLO partidos en vivo o terminados; los programados ESPN los da 0-0 y serían un resultado falso.
       const kx=koIndex(he,ae);
-      if(kx){
+      if(kx && (state==="in" || state==="post")){
         const g90h=goles90(hC), g90a=goles90(aC);
         const l90 = g90h!=null ? g90h : gh;     // si no hay linescores, usa el total (válido sin alargue)
         const v90 = g90a!=null ? g90a : ga;
