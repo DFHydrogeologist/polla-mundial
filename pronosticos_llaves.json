@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-28T14:21:56.793533+00:00",
+ "updatedAt": "2026-06-28T15:48:24.974812+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -635,7 +635,7 @@
     "Francia"
    ],
    [
-    1,
+    0,
     1,
     "Canadá"
    ],
@@ -645,64 +645,64 @@
     "Países Bajos"
    ],
    [
-    null,
-    null,
+    1,
+    1,
     "Croacia"
    ],
    [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    2,
+    0,
+    "España"
    ],
    [
     2,
-    1,
+    0,
+    "Estados Unidos"
+   ],
+   [
+    2,
+    2,
+    "Belgica"
+   ],
+   [
+    2,
+    0,
     "Brasil"
    ],
    [
-    2,
-    2,
-    "Costa de Marfil"
+    1,
+    1,
+    "Noruega"
    ],
    [
-    2,
     1,
+    0,
     "México"
    ],
    [
-    2,
+    1,
     0,
     "Inglaterra"
    ],
    [
-    3,
+    2,
     0,
     "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Egipto"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Suiza"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Colombia"
    ],
    [
     null,
@@ -787,84 +787,84 @@
   ],
   "Chorero": [
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Alemania"
+   ],
+   [
+    3,
+    1,
+    "Suecia"
+   ],
+   [
+    0,
+    1,
+    "Canadá"
    ],
    [
     null,
     null,
-    null
+    "Países Bajos"
    ],
    [
     null,
     null,
-    null
+    "Portugal"
    ],
    [
     null,
     null,
-    null
+    "España"
    ],
    [
     null,
     null,
-    null
+    "Estados Unidos"
    ],
    [
     null,
     null,
-    null
+    "Bélgica"
    ],
    [
     null,
     null,
-    null
+    "Brasil"
    ],
    [
     null,
     null,
-    null
+    "Noruega"
    ],
    [
     null,
     null,
-    null
+    "México"
    ],
    [
     null,
     null,
-    null
+    "Inglaterra"
    ],
    [
     null,
     null,
-    null
+    "Argentina"
    ],
    [
     null,
     null,
-    null
+    "Egipto"
    ],
    [
     null,
     null,
-    null
+    "Suiza"
    ],
    [
     null,
     null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    "Colombia"
    ],
    [
     null,
@@ -1467,7 +1467,7 @@
    [
     1,
     1,
-    "USA"
+    "Estados Unidos"
    ],
    [
     0,
@@ -1759,9 +1759,24 @@
   ],
   "Jano": [
    [
+    2,
+    0,
+    "Alemania"
+   ],
+   [
     null,
     null,
     null
+   ],
+   [
+    1,
+    2,
+    "Canadá"
+   ],
+   [
+    2,
+    1,
+    "Países Bajos"
    ],
    [
     null,
@@ -1784,29 +1799,14 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    3,
+    2,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    1,
+    2,
+    "Noruega"
    ],
    [
     null,
