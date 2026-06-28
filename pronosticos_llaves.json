@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-28T12:15:28.231528+00:00",
+ "updatedAt": "2026-06-28T14:21:56.793533+00:00",
  "deadlines": {
   "rondade32": "2026-06-28T17:00:00+00:00",
   "octavos": "2026-07-04T18:00:00+00:00",
@@ -463,84 +463,84 @@
   ],
   "Nacho": [
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Alemania"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Canadá"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Países Bajos"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Portugal"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Estados Unidos"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Bélgica"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Noruega"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "México"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Egipto"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Suiza"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Colombia"
    ],
    [
     null,
@@ -625,9 +625,29 @@
   ],
   "Bob": [
    [
+    2,
+    0,
+    "Alemania"
+   ],
+   [
+    2,
+    0,
+    "Francia"
+   ],
+   [
+    1,
+    1,
+    "Canadá"
+   ],
+   [
+    1,
+    0,
+    "Países Bajos"
+   ],
+   [
     null,
     null,
-    null
+    "Croacia"
    ],
    [
     null,
@@ -645,49 +665,29 @@
     null
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    2,
+    "Costa de Marfil"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "México"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
-   ],
-   [
-    null,
-    null,
-    null
+    3,
+    0,
+    "Argentina"
    ],
    [
     null,
