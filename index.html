@@ -74,6 +74,7 @@ section{padding:34px 0 8px}
 .card .runners span b{color:var(--ink);font-weight:600}
 
 .tablecard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.subcap{font-family:var(--display);font-size:15px;color:var(--ink);margin:18px 2px 8px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 thead th{background:var(--blue);color:#fff;font-weight:600;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;padding:11px 10px;text-align:center}
 thead th.l{text-align:left}
@@ -261,9 +262,9 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
 
 <div class="subnav"><div class="wrap">
   <a href="#ranking">Ranking oficial</a>
-  <a href="#destacados">Destacados</a>
-  <a href="#resultados">Resultados</a>
   <a href="#llaves">🗝️ Llaves</a>
+  <a href="#destacados">Destacados</a>
+  <a href="#resultados">Grupos</a>
   <a href="#estadistica">📈 Estadística</a>
 </div></div>
 
@@ -279,42 +280,40 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
   <section id="ranking">
     <div class="sechead">
       <div><div class="eyebrow">Tabla general</div><h2>🏆 Ranking oficial</h2></div>
-      <div class="hint">Suma de puntos en los partidos jugados. 2 acierto de resultado · 4 + margen · 6 marcador exacto.</div>
+      <div class="hint">Total = fase de grupos + fase de llaves. Marcador: 2 acierto · 4 + margen · 6 exacto. En llaves se suma el bonus por avance.</div>
     </div>
     <div class="livewrap" id="liveWrap" style="display:none"></div>
     <div class="podium" id="podium"></div>
-    <div class="tablecard" style="margin-top:16px">
+
+    <div class="subcap">🗝️ Detalle de la fase de llaves</div>
+    <div class="tablecard">
       <table>
         <thead><tr>
           <th>#</th><th class="l">Jugador</th>
-          <th title="Partidos puntuando">🎯 Puntúa</th>
-          <th title="Partidos sin puntos">🥶 En blanco</th>
-          <th title="Marcadores exactos (6 pts)">🔥 Exactos</th>
-          <th>Puntos</th>
+          <th title="Cruces donde sumó algún punto">🎯 Puntuando</th>
+          <th title="Cruces jugados sin puntos">🥶 En blanco</th>
+          <th title="Marcadores exactos en llaves">🔥 Exactos</th>
+          <th title="Puntos por acertar quién avanza">➡️ Bonus</th>
+          <th>Total llaves</th>
         </tr></thead>
-        <tbody id="rankBody"></tbody>
+        <tbody id="koDetailBody"></tbody>
+      </table>
+    </div>
+
+    <div class="subcap">🏆 Resumen general · define al ganador</div>
+    <div class="tablecard">
+      <table>
+        <thead><tr>
+          <th>#</th><th class="l">Jugador</th>
+          <th title="Puntos de la fase de grupos">Grupos</th>
+          <th title="Puntos de la fase de llaves">🗝️ Llaves</th>
+          <th>Total</th>
+        </tr></thead>
+        <tbody id="totalBody"></tbody>
       </table>
     </div>
     <div class="carrera" id="carreraBox"></div>
   </section>
-
-  <section id="destacados">
-    <div class="sechead">
-      <div><div class="eyebrow">Los números de la polla</div><h2>Destacados</h2></div>
-      <div class="hint">Se cuentan solo los partidos ya jugados.</div>
-    </div>
-    <div class="cards" id="cards"></div>
-  </section>
-
-  <section id="resultados">
-    <div class="sechead">
-      <div><div class="eyebrow">Marcadores oficiales · solo lectura</div><h2>Resultados</h2></div>
-      <div class="hint">Los marcadores los completa la API automáticamente. Toca un partido para ver qué marcó cada participante y sus puntos.</div>
-    </div>
-    <div id="groups"></div>
-    <div class="note">Los resultados llegan desde <b id="provName">la API</b> y se guardan en <code>resultados.json</code>, que actualiza un proceso automático del repositorio. La <b>fase de llave</b> se suma cuando se conozcan los cruces.</div>
-  </section>
-
   <section id="llaves">
     <div class="sechead">
       <div><div class="eyebrow">Fase final · eliminación directa</div><h2>🗝️ Llaves</h2></div>
@@ -324,7 +323,21 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
     <div id="koRounds" style="margin-top:18px"></div>
     <div class="note">Las apuestas las cargan los jugadores en el Google Sheets y las consolida el proceso automático en <code>pronosticos_llaves.json</code>. El marcador real de cada cruce —y quién avanza si hubo penales— lo completas en la pestaña <b>Resultados</b> de la planilla.</div>
   </section>
-
+  <section id="destacados">
+    <div class="sechead">
+      <div><div class="eyebrow">Los números de la polla</div><h2>Destacados</h2></div>
+      <div class="hint">Se cuentan solo los partidos ya jugados.</div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+  <section id="resultados">
+    <div class="sechead">
+      <div><div class="eyebrow">Fase de grupos · historial</div><h2>📋 Grupos</h2></div>
+      <div class="hint">Los marcadores los completa la API automáticamente. Toca un partido para ver qué marcó cada participante y sus puntos.</div>
+    </div>
+    <div id="groups"></div>
+    <div class="note">Los resultados llegan desde <b id="provName">la API</b> y se guardan en <code>resultados.json</code>, que actualiza un proceso automático del repositorio. La <b>fase de llave</b> se suma cuando se conozcan los cruces.</div>
+  </section>
   <section id="estadistica">
     <div class="sechead">
       <div><div class="eyebrow">La carrera de la polla</div><h2>📈 Estadística</h2></div>
@@ -539,18 +552,36 @@ function renderRanking(){
     const r=top3[idx]; if(!r) return '<div></div>';
     const cls=idx===0?"tile gold":"tile";
     const ej = r.enJuego>0?`<span class="ej">🔴+${r.enJuego}</span>`:"";
+    const koPts = r.ko?r.ko.total:0; const grPts = r.total - koPts;
     return `<div class="${cls}"><div class="medal">${idx+1}</div>
       <div class="pname">${esc(r.name)}</div>
       <div class="pscore">${r.total}</div><div class="plab">puntos${ej?" · en juego":""}</div>
-      <div class="mini"><span>🎯<b>${r.scored}</b></span><span>🔥<b>${r.exact}</b></span>${ej}</div></div>`;
+      <div class="mini"><span>Grupos<b>${grPts}</b></span><span>🗝️<b>${koPts}</b></span>${ej}</div></div>`;
   }).join("");
-  document.getElementById("rankBody").innerHTML = rows.map(r=>`
+  // Tabla 1: detalle de la fase de LLAVES (ordenada por total general, igual que el podio)
+  document.getElementById("koDetailBody").innerHTML = rows.map(r=>{
+    const ko = r.ko || {scored:0,played:0,exact:0,bonus:0,total:0};
+    const blank = (ko.played||0) - (ko.scored||0);
+    return `
     <tr class="${r.pos===1?'top1':''}">
       <td class="pos">${r.pos}</td><td class="l nm">${esc(r.name)}</td>
-      <td><span class="chip ${r.scored?'g':'zero'}">${r.scored}</span></td>
-      <td><span class="chip ${r.blank?'b':'zero'}">${r.blank}</span></td>
-      <td><span class="chip ${r.exact?'e':'zero'}">${r.exact}</span></td>
-      <td class="tot">${r.total}${r.enJuego>0?` <span class="ej">🔴+${r.enJuego}</span>`:""}</td></tr>`).join("");
+      <td><span class="chip ${ko.scored?'g':'zero'}">${ko.scored||0}</span></td>
+      <td><span class="chip ${blank?'b':'zero'}">${blank}</span></td>
+      <td><span class="chip ${ko.exact?'e':'zero'}">${ko.exact||0}</span></td>
+      <td><span class="chip ${ko.bonus?'e':'zero'}">${ko.bonus||0}</span></td>
+      <td class="tot">${ko.total||0}</td></tr>`;
+  }).join("");
+
+  // Tabla 2: resumen grupos / llaves / total (lo que define al ganador)
+  document.getElementById("totalBody").innerHTML = rows.map(r=>{
+    const koPts = r.ko?r.ko.total:0; const grPts = r.total - koPts;
+    return `
+    <tr class="${r.pos===1?'top1':''}">
+      <td class="pos">${r.pos}</td><td class="l nm">${esc(r.name)}</td>
+      <td><span class="chip ${grPts?'g':'zero'}">${grPts}</span></td>
+      <td><span class="chip ${koPts?'e':'zero'}">${koPts}</span></td>
+      <td class="tot">${r.total}${r.enJuego>0?` <span class="ej">🔴+${r.enJuego}</span>`:""}</td></tr>`;
+  }).join("");
   // marca provisional en el título
   const h2=document.querySelector("#ranking h2");
   if(h2) h2.innerHTML = "🏆 Ranking oficial" + (prov?'<span class="provtag">🔴 provisional</span>':"");
