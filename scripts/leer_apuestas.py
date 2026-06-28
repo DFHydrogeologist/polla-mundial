@@ -144,6 +144,99 @@ def avance_pred(local, visita, gl, gv, pasa_celda):
         return visita
     return None
 
+# ───────────── ESPN: resultados reales de llaves (para PERSISTIRLOS) ─────────────
+# Traducción nombre-ESPN (inglés/variantes) -> nombre canónico en español del Sheet.
+ALIASES = {
+  "México":["Mexico"], "Sudáfrica":["South Africa"], "Corea del Sur":["South Korea","Korea Republic","Korea, South"],
+  "Chequia":["Czech Republic","Czechia"], "Canadá":["Canada"], "Suiza":["Switzerland"], "Qatar":["Qatar","Catar"],
+  "Bosnia y Herzegovina":["Bosnia and Herzegovina","Bosnia & Herzegovina","Bosnia","Bosnia-Herzegovina"],
+  "Brasil":["Brazil"], "Marruecos":["Morocco"], "Haití":["Haiti"], "Escocia":["Scotland"],
+  "Estados Unidos":["USA","United States","United States of America"], "Paraguay":["Paraguay"], "Australia":["Australia"],
+  "Turquía":["Turkey","Turkiye","Türkiye"], "Alemania":["Germany"], "Curazao":["Curacao","Curaçao"],
+  "Costa de Marfil":["Ivory Coast","Cote d'Ivoire","Côte d'Ivoire","Cote dIvoire"], "Ecuador":["Ecuador"],
+  "Países Bajos":["Netherlands","Holland"], "Japón":["Japan"], "Túnez":["Tunisia"], "Suecia":["Sweden"],
+  "Bélgica":["Belgium"], "Egipto":["Egypt"], "Irán":["Iran","IR Iran"], "Nueva Zelanda":["New Zealand"],
+  "España":["Spain"], "Cabo Verde":["Cape Verde","Cape Verde Islands"], "Arabia Saudita":["Saudi Arabia"],
+  "Uruguay":["Uruguay"], "Francia":["France"], "Senegal":["Senegal"], "Noruega":["Norway"], "Iraq":["Iraq"],
+  "Argentina":["Argentina"], "Argelia":["Algeria"], "Austria":["Austria"], "Jordania":["Jordan"], "Portugal":["Portugal"],
+  "Colombia":["Colombia"], "Uzbekistán":["Uzbekistan"],
+  "DR Congo":["DR Congo","Congo DR","Democratic Republic of Congo","RD Congo"],
+  "Inglaterra":["England"], "Croacia":["Croatia"], "Ghana":["Ghana"], "Panamá":["Panama"],
+}
+_LOOKUP = {}
+for es, al in ALIASES.items():
+    for name in [es] + al:
+        _LOOKUP[norm(name)] = es
+
+def to_es(api_name):
+    """Nombre de ESPN -> español canónico (o None si no calza)."""
+    return _LOOKUP.get(norm(api_name))
+
+def goles90_espn(comp):
+    """Goles de un competidor ESPN SOLO en los 90' (linescores períodos 1 y 2).
+    HIPÓTESIS a validar con un partido real con alargue. Si no hay linescores, devuelve None."""
+    ls = comp.get("linescores")
+    if not isinstance(ls, list) or not ls:
+        return None
+    tiene_period = any(isinstance(p, dict) and p.get("period") is not None for p in ls)
+    s = 0
+    if tiene_period:
+        for p in ls:
+            if isinstance(p, dict) and p.get("period") is not None and p.get("period") <= 2:
+                try: s += int(float(p.get("value") or 0))
+                except (TypeError, ValueError): pass
+    else:
+        for p in ls[:2]:
+            try: s += int(float((p or {}).get("value") if isinstance(p, dict) else 0))
+            except (TypeError, ValueError): pass
+    return s
+
+def fetch_espn_llaves():
+    """Baja de ESPN los partidos TERMINADOS y devuelve [(localES, visitaES, gl90, gv90, ganadorES)].
+    Persistimos estos resultados en el JSON para que no se pierdan al salir de la ventana en vivo."""
+    hoy = datetime.datetime.now(datetime.timezone.utc).date()
+    d1 = (hoy - datetime.timedelta(days=5)).strftime("%Y%m%d")
+    d2 = (hoy + datetime.timedelta(days=1)).strftime("%Y%m%d")
+    url = (f"https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/"
+           f"scoreboard?dates={d1}-{d2}&limit=200")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "polla-bot"})
+        with urllib.request.urlopen(req, timeout=40) as r:
+            data = json.loads(r.read().decode())
+    except Exception as e:
+        print(f"[diag] ESPN llaves falló: {e}")
+        return []
+    out = []
+    for ev in data.get("events", []) or []:
+        comp = (ev.get("competitions") or [{}])[0]
+        st = ((ev.get("status") or {}).get("type") or {})
+        if st.get("completed") is not True:   # solo terminados (los en vivo los pone el navegador)
+            continue
+        hC = aC = None
+        for c in comp.get("competitors", []):
+            if c.get("homeAway") == "home": hC = c
+            elif c.get("homeAway") == "away": aC = c
+        if not hC or not aC:
+            continue
+        hn = (hC.get("team") or {}).get("displayName") or (hC.get("team") or {}).get("name")
+        an = (aC.get("team") or {}).get("displayName") or (aC.get("team") or {}).get("name")
+        he, ae = to_es(hn), to_es(an)
+        if not he or not ae:
+            continue
+        gl90 = goles90_espn(hC); gv90 = goles90_espn(aC)
+        if gl90 is None:
+            try: gl90 = int(hC.get("score"))
+            except (TypeError, ValueError): gl90 = None
+        if gv90 is None:
+            try: gv90 = int(aC.get("score"))
+            except (TypeError, ValueError): gv90 = None
+        if gl90 is None or gv90 is None:
+            continue
+        winner = he if hC.get("winner") is True else (ae if aC.get("winner") is True else None)
+        out.append((he, ae, gl90, gv90, winner))
+    print(f"[diag] ESPN llaves: {len(out)} partidos terminados mapeados")
+    return out
+
 # ─────────────────────────── core ───────────────────────────
 
 def build_llaves(rows):
@@ -178,6 +271,24 @@ def main():
     llaves = build_llaves(llaves_rows)
     # clave estable por partido: (ronda_norm, cruce_norm)
     keys = [(norm(m["ronda"]), norm(m["cruce"])) for m in llaves]
+
+    # 1b) Resultados reales desde ESPN (se PERSISTEN en el JSON, igual que grupos).
+    # Esto es lo que evita que un cruce jugado "desaparezca" al salir de la ventana en vivo.
+    espn = fetch_espn_llaves()
+    espn_pair = {}
+    for he, ae, gl, gv, w in espn:
+        espn_pair[(norm(he), norm(ae))] = (gl, gv, w)
+        espn_pair[(norm(ae), norm(he))] = (gv, gl, w)   # por si ESPN invierte local/visita
+    n_espn = 0
+    for m in llaves:
+        if not m["local"] or not m["visita"]:
+            continue
+        hit = espn_pair.get((norm(m["local"]), norm(m["visita"])))
+        if hit:
+            m["realGL"], m["realGV"] = hit[0], hit[1]
+            m["realPasa"] = hit[2] or m.get("realPasa")
+            n_espn += 1
+    print(f"[diag] resultados de llaves aplicados desde ESPN: {n_espn}")
 
     # 2) JSON previo (para conservar rondas cerradas y resultados ya cargados)
     prev = {}
