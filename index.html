@@ -319,8 +319,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:12px}
       <div><div class="eyebrow">Fase final · eliminación directa</div><h2>🗝️ Llaves</h2></div>
       <div class="hint">Marcador a los 90' con el mismo puntaje (2 · 4 · 6) más bonus por acertar quién avanza: dieciseisavos +2, octavos +3, cuartos +4, semis +5, tercer puesto +6, final +7.</div>
     </div>
-    <div id="koStandings" class="tablecard"></div>
-    <div id="koRounds" style="margin-top:18px"></div>
+    <div id="koRounds"></div>
     <div class="note">Las apuestas las cargan los jugadores en el Google Sheets y las consolida el proceso automático en <code>pronosticos_llaves.json</code>. El marcador real de cada cruce —y quién avanza si hubo penales— lo completas en la pestaña <b>Resultados</b> de la planilla.</div>
   </section>
   <section id="destacados">
@@ -860,38 +859,13 @@ function renderTicker(){
 }
 
 function renderLlaves(){
-  const standings=document.getElementById("koStandings");
   const roundsBox=document.getElementById("koRounds");
-  if(!standings||!roundsBox) return;
+  if(!roundsBox) return;
 
   if(!LL || !Array.isArray(LL.llaves)){
-    standings.innerHTML = `<div class="ph" style="padding:18px">Aún no hay datos de la fase de llaves. Aparecerán cuando el proceso automático lea el Google Sheets.</div>`;
-    roundsBox.innerHTML = "";
+    roundsBox.innerHTML = `<div class="ph" style="padding:18px">Aún no hay datos de la fase de llaves. Aparecerán cuando el proceso automático lea el Google Sheets.</div>`;
     return;
   }
-
-  // tabla de puntos de llaves por jugador
-  const ranked = Object.keys(LL.pronosticos||{}).map(name=>{
-    const k = koByName[norm(name)] || {total:0,marker:0,bonus:0,exact:0,played:0};
-    return {name, ...k};
-  }).sort((a,b)=> b.total-a.total || b.bonus-a.bonus || b.exact-a.exact || a.name.localeCompare(b.name));
-  ranked.forEach(r=> r.pos = 1 + ranked.filter(o=>o.total>r.total).length);
-
-  const algoJugado = LL.llaves.some((m,k)=>{ const R=koReal(k); return R.gl!=null; });
-  standings.innerHTML = `<table>
-    <thead><tr><th>#</th><th class="l">Jugador</th>
-      <th title="Puntos por marcador (90')">⚽ Marcador</th>
-      <th title="Bonus por acertar quién avanza">➡️ Avance</th>
-      <th title="Marcadores exactos en llaves">🔥 Exactos</th>
-      <th>Puntos llaves</th></tr></thead>
-    <tbody>${ranked.map(r=>`
-      <tr class="${r.pos===1&&r.total>0?'top1':''}">
-        <td class="pos">${r.pos}</td><td class="l nm">${esc(r.name)}</td>
-        <td><span class="chip ${r.marker?'g':'zero'}">${r.marker}</span></td>
-        <td><span class="chip ${r.bonus?'e':'zero'}">${r.bonus}</span></td>
-        <td><span class="chip ${r.exact?'e':'zero'}">${r.exact}</span></td>
-        <td class="tot">${r.total}</td></tr>`).join("")}</tbody></table>
-    ${algoJugado?"":'<div class="ph" style="padding:12px">Todavía no se juega ningún partido de llaves. Los puntos aparecen en vivo cuando arranquen.</div>'}`;
 
   // cruces agrupados por ronda, en el orden del JSON (con índice global k)
   const orden=[]; const porRonda={};
