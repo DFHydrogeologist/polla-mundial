@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-28T18:16:12.612821+00:00",
+ "updatedAt": "2026-06-28T18:20:27.746834+00:00",
  "deadlines": {
   "rondade32": "2026-06-29T15:30:00+00:00",
   "rondade32e": "2026-06-28T18:30:00+00:00",
@@ -302,19 +302,19 @@
  "pronosticos": {
   "Demian": [
    [
-    null,
-    null,
+    0,
+    0,
     null
    ],
    [
-    null,
-    null,
+    0,
+    0,
     null
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Canadá"
    ],
    [
     null,
@@ -2084,19 +2084,19 @@
   ],
   "Raul": [
    [
-    null,
-    null,
+    0,
+    0,
     null
    ],
    [
-    null,
-    null,
+    0,
+    0,
     null
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Canadá"
    ],
    [
     null,
