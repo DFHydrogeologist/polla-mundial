@@ -38,7 +38,7 @@ PERSONAS = os.environ.get("POLLA_PERSONAS", "Demian,Jano,Nacho,Pelao,Raul,Jlo,Pa
 # Mundial 2026: R32 arranca 28-jun, final 19-jul. Ajusta las horas a los kickoffs reales.
 DEADLINES = {
     "rondade32":   datetime.datetime(2026, 6, 29, 15, 30, tzinfo=datetime.timezone.utc),  # mañana 11:30 Chile
-    "rondade32e":  datetime.datetime(2026, 6, 28, 18,  50, tzinfo=datetime.timezone.utc),  # hoy 14:00 Chile, inicio del partido
+    "rondade32e":  datetime.datetime(2026, 6, 28, 19,  58, tzinfo=datetime.timezone.utc),  # hoy 14:00 Chile, inicio del partido
     "octavos":     datetime.datetime(2026, 7,  4, 18, 0, tzinfo=datetime.timezone.utc),
     "cuartos":     datetime.datetime(2026, 7,  9, 18, 0, tzinfo=datetime.timezone.utc),
     "semifinal":   datetime.datetime(2026, 7, 14, 18, 0, tzinfo=datetime.timezone.utc),
