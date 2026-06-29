@@ -24,55 +24,42 @@ import os, sys, json, csv, io, unicodedata, datetime, urllib.request, urllib.par
 
 # ─────────────────────────── CONFIG (ajusta esto) ───────────────────────────
 
-# ID del Google Sheets (lo que va entre /d/ y /edit en la URL del Sheets)
 SHEET_ID = os.environ.get("POLLA_SHEET_ID", "1y6omPkb9NWIfSITMSJKmzXF4AIAo5oevW6t9DfDn_bc")
-
-# Nombre EXACTO de la pestaña fuente (la de los 32 cruces). Si no es "Llaves", cámbialo.
 LLAVES_TAB = "Llaves"
-
-# Nombres EXACTOS de las pestañas de cada persona (= nombre del participante).
-# Si tienen tilde funciona igual (se url-encodea), pero sin tilde es más a prueba de tontos.
 PERSONAS = os.environ.get("POLLA_PERSONAS", "Demian,Jano,Nacho,Pelao,Raul,Jlo,Paula,Six,Chapa,Bob,Claudia,Chorero").split(",")
 
-# Deadlines por ronda (UTC). Pon ~30 min antes del primer partido de cada ronda.
-# Mundial 2026: R32 arranca 28-jun, final 19-jul. Ajusta las horas a los kickoffs reales.
 DEADLINES = {
-    "rondade32":   datetime.datetime(2026, 6, 29, 16, 30, tzinfo=datetime.timezone.utc),  # mañana 11:30 Chile
-    "rondade32e":  datetime.datetime(2026, 6, 28, 19,  58, tzinfo=datetime.timezone.utc),  # hoy 14:00 Chile, inicio del partido
-    "octavos":     datetime.datetime(2026, 7,  4, 18, 0, tzinfo=datetime.timezone.utc),
-    "cuartos":     datetime.datetime(2026, 7,  9, 18, 0, tzinfo=datetime.timezone.utc),
-    "semifinal":   datetime.datetime(2026, 7, 14, 18, 0, tzinfo=datetime.timezone.utc),
-    "3erpuesto":   datetime.datetime(2026, 7, 18, 18, 0, tzinfo=datetime.timezone.utc),
-    "final":       datetime.datetime(2026, 7, 19, 18, 0, tzinfo=datetime.timezone.utc),
+    "rondade32":   datetime.datetime(2026, 6, 29, 16, 30, tzinfo=datetime.timezone.utc),
+    "rondade32e":  datetime.datetime(2026, 6, 28, 19, 58, tzinfo=datetime.timezone.utc),
+    "octavos":     datetime.datetime(2026, 7,  4, 18,  0, tzinfo=datetime.timezone.utc),
+    "cuartos":     datetime.datetime(2026, 7,  9, 18,  0, tzinfo=datetime.timezone.utc),
+    "semifinal":   datetime.datetime(2026, 7, 14, 18,  0, tzinfo=datetime.timezone.utc),
+    "3erpuesto":   datetime.datetime(2026, 7, 18, 18,  0, tzinfo=datetime.timezone.utc),
+    "final":       datetime.datetime(2026, 7, 19, 18,  0, tzinfo=datetime.timezone.utc),
 }
 
-# Sube un nivel desde scripts/ y deja el JSON en la raíz del repo (donde lo lee index.html),
-# misma convención que fetch_resultados.py.
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "pronosticos_llaves.json")
 
 # ─────────────────────────── helpers ───────────────────────────
 
 def norm(s):
-    """minúsculas, sin tildes, sin espacios ni signos. Para comparar nombres de ronda/columnas."""
     s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
     return "".join(c for c in s.lower() if c.isalnum())
 
 def to_int(x):
-    """'2' -> 2 ; '' / None / basura -> None"""
     if x is None:
         return None
     x = str(x).strip()
     if x == "":
         return None
     try:
-        return int(float(x))   # tolera "2" y "2.0"
+        return int(float(x))
     except ValueError:
         return None
 
 def clean(x):
     return str(x).strip() if x is not None else ""
 
-# columnas esperadas -> clave interna (se mapean por encabezado, así no importa el orden)
 COLMAP = {
     "ronda": "ronda", "cruce": "cruce",
     "local": "local", "gl": "gl", "gv": "gv",
@@ -81,7 +68,6 @@ COLMAP = {
 }
 
 def parse_csv_text(text):
-    """CSV (texto) -> lista de dicts con claves internas (ronda, cruce, local, gl, gv, visita, pasa)."""
     reader = csv.reader(io.StringIO(text))
     rows = list(reader)
     if not rows:
@@ -96,7 +82,6 @@ def parse_csv_text(text):
         def get(key):
             j = idx.get(key)
             return r[j] if (j is not None and j < len(r)) else ""
-        # fila vacía completa -> la saltamos
         if not any(clean(get(k)) for k in ("ronda", "cruce", "local", "gl", "gv", "visita", "pasa")):
             continue
         out.append({
@@ -111,7 +96,6 @@ def parse_csv_text(text):
     return out
 
 def fetch_csv(tab):
-    """Baja una pestaña del Sheets como CSV vía gviz. Devuelve lista de dicts."""
     url = (f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq"
            f"?tqx=out:csv&sheet={urllib.parse.quote(tab)}")
     req = urllib.request.Request(url, headers={"User-Agent": "polla-bot"})
@@ -120,20 +104,15 @@ def fetch_csv(tab):
     return parse_csv_text(text)
 
 def avance_real(local, visita, gl, gv, pasa_celda):
-    """Avance REAL (objetivo): gana el del marcador; si hay empate a los 90, lo que
-    pongas en la celda Pasa de Resultados (penales). No se sobreescribe un ganador claro."""
     if gl is None or gv is None:
         return clean(pasa_celda) or None
     if gl > gv:
         return local
     if gv > gl:
         return visita
-    return clean(pasa_celda) or None     # empate -> manda la celda (penales)
+    return clean(pasa_celda) or None
 
 def avance_pred(local, visita, gl, gv, pasa_celda):
-    """Avance de un PRONÓSTICO: la columna Pasa manda SIEMPRE, aunque contradiga el marcador
-    (algunos apuestan 'pierde pero igual avanza'). Si Pasa está vacía, respaldo: ganador del
-    marcador, o None si la persona predijo empate sin indicar quién pasa."""
     p = clean(pasa_celda)
     if p:
         return p
@@ -145,8 +124,8 @@ def avance_pred(local, visita, gl, gv, pasa_celda):
         return visita
     return None
 
-# ───────────── ESPN: resultados reales de llaves (para PERSISTIRLOS) ─────────────
-# Traducción nombre-ESPN (inglés/variantes) -> nombre canónico en español del Sheet.
+# ───────────── ESPN: resultados reales de llaves ─────────────
+
 ALIASES = {
   "México":["Mexico"], "Sudáfrica":["South Africa"], "Corea del Sur":["South Korea","Korea Republic","Korea, South"],
   "Chequia":["Czech Republic","Czechia"], "Canadá":["Canada"], "Suiza":["Switzerland"], "Qatar":["Qatar","Catar"],
@@ -170,12 +149,13 @@ for es, al in ALIASES.items():
         _LOOKUP[norm(name)] = es
 
 def to_es(api_name):
-    """Nombre de ESPN -> español canónico (o None si no calza)."""
     return _LOOKUP.get(norm(api_name))
 
-def goles90_espn(comp):
-    """Goles de un competidor ESPN SOLO en los 90' (linescores períodos 1 y 2).
-    HIPÓTESIS a validar con un partido real con alargue. Si no hay linescores, devuelve None."""
+def goles90_linescores(comp):
+    """
+    Intenta obtener goles de los 90' usando linescores (períodos 1 y 2).
+    Devuelve el total o None si no hay linescores disponibles.
+    """
     ls = comp.get("linescores")
     if not isinstance(ls, list) or not ls:
         return None
@@ -184,17 +164,57 @@ def goles90_espn(comp):
     if tiene_period:
         for p in ls:
             if isinstance(p, dict) and p.get("period") is not None and p.get("period") <= 2:
-                try: s += int(float(p.get("value") or 0))
-                except (TypeError, ValueError): pass
+                try:
+                    s += int(float(p.get("value") or 0))
+                except (TypeError, ValueError):
+                    pass
     else:
         for p in ls[:2]:
-            try: s += int(float((p or {}).get("value") if isinstance(p, dict) else 0))
-            except (TypeError, ValueError): pass
+            try:
+                s += int(float((p or {}).get("value") if isinstance(p, dict) else 0))
+            except (TypeError, ValueError):
+                pass
     return s
 
+def goles90_desde_details(comp_dict, home_id, away_id):
+    """
+    Fallback: cuenta goles de los 90' reglamentarios leyendo los eventos del partido.
+
+    Reglas:
+      - clock.value <= 5400  → reglamento (90 min = 5400 seg)
+      - clock.value >  5400  → alargue: se IGNORA
+      - shootout == True     → tanda de penales: se IGNORA
+      - scoringPlay == False → no es gol: se ignora
+    """
+    details = comp_dict.get("details") or []
+    gl, gv = 0, 0
+    for ev in details:
+        if not ev.get("scoringPlay"):
+            continue
+        if ev.get("shootout"):
+            continue
+        clk = (ev.get("clock") or {}).get("value")
+        if clk is None:
+            continue
+        if clk > 5400:                  # alargue: no cuenta
+            continue
+        team_id = str((ev.get("team") or {}).get("id") or "")
+        val = ev.get("scoreValue") or 1
+        if team_id == str(home_id):
+            gl += val
+        elif team_id == str(away_id):
+            gv += val
+    return gl, gv
+
 def fetch_espn_llaves():
-    """Baja de ESPN los partidos TERMINADOS y devuelve [(localES, visitaES, gl90, gv90, ganadorES)].
-    Persistimos estos resultados en el JSON para que no se pierdan al salir de la ventana en vivo."""
+    """
+    Baja de ESPN los partidos TERMINADOS y devuelve
+    [(localES, visitaES, gl90, gv90, ganadorES)].
+
+    Prioridad para goles de 90':
+      1. linescores (períodos 1+2) si ESPN los manda
+      2. details filtrando clock.value <= 5400  ← fix para alargue
+    """
     hoy = datetime.datetime.now(datetime.timezone.utc).date()
     d1 = (hoy - datetime.timedelta(days=5)).strftime("%Y%m%d")
     d2 = (hoy + datetime.timedelta(days=1)).strftime("%Y%m%d")
@@ -207,41 +227,52 @@ def fetch_espn_llaves():
     except Exception as e:
         print(f"[diag] ESPN llaves falló: {e}")
         return []
+
     out = []
     for ev in data.get("events", []) or []:
         comp = (ev.get("competitions") or [{}])[0]
         st = ((ev.get("status") or {}).get("type") or {})
-        if st.get("completed") is not True:   # solo terminados (los en vivo los pone el navegador)
+        if st.get("completed") is not True:
             continue
+
         hC = aC = None
         for c in comp.get("competitors", []):
-            if c.get("homeAway") == "home": hC = c
-            elif c.get("homeAway") == "away": aC = c
+            if c.get("homeAway") == "home":
+                hC = c
+            elif c.get("homeAway") == "away":
+                aC = c
         if not hC or not aC:
             continue
+
         hn = (hC.get("team") or {}).get("displayName") or (hC.get("team") or {}).get("name")
         an = (aC.get("team") or {}).get("displayName") or (aC.get("team") or {}).get("name")
         he, ae = to_es(hn), to_es(an)
         if not he or not ae:
             continue
-        gl90 = goles90_espn(hC); gv90 = goles90_espn(aC)
-        if gl90 is None:
-            try: gl90 = int(hC.get("score"))
-            except (TypeError, ValueError): gl90 = None
-        if gv90 is None:
-            try: gv90 = int(aC.get("score"))
-            except (TypeError, ValueError): gv90 = None
+
+        home_id = str((hC.get("team") or {}).get("id") or hC.get("id") or "")
+        away_id = str((aC.get("team") or {}).get("id") or aC.get("id") or "")
+
+        # ── Prioridad 1: linescores ──
+        gl90 = goles90_linescores(hC)
+        gv90 = goles90_linescores(aC)
+
+        # ── Prioridad 2: details filtrados por clock <= 5400 ──
         if gl90 is None or gv90 is None:
-            continue
+            gl90, gv90 = goles90_desde_details(comp, home_id, away_id)
+            print(f"[diag] {hn} vs {an}: sin linescores → usé details ({gl90}-{gv90})")
+        else:
+            print(f"[diag] {hn} vs {an}: goles90 via linescores ({gl90}-{gv90})")
+
         winner = he if hC.get("winner") is True else (ae if aC.get("winner") is True else None)
         out.append((he, ae, gl90, gv90, winner))
+
     print(f"[diag] ESPN llaves: {len(out)} partidos terminados mapeados")
     return out
 
 # ─────────────────────────── core ───────────────────────────
 
 def build_llaves(rows):
-    """Lista ordenada de los 32 partidos desde la pestaña Llaves (con el resultado REAL)."""
     llaves = []
     for r in rows:
         llaves.append({
@@ -259,7 +290,7 @@ def main():
     ahora = datetime.datetime.now(datetime.timezone.utc)
     print(f"[diag] corriendo {ahora.isoformat()}  ·  sheet={SHEET_ID}")
 
-    # 1) Llaves (fuente única + resultados reales)
+    # 1) Llaves
     try:
         llaves_rows = fetch_csv(LLAVES_TAB)
     except Exception as e:
@@ -270,16 +301,14 @@ def main():
         print(f"[diag] OJO: esperaba 32 partidos en Llaves, llegaron {len(llaves_rows)}.")
 
     llaves = build_llaves(llaves_rows)
-    # clave estable por partido: (ronda_norm, cruce_norm)
     keys = [(norm(m["ronda"]), norm(m["cruce"])) for m in llaves]
 
-    # 1b) Resultados reales desde ESPN (se PERSISTEN en el JSON, igual que grupos).
-    # Esto es lo que evita que un cruce jugado "desaparezca" al salir de la ventana en vivo.
+    # 1b) Resultados reales desde ESPN
     espn = fetch_espn_llaves()
     espn_pair = {}
     for he, ae, gl, gv, w in espn:
         espn_pair[(norm(he), norm(ae))] = (gl, gv, w)
-        espn_pair[(norm(ae), norm(he))] = (gv, gl, w)   # por si ESPN invierte local/visita
+        espn_pair[(norm(ae), norm(he))] = (gv, gl, w)
     n_espn = 0
     for m in llaves:
         if not m["local"] or not m["visita"]:
@@ -291,10 +320,10 @@ def main():
             n_espn += 1
     print(f"[diag] resultados de llaves aplicados desde ESPN: {n_espn}")
 
-    # 2) JSON previo (para conservar rondas cerradas y resultados ya cargados)
+    # 2) JSON previo
     prev = {}
-    prev_pron = {}        # (persona, ronda_n, cruce_n) -> [gl,gv,pasa]
-    prev_real = {}        # (ronda_n, cruce_n) -> {realGL, realGV, realPasa}
+    prev_pron = {}
+    prev_real = {}
     try:
         with open(OUT, encoding="utf-8") as fp:
             prev = json.load(fp)
@@ -309,7 +338,7 @@ def main():
     except Exception:
         pass
 
-    # 2b) Merge de resultados reales: si una celda quedó vacía pero antes había dato, lo conservo
+    # 2b) Merge: conserva resultados previos si la celda quedó vacía
     for i, m in enumerate(llaves):
         if m["realGL"] is None and m["realGV"] is None:
             pr = prev_real.get(keys[i])
@@ -317,7 +346,7 @@ def main():
                 m["realGL"], m["realGV"], m["realPasa"] = pr["realGL"], pr["realGV"], pr.get("realPasa")
 
     # 3) Pronósticos por persona, con congelado por ronda
-    estado_ronda = {}     # ronda_norm -> "abierta"/"cerrada"
+    estado_ronda = {}
     for m in llaves:
         rn = norm(m["ronda"])
         dl = DEADLINES.get(rn)
@@ -333,7 +362,6 @@ def main():
             print(f"[diag] pestaña '{persona}' falló: {e}  -> conservo lo previo si existe")
             prows = []
 
-        # index del sheet de la persona por (ronda_n, cruce_n)
         sheet_ap = {}
         for r in prows:
             k = (norm(r["ronda"]), norm(r["cruce"]))
@@ -350,12 +378,10 @@ def main():
                 sin_deadline.add(m["ronda"])
 
             if not cerrada:
-                # ronda abierta -> lee del sheet (y esto se congela en la última corrida antes del deadline)
                 ap = sheet_ap.get(k, [None, None, None])
                 if ap[0] is not None or ap[1] is not None:
                     leidos += 1
             else:
-                # ronda cerrada -> conserva lo congelado; si no hay previo, último recurso = sheet (con aviso)
                 pp = prev_pron.get((persona,) + k)
                 if pp is not None:
                     ap = pp
@@ -370,7 +396,7 @@ def main():
     if sin_deadline:
         print(f"[diag] OJO: rondas sin deadline en DEADLINES (no se congelan): {sorted(sin_deadline)}")
 
-    # 4) escribir
+    # 4) Escribir JSON
     payload = {
         "updatedAt": ahora.isoformat(),
         "deadlines": {k: v.isoformat() for k, v in DEADLINES.items()},
