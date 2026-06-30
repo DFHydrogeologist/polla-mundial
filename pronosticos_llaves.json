@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-29T22:54:40.641595+00:00",
+ "updatedAt": "2026-06-30T00:02:29.279218+00:00",
  "deadlines": {
   "rondade32": "2026-06-29T16:30:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -15,9 +15,9 @@
    "cruce": "Cruce 1",
    "local": "Alemania",
    "visita": "Paraguay",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 1,
+   "realGV": 1,
+   "realPasa": "Paraguay"
   },
   {
    "ronda": "Ronda de 32",
