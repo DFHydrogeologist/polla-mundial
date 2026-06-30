@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-06-30T21:58:29.004476+00:00",
+ "updatedAt": "2026-06-30T23:19:19.355700+00:00",
  "deadlines": {
   "rondade32": "2026-06-30T16:30:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -24,9 +24,9 @@
    "cruce": "Cruce 2",
    "local": "Francia",
    "visita": "Suecia",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 3,
+   "realGV": 0,
+   "realPasa": "Francia"
   },
   {
    "ronda": "Ronda de 32E",
@@ -158,7 +158,7 @@
    "ronda": "Octavos",
    "cruce": "Cruce 1",
    "local": "Paraguay",
-   "visita": "Equipo",
+   "visita": "Francia",
    "realGL": null,
    "realGV": null,
    "realPasa": null
