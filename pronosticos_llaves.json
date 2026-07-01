@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-01T16:04:41.131611+00:00",
+ "updatedAt": "2026-07-01T18:24:24.134127+00:00",
  "deadlines": {
   "rondade32": "2026-06-30T16:30:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -114,9 +114,9 @@
    "cruce": "Cruce 12",
    "local": "Inglaterra",
    "visita": "DR Congo",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 1,
+   "realPasa": "Inglaterra"
   },
   {
    "ronda": "Ronda de 32",
@@ -202,7 +202,7 @@
   {
    "ronda": "Octavos",
    "cruce": "Cruce 6",
-   "local": "Equipo",
+   "local": "México",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
