@@ -29,7 +29,7 @@ LLAVES_TAB = "Llaves"
 PERSONAS = os.environ.get("POLLA_PERSONAS", "Demian,Jano,Nacho,Pelao,Raul,Jlo,Paula,Six,Chapa,Bob,Claudia,Chorero").split(",")
 
 DEADLINES = {
-    "rondade32":   datetime.datetime(2026, 6, 30, 16, 30, tzinfo=datetime.timezone.utc),
+    "rondade32":   datetime.datetime(2026, 7, 1, 20, 10, tzinfo=datetime.timezone.utc),
     "rondade32e":  datetime.datetime(2026, 6, 28, 19, 58, tzinfo=datetime.timezone.utc),
     "octavos":     datetime.datetime(2026, 7,  4, 18,  0, tzinfo=datetime.timezone.utc),
     "cuartos":     datetime.datetime(2026, 7,  9, 18,  0, tzinfo=datetime.timezone.utc),
