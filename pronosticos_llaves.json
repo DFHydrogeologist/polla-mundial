@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-01T01:39:25.110535+00:00",
+ "updatedAt": "2026-07-01T06:25:07.494869+00:00",
  "deadlines": {
   "rondade32": "2026-06-30T16:30:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -105,9 +105,9 @@
    "cruce": "Cruce 11",
    "local": "México",
    "visita": "Ecuador",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 0,
+   "realPasa": "México"
   },
   {
    "ronda": "Ronda de 32",
