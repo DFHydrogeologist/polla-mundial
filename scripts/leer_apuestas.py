@@ -20,7 +20,7 @@ Lógica de congelado (freeze) por RONDA:
 Solo usa la librería estándar. Corre local con:  python leer_apuestas.py
 """
 
-import os, sys, json, csv, io, unicodedata, datetime, urllib.request, urllib.parse
+import os, sys, json, csv, io, re, unicodedata, datetime, urllib.request, urllib.parse
 
 # ─────────────────────────── CONFIG (ajusta esto) ───────────────────────────
 
@@ -97,7 +97,7 @@ def parse_csv_text(text):
 
 def fetch_csv(tab):
     url = (f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq"
-           f"?tqx=out:csv&sheet={urllib.parse.quote(tab)}")
+           f"?tqx=out:csv&headers=1&sheet={urllib.parse.quote(tab)}")
     req = urllib.request.Request(url, headers={"User-Agent": "polla-bot"})
     with urllib.request.urlopen(req, timeout=40) as r:
         text = r.read().decode("utf-8")
@@ -176,16 +176,33 @@ def goles90_linescores(comp):
                 pass
     return s
 
-def goles90_desde_details(comp_dict, home_id, away_id):
-    """
-    Fallback: cuenta goles de los 90' reglamentarios leyendo los eventos del partido.
+def _minuto_base(ev):
+    """Minuto reglamentario del evento a partir de clock.displayValue.
+    '67\\'' -> 67 · '90\\'+2\\'' -> 90 (stoppage sigue siendo reglamento) · '105\\'' -> 105 (alargue).
+    Si no hay displayValue, cae al valor en segundos (5400 = 90 min)."""
+    clk = ev.get("clock") or {}
+    disp = clk.get("displayValue")
+    if disp:
+        m = re.match(r"\s*(\d+)", str(disp))
+        if m:
+            return int(m.group(1))
+    val = clk.get("value")
+    if val is not None:
+        try:
+            return int(float(val) // 60)   # segundos -> minutos
+        except (TypeError, ValueError):
+            pass
+    return None
 
-    Reglas:
-      - clock.value <= 5400  → reglamento (90 min = 5400 seg)
-      - clock.value >  5400  → alargue: se IGNORA
-      - shootout == True     → tanda de penales: se IGNORA
-      - scoringPlay == False → no es gol: se ignora
-    """
+def goles90_desde_details(comp_dict, home_id, away_id):
+    """Cuenta los goles de los 90' reglamentarios leyendo los eventos (details) del partido.
+
+    Regla clave (validada contra la estructura real de ESPN, que NO trae linescores):
+      - El minuto reglamentario sale de clock.displayValue: '90\\'+2\\'' = minuto 90 (cuenta),
+        '105\\'' o '119\\'' = alargue (minuto > 90, NO cuenta).
+      - shootout == True  → tanda de penales: no cuenta.
+      - scoringPlay == False → no es gol.
+      - ownGoal → cuenta para el rival (ESPN ya asigna el team correcto en el evento)."""
     details = comp_dict.get("details") or []
     gl, gv = 0, 0
     for ev in details:
@@ -193,10 +210,8 @@ def goles90_desde_details(comp_dict, home_id, away_id):
             continue
         if ev.get("shootout"):
             continue
-        clk = (ev.get("clock") or {}).get("value")
-        if clk is None:
-            continue
-        if clk > 5400:                  # alargue: no cuenta
+        minuto = _minuto_base(ev)
+        if minuto is not None and minuto > 90:   # alargue: no cuenta para los 90'
             continue
         team_id = str((ev.get("team") or {}).get("id") or "")
         val = ev.get("scoreValue") or 1
@@ -253,16 +268,19 @@ def fetch_espn_llaves():
         home_id = str((hC.get("team") or {}).get("id") or hC.get("id") or "")
         away_id = str((aC.get("team") or {}).get("id") or aC.get("id") or "")
 
-        # ── Prioridad 1: linescores ──
-        gl90 = goles90_linescores(hC)
-        gv90 = goles90_linescores(aC)
-
-        # ── Prioridad 2: details filtrados por clock <= 5400 ──
-        if gl90 is None or gv90 is None:
-            gl90, gv90 = goles90_desde_details(comp, home_id, away_id)
-            print(f"[diag] {hn} vs {an}: sin linescores → usé details ({gl90}-{gv90})")
+        # 90' desde los details (eventos con minuto). Este feed de ESPN no trae linescores,
+        # así que los details son la fuente confiable; separan alargue por el minuto real.
+        gl90, gv90 = goles90_desde_details(comp, home_id, away_id)
+        # respaldo por si un partido no trajera details
+        if (gl90 == 0 and gv90 == 0):
+            l1, l2 = goles90_linescores(hC), goles90_linescores(aC)
+            if l1 is not None and l2 is not None:
+                gl90, gv90 = l1, l2
+                print(f"[diag] {hn} vs {an}: sin details → linescores ({gl90}-{gv90})")
+            else:
+                print(f"[diag] {hn} vs {an}: 90' = {gl90}-{gv90} (details)")
         else:
-            print(f"[diag] {hn} vs {an}: goles90 via linescores ({gl90}-{gv90})")
+            print(f"[diag] {hn} vs {an}: 90' = {gl90}-{gv90} (details)")
 
         winner = he if hC.get("winner") is True else (ae if aC.get("winner") is True else None)
         out.append((he, ae, gl90, gv90, winner))
