@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-02T01:31:46.849920+00:00",
+ "updatedAt": "2026-07-02T01:49:06.820865+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -17,7 +17,10 @@
    "visita": "Paraguay",
    "realGL": 1,
    "realGV": 1,
-   "realPasa": "Paraguay"
+   "realPasa": "Paraguay",
+   "realFinalGL": 1,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -26,7 +29,10 @@
    "visita": "Suecia",
    "realGL": 3,
    "realGV": 0,
-   "realPasa": "Francia"
+   "realPasa": "Francia",
+   "realFinalGL": 3,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32E",
@@ -35,7 +41,10 @@
    "visita": "Canadá",
    "realGL": 0,
    "realGV": 1,
-   "realPasa": "Canadá"
+   "realPasa": "Canadá",
+   "realFinalGL": 0,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -44,7 +53,10 @@
    "visita": "Marruecos",
    "realGL": 1,
    "realGV": 1,
-   "realPasa": "Marruecos"
+   "realPasa": "Marruecos",
+   "realFinalGL": 1,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -80,7 +92,10 @@
    "visita": "Senegal",
    "realGL": 2,
    "realGV": 2,
-   "realPasa": "Bélgica"
+   "realPasa": "Bélgica",
+   "realFinalGL": 3,
+   "realFinalGV": 2,
+   "realWentET": true
   },
   {
    "ronda": "Ronda de 32",
@@ -89,7 +104,10 @@
    "visita": "Japón",
    "realGL": 2,
    "realGV": 1,
-   "realPasa": "Brasil"
+   "realPasa": "Brasil",
+   "realFinalGL": 2,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -98,7 +116,10 @@
    "visita": "Noruega",
    "realGL": 1,
    "realGV": 2,
-   "realPasa": "Noruega"
+   "realPasa": "Noruega",
+   "realFinalGL": 1,
+   "realFinalGV": 2,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -107,7 +128,10 @@
    "visita": "Ecuador",
    "realGL": 2,
    "realGV": 0,
-   "realPasa": "México"
+   "realPasa": "México",
+   "realFinalGL": 2,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -116,7 +140,10 @@
    "visita": "DR Congo",
    "realGL": 2,
    "realGV": 1,
-   "realPasa": "Inglaterra"
+   "realPasa": "Inglaterra",
+   "realFinalGL": 2,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
