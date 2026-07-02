@@ -176,33 +176,37 @@ def goles90_linescores(comp):
                 pass
     return s
 
-def _minuto_base(ev):
-    """Minuto reglamentario del evento a partir de clock.displayValue.
-    '67\\'' -> 67 · '90\\'+2\\'' -> 90 (stoppage sigue siendo reglamento) · '105\\'' -> 105 (alargue).
-    Si no hay displayValue, cae al valor en segundos (5400 = 90 min)."""
+def _es_alargue(ev):
+    """True si el gol/evento ocurrió en tiempo extra (alargue), False si es reglamentario.
+
+    Validado contra la estructura real de ESPN de este Mundial. clock.displayValue trae
+    el minuto: '67\\'', '45\\'+2\\'', '90\\'+5\\'', '105\\'', '105\\'+2\\'', '120\\'+3\\''.
+      - Minuto base = número antes del '+'.
+      - Reglamentario (cuenta): base <= 90. Incluye el descuento '45\\'+x' y '90\\'+x'
+        (ej. un gol al 95' llega como '90\\'+5\\'' → base 90 → cuenta).
+      - Alargue (no cuenta): base > 90. Incluye '105\\'', '105\\'+x', '119\\'', '120\\'+x'.
+    Sin displayValue, cae a clock.value en segundos (poco fiable: ESPN deja el value
+    pegado en 5400 durante el descuento, por eso el displayValue manda si existe)."""
     clk = ev.get("clock") or {}
     disp = clk.get("displayValue")
     if disp:
         m = re.match(r"\s*(\d+)", str(disp))
         if m:
-            return int(m.group(1))
+            return int(m.group(1)) > 90     # la base decide; '90'+x' = 90 (cuenta), '105'+x' = 105 (alargue)
     val = clk.get("value")
     if val is not None:
         try:
-            return int(float(val) // 60)   # segundos -> minutos
+            return float(val) > 5400.0
         except (TypeError, ValueError):
             pass
-    return None
+    return False   # ante la duda, cuenta (no descartamos un gol reglamentario)
 
 def goles90_desde_details(comp_dict, home_id, away_id):
     """Cuenta los goles de los 90' reglamentarios leyendo los eventos (details) del partido.
 
-    Regla clave (validada contra la estructura real de ESPN, que NO trae linescores):
-      - El minuto reglamentario sale de clock.displayValue: '90\\'+2\\'' = minuto 90 (cuenta),
-        '105\\'' o '119\\'' = alargue (minuto > 90, NO cuenta).
-      - shootout == True  → tanda de penales: no cuenta.
-      - scoringPlay == False → no es gol.
-      - ownGoal → cuenta para el rival (ESPN ya asigna el team correcto en el evento)."""
+    - Excluye alargue (minuto > 90 sin '+') y penales (shootout).
+    - Incluye descuento reglamentario ('90\\'+x').
+    - ownGoal: ESPN ya asigna el team beneficiado en el evento."""
     details = comp_dict.get("details") or []
     gl, gv = 0, 0
     for ev in details:
@@ -210,8 +214,7 @@ def goles90_desde_details(comp_dict, home_id, away_id):
             continue
         if ev.get("shootout"):
             continue
-        minuto = _minuto_base(ev)
-        if minuto is not None and minuto > 90:   # alargue: no cuenta para los 90'
+        if _es_alargue(ev):
             continue
         team_id = str((ev.get("team") or {}).get("id") or "")
         val = ev.get("scoreValue") or 1
@@ -283,7 +286,24 @@ def fetch_espn_llaves():
             print(f"[diag] {hn} vs {an}: 90' = {gl90}-{gv90} (details)")
 
         winner = he if hC.get("winner") is True else (ae if aC.get("winner") is True else None)
-        out.append((he, ae, gl90, gv90, winner))
+
+        # marcador FINAL (incluye alargue) desde el score del competidor
+        def _score_int(c):
+            try:
+                return int(float(c.get("score")))
+            except (TypeError, ValueError):
+                return None
+        glF, gvF = _score_int(hC), _score_int(aC)
+        # ¿hubo alargue? si el final difiere de los 90', o si hay algún gol con minuto > 90
+        went_et = False
+        if glF is not None and gvF is not None:
+            if glF != gl90 or gvF != gv90:
+                went_et = True
+        for ev in (comp.get("details") or []):
+            if ev.get("scoringPlay") and not ev.get("shootout") and _es_alargue(ev):
+                went_et = True
+                break
+        out.append((he, ae, gl90, gv90, winner, glF, gvF, went_et))
 
     print(f"[diag] ESPN llaves: {len(out)} partidos terminados mapeados")
     return out
@@ -324,9 +344,9 @@ def main():
     # 1b) Resultados reales desde ESPN
     espn = fetch_espn_llaves()
     espn_pair = {}
-    for he, ae, gl, gv, w in espn:
-        espn_pair[(norm(he), norm(ae))] = (gl, gv, w)
-        espn_pair[(norm(ae), norm(he))] = (gv, gl, w)
+    for he, ae, gl, gv, w, glF, gvF, et in espn:
+        espn_pair[(norm(he), norm(ae))] = (gl, gv, w, glF, gvF, et)
+        espn_pair[(norm(ae), norm(he))] = (gv, gl, w, (gvF if gvF is not None else None), (glF if glF is not None else None), et)
     n_espn = 0
     for m in llaves:
         if not m["local"] or not m["visita"]:
@@ -335,6 +355,8 @@ def main():
         if hit:
             m["realGL"], m["realGV"] = hit[0], hit[1]
             m["realPasa"] = hit[2] or m.get("realPasa")
+            m["realFinalGL"], m["realFinalGV"] = hit[3], hit[4]
+            m["realWentET"] = bool(hit[5])
             n_espn += 1
     print(f"[diag] resultados de llaves aplicados desde ESPN: {n_espn}")
 
@@ -348,7 +370,9 @@ def main():
         for i, m in enumerate(prev.get("llaves", [])):
             k = (norm(m.get("ronda", "")), norm(m.get("cruce", "")))
             prev_real[k] = {"realGL": m.get("realGL"), "realGV": m.get("realGV"),
-                            "realPasa": m.get("realPasa")}
+                            "realPasa": m.get("realPasa"),
+                            "realFinalGL": m.get("realFinalGL"), "realFinalGV": m.get("realFinalGV"),
+                            "realWentET": m.get("realWentET")}
         for per, lst in prev.get("pronosticos", {}).items():
             for i, ap in enumerate(lst):
                 if i < len(keys):
@@ -362,6 +386,9 @@ def main():
             pr = prev_real.get(keys[i])
             if pr and pr.get("realGL") is not None:
                 m["realGL"], m["realGV"], m["realPasa"] = pr["realGL"], pr["realGV"], pr.get("realPasa")
+                m["realFinalGL"] = pr.get("realFinalGL")
+                m["realFinalGV"] = pr.get("realFinalGV")
+                m["realWentET"] = pr.get("realWentET")
 
     # 3) Pronósticos por persona, con congelado por ronda
     estado_ronda = {}
