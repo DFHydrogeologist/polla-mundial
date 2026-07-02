@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-02T01:49:06.820865+00:00",
+ "updatedAt": "2026-07-02T02:28:05.585390+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -81,9 +81,12 @@
    "cruce": "Cruce 7",
    "local": "Estados Unidos",
    "visita": "Bosnia y Herzegovina",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 0,
+   "realPasa": "Estados Unidos",
+   "realFinalGL": 2,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
