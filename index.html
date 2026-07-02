@@ -417,6 +417,37 @@ function goles90(comp){
   return s;
 }
 
+// ¿el evento fue en alargue? Igual que el script: el minuto base del displayValue decide.
+// '90'+5'' -> base 90 (cuenta) · '105'' / '113'' -> base >90 (alargue, no cuenta).
+function esAlargueEv(ev){
+  const clk = (ev && ev.clock) || {};
+  const disp = clk.displayValue;
+  if(disp){
+    const m = String(disp).match(/^\s*(\d+)/);
+    if(m) return parseInt(m[1],10) > 90;
+  }
+  const v = clk.value;
+  if(v!=null && !isNaN(+v)) return (+v) > 5400;
+  return false;
+}
+
+// goles de los 90' de un cruce, contados desde comp.details (este feed NO trae linescores).
+// Devuelve [golesHome, golesAway] usando los id de equipo, o null si no hay details.
+function goles90Details(comp, homeId, awayId){
+  const details = comp && comp.details;
+  if(!Array.isArray(details) || !details.length) return null;
+  let gh=0, ga=0;
+  details.forEach(ev=>{
+    if(!ev || !ev.scoringPlay || ev.shootout) return;
+    if(esAlargueEv(ev)) return;                       // alargue no cuenta en los 90'
+    const tid = String(((ev.team||{}).id)||"");
+    const val = ev.scoreValue || 1;
+    if(tid===String(homeId)) gh+=val;
+    else if(tid===String(awayId)) ga+=val;
+  });
+  return [gh, ga];
+}
+
 // ───────────── Fase de llaves (pronosticos_llaves.json) ─────────────
 let LL = null;            // crudo del JSON de llaves
 let koByName = {};        // norm(nombre) -> {total, marker, bonus, exact, scored, played}
@@ -1056,15 +1087,21 @@ eventos.forEach(ev=>{
       // SOLO partidos en vivo o terminados; los programados ESPN los da 0-0 y serían un resultado falso.
       const kx=koIndex(he,ae);
       if(kx && (state==="in" || state==="post")){
-        const g90h=goles90(hC), g90a=goles90(aC);
-        const l90 = g90h!=null ? g90h : gh;     // si no hay linescores, usa el total (válido sin alargue)
-        const v90 = g90a!=null ? g90a : ga;
+        // 90' desde details (este feed no trae linescores). Fallback al total si no hay details.
+        const homeId=String(((hC.team||{}).id)||hC.id||"");
+        const awayId=String(((aC.team||{}).id)||aC.id||"");
+        const g90=goles90Details(comp, homeId, awayId);
+        const l90 = g90 ? g90[0] : gh;
+        const v90 = g90 ? g90[1] : ga;
         const winnerNm = hC.winner===true ? he : (aC.winner===true ? ae : null);
-        const wentET = (Array.isArray(hC.linescores)&&hC.linescores.length>2) ||
-                       (Array.isArray(aC.linescores)&&aC.linescores.length>2);
+        // alargue: si el final difiere de los 90', o si hay algún gol con minuto > 90
+        let wentET = (g90 && (g90[0]!==gh || g90[1]!==ga));
+        if(!wentET && Array.isArray(comp.details)){
+          wentET = comp.details.some(ev=> ev && ev.scoringPlay && !ev.shootout && esAlargueEv(ev));
+        }
         const gl90=kx.swap?v90:l90, gv90=kx.swap?l90:v90;     // orientado a local/visitante del cruce
         const glF =kx.swap?ga:gh,  gvF =kx.swap?gh:ga;        // marcador final (con alargue si hubo)
-        koNew[kx.k] = {state, clock, g90:[gl90,gv90], gFinal:[glF,gvF], winner:winnerNm, wentET};
+        koNew[kx.k] = {state, clock, g90:[gl90,gv90], gFinal:[glF,gvF], winner:winnerNm, wentET:!!wentET};
       }
     });
     espnLive=live; espnPost=post; koLive=koNew;
