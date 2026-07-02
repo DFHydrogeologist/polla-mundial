@@ -432,7 +432,10 @@ function koReal(k){
             gFinal:e.gFinal||null, clock:e.clock||""};
   }
   return {gl:m.realGL, gv:m.realGV, pasa:m.realPasa,
-          live:false, post:(m.realGL!=null && m.realGV!=null), wentET:false, gFinal:null, clock:""};
+          live:false, post:(m.realGL!=null && m.realGV!=null),
+          wentET:!!m.realWentET,
+          gFinal:(m.realFinalGL!=null && m.realFinalGV!=null)?[m.realFinalGL,m.realFinalGV]:null,
+          clock:""};
 }
 
 function computeKo(){
