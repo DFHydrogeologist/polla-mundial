@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-02T20:01:10.114332+00:00",
+ "updatedAt": "2026-07-02T21:43:10.094890+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -72,9 +72,12 @@
    "cruce": "Cruce 6",
    "local": "España",
    "visita": "Austria",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 3,
+   "realGV": 0,
+   "realPasa": "España",
+   "realFinalGL": 3,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
@@ -214,7 +217,7 @@
   {
    "ronda": "Octavos",
    "cruce": "Cruce 4",
-   "local": "Equipo",
+   "local": "España",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
