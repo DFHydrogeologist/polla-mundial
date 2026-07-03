@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-03T05:13:28.123868+00:00",
+ "updatedAt": "2026-07-03T08:34:05.666430+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -177,9 +177,12 @@
    "cruce": "Cruce 15",
    "local": "Suiza",
    "visita": "Argelia",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 0,
+   "realPasa": "Suiza",
+   "realFinalGL": 2,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Ronda de 32",
