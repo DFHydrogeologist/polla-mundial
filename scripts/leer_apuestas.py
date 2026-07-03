@@ -31,7 +31,11 @@ PERSONAS = os.environ.get("POLLA_PERSONAS", "Demian,Jano,Nacho,Pelao,Raul,Jlo,Pa
 DEADLINES = {
     "rondade32":   datetime.datetime(2026, 7, 1, 20, 10, tzinfo=datetime.timezone.utc),
     "rondade32e":  datetime.datetime(2026, 6, 28, 19, 58, tzinfo=datetime.timezone.utc),
-    "octavos":     datetime.datetime(2026, 7,  4, 16,  0, tzinfo=datetime.timezone.utc),
+    "octavos":     datetime.datetime(2026, 7,  4, 16,  0, tzinfo=datetime.timezone.utc),  # respaldo si algún cruce quedó como "Octavos" a secas
+    "octavosdia1": datetime.datetime(2026, 7,  4, 15,  0, tzinfo=datetime.timezone.utc),  # 4 jul 11:00 Chile
+    "octavosdia2": datetime.datetime(2026, 7,  5, 18,  0, tzinfo=datetime.timezone.utc),  # 5 jul 14:00 Chile
+    "octavosdia3": datetime.datetime(2026, 7,  6, 17,  0, tzinfo=datetime.timezone.utc),  # 6 jul 13:00 Chile
+    "octavosdia4": datetime.datetime(2026, 7,  7, 14,  0, tzinfo=datetime.timezone.utc),  # 7 jul 10:00 Chile
     "cuartos":     datetime.datetime(2026, 7,  9, 18,  0, tzinfo=datetime.timezone.utc),
     "semifinal":   datetime.datetime(2026, 7, 14, 18,  0, tzinfo=datetime.timezone.utc),
     "3erpuesto":   datetime.datetime(2026, 7, 18, 18,  0, tzinfo=datetime.timezone.utc),
@@ -308,6 +312,67 @@ def fetch_espn_llaves():
     print(f"[diag] ESPN llaves: {len(out)} partidos terminados mapeados")
     return out
 
+def fetch_deadlines_por_fecha(margen_horas=1):
+    """Consulta ESPN las fechas reales de TODOS los cruces (jugados o no) y devuelve
+    un dict {(localES, visitaES): deadline_utc}, donde el deadline es `margen_horas`
+    antes del PRIMER partido del día en que se juega ese cruce.
+
+    Así, todos los partidos de un mismo día comparten el mismo deadline (el más temprano
+    de ese día menos el margen). Devuelve {} si ESPN falla (el caller usa DEADLINES fijos)."""
+    hoy = datetime.datetime.now(datetime.timezone.utc).date()
+    d1 = (hoy - datetime.timedelta(days=2)).strftime("%Y%m%d")
+    d2 = (hoy + datetime.timedelta(days=20)).strftime("%Y%m%d")   # ventana amplia hacia adelante
+    url = (f"https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/"
+           f"scoreboard?dates={d1}-{d2}&limit=300")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "polla-bot"})
+        with urllib.request.urlopen(req, timeout=40) as r:
+            data = json.loads(r.read().decode())
+    except Exception as e:
+        print(f"[diag] fechas ESPN fallaron: {e}  -> uso DEADLINES fijos")
+        return {}
+
+    # 1) juntar (fecha_partido, localES, visitaES) de cada evento con fecha
+    partidos = []
+    primero_del_dia = {}   # date -> datetime más temprano de ese día
+    for ev in data.get("events", []) or []:
+        fecha_raw = ev.get("date")
+        if not fecha_raw:
+            continue
+        try:
+            dt = datetime.datetime.fromisoformat(fecha_raw.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        comp = (ev.get("competitions") or [{}])[0]
+        hC = aC = None
+        for c in comp.get("competitors", []):
+            if c.get("homeAway") == "home":
+                hC = c
+            elif c.get("homeAway") == "away":
+                aC = c
+        if not hC or not aC:
+            continue
+        hn = (hC.get("team") or {}).get("displayName") or (hC.get("team") or {}).get("name")
+        an = (aC.get("team") or {}).get("displayName") or (aC.get("team") or {}).get("name")
+        he, ae = to_es(hn), to_es(an)
+        if not he or not ae:
+            continue
+        dia = dt.date()
+        partidos.append((dia, he, ae))
+        if dia not in primero_del_dia or dt < primero_del_dia[dia]:
+            primero_del_dia[dia] = dt
+
+    # 2) deadline por partido = primer partido de su día - margen
+    deadlines = {}
+    for dia, he, ae in partidos:
+        dl = primero_del_dia[dia] - datetime.timedelta(hours=margen_horas)
+        deadlines[(norm(he), norm(ae))] = dl
+        deadlines[(norm(ae), norm(he))] = dl   # por si el orden local/visita difiere
+    if deadlines:
+        dias = sorted({d.isoformat() for d, _, _ in partidos})
+        print(f"[diag] deadlines por fecha: {len(partidos)} partidos en {len(dias)} días ({', '.join(dias)})")
+    return deadlines
+
 # ─────────────────────────── core ───────────────────────────
 
 def build_llaves(rows):
@@ -390,12 +455,30 @@ def main():
                 m["realFinalGV"] = pr.get("realFinalGV")
                 m["realWentET"] = pr.get("realWentET")
 
-    # 3) Pronósticos por persona, con congelado por ronda
+    # 3) Pronósticos por persona, con congelado por ronda / por fecha real del partido
+    # deadline efectivo de un cruce:
+    #   1) si la ronda tiene un DEADLINES manual explícito → ese manda (control total)
+    #   2) si no, se usa la fecha real de ESPN (automático)
+    # Así, poner "Octavos_dia1..4" con su hora en DEADLINES tiene prioridad y no lo pisa ESPN.
+    dl_por_fecha = fetch_deadlines_por_fecha(margen_horas=1)
+    def deadline_de(m):
+        manual = DEADLINES.get(norm(m["ronda"]))
+        if manual is not None:
+            return manual
+        k = (norm(m.get("local") or ""), norm(m.get("visita") or ""))
+        if k in dl_por_fecha:
+            return dl_por_fecha[k]
+        return None
+
     estado_ronda = {}
     for m in llaves:
         rn = norm(m["ronda"])
-        dl = DEADLINES.get(rn)
-        estado_ronda[rn] = "cerrada" if (dl and ahora >= dl) else "abierta"
+        dl = deadline_de(m)
+        # el estado por ronda es informativo; si algún cruce de la ronda está cerrado lo marca
+        est = "cerrada" if (dl and ahora >= dl) else "abierta"
+        # si ya había una marca 'cerrada' para la ronda, la conservamos (mezcla de días)
+        if estado_ronda.get(rn) != "cerrada":
+            estado_ronda[rn] = est
     print("[diag] estado rondas:", estado_ronda)
 
     pronosticos = {}
@@ -417,7 +500,7 @@ def main():
         leidos = 0
         for i, m in enumerate(llaves):
             rn = norm(m["ronda"]); k = keys[i]
-            dl = DEADLINES.get(rn)
+            dl = deadline_de(m)
             cerrada = bool(dl and ahora >= dl)
             if dl is None:
                 sin_deadline.add(m["ronda"])
