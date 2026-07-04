@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-04T22:28:59.514836+00:00",
+ "updatedAt": "2026-07-04T23:34:17.027992+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -211,9 +211,12 @@
    "cruce": "Cruce 1",
    "local": "Paraguay",
    "visita": "Francia",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 0,
+   "realGV": 1,
+   "realPasa": "Francia",
+   "realFinalGL": 0,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Octavos_dia1",
