@@ -1,10 +1,10 @@
 {
- "updatedAt": "2026-07-04T14:08:27.852734+00:00",
+ "updatedAt": "2026-07-04T15:02:49.075046+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
   "octavos": "2026-07-04T16:00:00+00:00",
-  "octavosdia1": "2026-07-04T15:00:00+00:00",
+  "octavosdia1": "2026-07-04T15:30:00+00:00",
   "octavosdia2": "2026-07-05T18:00:00+00:00",
   "octavosdia3": "2026-07-06T17:00:00+00:00",
   "octavosdia4": "2026-07-07T14:00:00+00:00",
@@ -1244,39 +1244,39 @@
     "Colombia"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    2,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Canadá"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Bélgica"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Brasil"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Colombia"
    ],
    [
     null,
