@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-04T05:07:38.147393+00:00",
+ "updatedAt": "2026-07-04T08:09:37.462867+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -1082,44 +1082,44 @@
     "Colombia"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    2,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Marruecos"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Belgica"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Noruega"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Colombia"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    0,
+    "Argentina"
    ],
    [
     null,
@@ -1436,14 +1436,14 @@
     "mexico"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "suiza"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "argentina"
    ],
    [
     null,
