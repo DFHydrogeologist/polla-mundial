@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-06T10:15:50.048883+00:00",
+ "updatedAt": "2026-07-06T14:05:57.552147+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -311,8 +311,8 @@
   {
    "ronda": "Cuartos",
    "cruce": "Cruce 3",
-   "local": "Equipo",
-   "visita": "Equipo",
+   "local": "Noruega",
+   "visita": "Inglaterra",
    "realGL": null,
    "realGV": null,
    "realPasa": null
@@ -1772,14 +1772,14 @@
     "México"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Colombia"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Argentina"
    ],
    [
     null,
