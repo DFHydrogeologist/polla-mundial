@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-06T01:15:06.202201+00:00",
+ "updatedAt": "2026-07-06T05:54:08.020782+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -265,9 +265,12 @@
    "cruce": "Cruce 6",
    "local": "México",
    "visita": "Inglaterra",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 3,
+   "realPasa": "Inglaterra",
+   "realFinalGL": 2,
+   "realFinalGV": 3,
+   "realWentET": false
   },
   {
    "ronda": "Octavos_dia4",
