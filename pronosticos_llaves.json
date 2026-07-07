@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-07T22:09:42.761123+00:00",
+ "updatedAt": "2026-07-07T23:29:10.126560+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -283,9 +283,12 @@
    "cruce": "Cruce 7",
    "local": "Suiza",
    "visita": "Colombia",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 0,
+   "realGV": 0,
+   "realPasa": "Suiza",
+   "realFinalGL": 0,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Octavos_dia4",
