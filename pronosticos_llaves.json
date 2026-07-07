@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-07T00:06:28.685891+00:00",
+ "updatedAt": "2026-07-07T04:32:16.776100+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -235,9 +235,12 @@
    "cruce": "Cruce 3",
    "local": "Estados Unidos",
    "visita": "Bélgica",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 1,
+   "realGV": 4,
+   "realPasa": "Bélgica",
+   "realFinalGL": 1,
+   "realFinalGV": 4,
+   "realWentET": false
   },
   {
    "ronda": "Octavos_dia3",
