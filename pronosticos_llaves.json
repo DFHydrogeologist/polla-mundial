@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-07T11:23:58.881186+00:00",
+ "updatedAt": "2026-07-07T13:32:53.985646+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -1297,9 +1297,9 @@
     "Colombia"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Argentina"
    ],
    [
     null,
@@ -2102,14 +2102,14 @@
     "México"
    ],
    [
-    null,
-    null,
-    null
+    0,
+    1,
+    "Colombia"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Argentina"
    ],
    [
     null,
