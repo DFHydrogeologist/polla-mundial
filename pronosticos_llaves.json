@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-08T16:05:18.874651+00:00",
+ "updatedAt": "2026-07-08T17:58:47.281640+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -498,24 +498,24 @@
     "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    2,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    0,
+    "Argentina"
    ],
    [
     null,
@@ -660,24 +660,24 @@
     "Argentina"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "España"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    1,
+    "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    1,
+    0,
+    "Argentina"
    ],
    [
     null,
@@ -1796,12 +1796,12 @@
    [
     2,
     0,
-    "Marruecos"
+    "Francia"
    ],
    [
     1,
     0,
-    "Bélgica"
+    "España"
    ],
    [
     2,
