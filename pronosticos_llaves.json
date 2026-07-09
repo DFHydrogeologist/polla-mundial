@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-09T21:02:49.061560+00:00",
+ "updatedAt": "2026-07-09T22:49:19.893785+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -307,9 +307,12 @@
    "cruce": "Cruce 1",
    "local": "Francia",
    "visita": "Marruecos",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 0,
+   "realPasa": "Francia",
+   "realFinalGL": 2,
+   "realFinalGV": 0,
+   "realWentET": false
   },
   {
    "ronda": "Cuartos",
