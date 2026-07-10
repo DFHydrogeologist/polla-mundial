@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-10T20:48:44.067925+00:00",
+ "updatedAt": "2026-07-10T21:59:57.239707+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -319,9 +319,12 @@
    "cruce": "Cruce 2",
    "local": "España",
    "visita": "Bélgica",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 2,
+   "realGV": 1,
+   "realPasa": "España",
+   "realFinalGL": 2,
+   "realFinalGV": 1,
+   "realWentET": false
   },
   {
    "ronda": "Cuartos",
