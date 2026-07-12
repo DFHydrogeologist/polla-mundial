@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-12T04:51:12.276497+00:00",
+ "updatedAt": "2026-07-12T07:27:24.735073+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -343,9 +343,12 @@
    "cruce": "Cruce 4",
    "local": "Argentina",
    "visita": "Suiza",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 1,
+   "realGV": 1,
+   "realPasa": "Argentina",
+   "realFinalGL": 3,
+   "realFinalGV": 1,
+   "realWentET": true
   },
   {
    "ronda": "Semifinal",
