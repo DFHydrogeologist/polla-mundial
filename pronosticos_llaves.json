@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-11T23:25:38.514176+00:00",
+ "updatedAt": "2026-07-12T01:03:35.274473+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -331,9 +331,12 @@
    "cruce": "Cruce 3",
    "local": "Noruega",
    "visita": "Inglaterra",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 1,
+   "realGV": 1,
+   "realPasa": "Inglaterra",
+   "realFinalGL": 1,
+   "realFinalGV": 2,
+   "realWentET": true
   },
   {
    "ronda": "Cuartos",
