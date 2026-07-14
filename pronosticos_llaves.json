@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-14T20:08:50.484639+00:00",
+ "updatedAt": "2026-07-14T21:30:13.270460+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -355,9 +355,12 @@
    "cruce": "Cruce 1",
    "local": "Francia",
    "visita": "España",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 0,
+   "realGV": 2,
+   "realPasa": "España",
+   "realFinalGL": 0,
+   "realFinalGV": 2,
+   "realWentET": false
   },
   {
    "ronda": "Semifinal",
@@ -371,7 +374,7 @@
   {
    "ronda": "3er puesto",
    "cruce": "Único",
-   "local": "Equipo",
+   "local": "Francia",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
@@ -380,7 +383,7 @@
   {
    "ronda": "FINAL",
    "cruce": "Único",
-   "local": "Equipo",
+   "local": "España",
    "visita": "Equipo",
    "realGL": null,
    "realGV": null,
