@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-16T23:24:07.326750+00:00",
+ "updatedAt": "2026-07-17T00:59:24.036735+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -870,14 +870,14 @@
     "Inglaterra"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "Francia"
    ],
    [
-    null,
-    null,
-    null
+    2,
+    1,
+    "España"
    ]
   ],
   "Chorero": [
