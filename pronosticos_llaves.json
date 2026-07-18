@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-18T22:21:46.623224+00:00",
+ "updatedAt": "2026-07-18T23:25:24.486729+00:00",
  "deadlines": {
   "rondade32": "2026-07-01T20:10:00+00:00",
   "rondade32e": "2026-06-28T19:58:00+00:00",
@@ -379,9 +379,12 @@
    "cruce": "Único",
    "local": "Francia",
    "visita": "Inglaterra",
-   "realGL": null,
-   "realGV": null,
-   "realPasa": null
+   "realGL": 4,
+   "realGV": 6,
+   "realPasa": "Inglaterra",
+   "realFinalGL": 4,
+   "realFinalGV": 6,
+   "realWentET": false
   },
   {
    "ronda": "FINAL",
