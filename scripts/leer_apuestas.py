@@ -38,7 +38,7 @@ DEADLINES = {
     "octavosdia4": datetime.datetime(2026, 7,  7, 14,  0, tzinfo=datetime.timezone.utc),  # 7 jul 10:00 Chile
     "cuartos":     datetime.datetime(2026, 7,  11, 19,  0, tzinfo=datetime.timezone.utc),
     "semifinal":   datetime.datetime(2026, 7, 18, 19,  30, tzinfo=datetime.timezone.utc),
-    "3erpuesto":   datetime.datetime(2026, 7, 18, 18,  0, tzinfo=datetime.timezone.utc),
+    "3erpuesto":   datetime.datetime(2026, 7, 18, 20,  30, tzinfo=datetime.timezone.utc),
     "final":       datetime.datetime(2026, 7, 19, 18,  0, tzinfo=datetime.timezone.utc),
 }
 
