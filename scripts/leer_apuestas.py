@@ -39,7 +39,7 @@ DEADLINES = {
     "cuartos":     datetime.datetime(2026, 7,  11, 19,  0, tzinfo=datetime.timezone.utc),
     "semifinal":   datetime.datetime(2026, 7, 18, 19,  30, tzinfo=datetime.timezone.utc),
     "3erpuesto":   datetime.datetime(2026, 7, 18, 20,  30, tzinfo=datetime.timezone.utc),
-    "final":       datetime.datetime(2026, 7, 19, 18,  0, tzinfo=datetime.timezone.utc),
+    "final":       datetime.datetime(2026, 7, 19, 21,  30, tzinfo=datetime.timezone.utc),
 }
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "pronosticos_llaves.json")
